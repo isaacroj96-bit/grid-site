@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Grid — formatos do topo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&display=swap">
+<style>
+:root{--bg:#121214;--sup:#1b1b1f;--linha:#2f2f35;--ink:#f3f2ed;--ink2:#bab8b0;--ink3:#86847c;--amarelo:#f2c200;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;padding-inline:16px}
+main{max-width:1100px;margin:0 auto;padding-block:26px 60px;display:grid;gap:22px}
+.topo-texto{color:var(--ink3);font-size:14px}
+.op{border:1px solid var(--linha);border-radius:12px;overflow:hidden}
+.rotulo{padding:12px 16px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amarelo);font-weight:700;border-bottom:1px solid var(--linha)}
+.rotulo span{color:var(--ink3);letter-spacing:.02em;text-transform:none;font-weight:400;margin-left:8px}
+.barra{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:14px 18px}
+.barra img{height:44px;justify-self:center}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;width:190px;color:var(--ink);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap}
+.b svg{width:18px;height:18px;stroke:var(--amarelo);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.esq{justify-self:start}.dir{justify-self:end}
+.flag{height:6px;background-image:linear-gradient(45deg,var(--ink) 25%,transparent 25%,transparent 75%,var(--ink) 75%),linear-gradient(45deg,var(--ink) 25%,var(--bg) 25%,var(--bg) 75%,var(--ink) 75%);background-size:6px 6px;background-position:0 0,3px 3px;opacity:.85}
+/* A atual */
+.a .b{border:1px solid var(--amarelo);border-radius:6px}
+/* B paralelogramo (itálico do logo, igual à moldura do carro) */
+.pB .b{position:relative;isolation:isolate}
+.pB .b::before{content:"";position:absolute;inset:0;z-index:-1;border:1px solid var(--amarelo);transform:skewX(-14deg);border-radius:3px}
+.pB .b:hover::before{background:rgba(242,194,0,.12)}
+/* C pílula */
+.pC .b{border:1px solid var(--amarelo);border-radius:999px}
+/* D oval preenchido como o logo */
+.pD .b{border-radius:50%/50%;background:var(--amarelo);color:#121214;border:2px solid #000;box-shadow:0 0 0 1px var(--amarelo);font-style:italic;font-weight:900}
+.pD .b svg{stroke:#121214}
+/* E paralelogramo com borda quadriculada virada para o logo */
+.pE .b{position:relative;isolation:isolate}
+.pE .b::before{content:"";position:absolute;inset:0;z-index:-1;border:1px solid var(--amarelo);transform:skewX(-14deg);border-radius:3px}
+.pE .b::after{content:"";position:absolute;top:0;bottom:0;width:8px;transform:skewX(-14deg);background-image:linear-gradient(45deg,var(--ink) 25%,transparent 25%,transparent 75%,var(--ink) 75%),linear-gradient(45deg,var(--ink) 25%,var(--bg) 25%,var(--bg) 75%,var(--ink) 75%);background-size:4px 4px;background-position:0 0,2px 2px;opacity:.8}
+.pE .esq::after{right:-1px}.pE .dir::after{left:-1px}
+@media (max-width:560px){.b{width:auto;padding:0 10px;font-size:13px;height:38px}.barra img{height:36px}.longo{display:none}}
+@media (min-width:561px){.curto{display:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="topo-texto">Formatos para os dois botões do topo. Escolha a letra.</div>
+  <section class="op a"><div class="rotulo">A · Atual <span>retângulo com cantos levemente arredondados</span></div>
+    <div class="barra"><a class="b esq" href="#"><svg viewBox="0 0 24 24"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg><span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a><img src="../../grid-logo.png" alt="Grid"><a class="b dir" href="#"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg><span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a></div><div class="flag"></div></section>
+  <section class="op pB"><div class="rotulo">B · Inclinado <span>a inclinação do itálico do logo, a mesma da moldura do carro</span></div>
+    <div class="barra"><a class="b esq" href="#"><svg viewBox="0 0 24 24"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg><span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a><img src="../../grid-logo.png" alt="Grid"><a class="b dir" href="#"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg><span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a></div><div class="flag"></div></section>
+  <section class="op pE"><div class="rotulo">C · Inclinado com bandeira <span>o B com uma faixa quadriculada no lado virado para o logo</span></div>
+    <div class="barra"><a class="b esq" href="#"><svg viewBox="0 0 24 24"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg><span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a><img src="../../grid-logo.png" alt="Grid"><a class="b dir" href="#"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg><span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a></div><div class="flag"></div></section>
+  <section class="op pC"><div class="rotulo">D · Pílula <span>pontas redondas, lembram o oval sem copiar</span></div>
+    <div class="barra"><a class="b esq" href="#"><svg viewBox="0 0 24 24"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg><span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a><img src="../../grid-logo.png" alt="Grid"><a class="b dir" href="#"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg><span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a></div><div class="flag"></div></section>
+  <section class="op pD"><div class="rotulo">E · Oval como o logo <span>amarelo, contorno preto, itálico</span></div>
+    <div class="barra"><a class="b esq" href="#"><svg viewBox="0 0 24 24"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg><span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a><img src="../../grid-logo.png" alt="Grid"><a class="b dir" href="#"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg><span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a></div><div class="flag"></div></section>
+</main>
+</body>
+</html>
