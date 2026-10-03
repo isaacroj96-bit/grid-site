@@ -190,7 +190,23 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .cookies{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;max-width:520px;margin-inline:auto;background:var(--sup2);border:1px solid var(--linha);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:center;font-size:13.5px;color:var(--ink2);box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .cookies button{background:var(--amarelo);color:var(--amarelo-ink);border:0;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}
 @media (min-width:920px){.cookies{bottom:16px}}
-footer.rodape-site{border-top:1px solid var(--linha);color:var(--ink3);font-size:13px}
-footer.rodape-site .wrap{padding-block:22px;display:grid;gap:6px}
+footer.rodape-site{border-top:1px solid var(--linha);color:var(--ink3);font-size:14px;margin-top:20px}
+footer.rodape-site .wrap{padding-block:34px 40px;display:grid;gap:14px;justify-items:center;text-align:center}
+.logo-rodape{height:38px;width:auto;opacity:.95}
+footer.rodape-site address{font-style:normal;color:var(--ink2);line-height:1.6}
+.rodape-links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.rodape-links a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);border:1px solid var(--linha);border-radius:999px;padding:8px 14px;font-size:14px}
+.rodape-links a:hover{border-color:var(--amarelo)}
+.rodape-links svg{width:18px;height:18px}
+.rodape-fino{font-size:13px}
 footer.rodape-site a{color:var(--ink2)}
+.rodape-links a{color:var(--ink)}
+/* venha nos visitar */
+.visite{display:grid;gap:20px;align-items:center;margin-block:10px 50px;padding-top:30px;border-top:1px solid var(--linha);grid-template-columns:minmax(0,1fr)}
+.visite img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;box-shadow:0 30px 50px -28px rgba(0,0,0,.9)}
+.visite-texto{display:grid;gap:12px;justify-items:start}
+.visite-texto .h1{font-size:clamp(30px,4.5vw,44px)}
+.visite-texto p{margin:0;color:var(--ink2)}
+.foto-loja{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px}
+@media (min-width:860px){.visite{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
