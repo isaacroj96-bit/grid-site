@@ -22,6 +22,9 @@ const CONFIG = {
   pixelId: process.env.PIXEL_ID || '',
   whatsappPadrao: '5531996011999',
   instagram: 'gridbh.auto',
+  // Avaliações do Google: sempre os números reais do Perfil da Empresa, atualizados à mão.
+  // Sem nota preenchida, aparece só o link "Ver avaliações no Google".
+  google: { nota: '', total: '', link: 'https://www.google.com/maps/search/?api=1&query=Grid+Autom%C3%B3veis+Belo+Horizonte' },
   // Prévia: BASE=/prototipo/v3 SAIDA=estatico/prototipo/v3 node build.js gera o site inteiro numa subpasta.
   base: (process.env.BASE || '').replace(/\/$/, '')
 };
@@ -86,7 +89,7 @@ function organizarOpcionais(c) {
   }
   const lista = c.opcionais || [];
   const acha = k => lista.find(o => chave(o) === k);
-  const procedencia = lista.filter(o => PROCEDENCIA.includes(chave(o)));
+  const procedencia = (c.laudo_aprovado ? ['Laudo cautelar aprovado'] : []).concat(lista.filter(o => PROCEDENCIA.includes(chave(o))));
   const raros = RAROS.map(acha).filter(Boolean)
     .filter((o, i, l) => !(chave(o) === 'teto solar' && l.some(x => chave(x) === 'teto panoramico')));
   const procurados = [];
@@ -155,6 +158,9 @@ function icone(nome) {
 }
 
 // ---------- pedaços de página ----------
+const ICONE_TROCA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>';
+const ICONE_FIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></svg>';
+const ICONE_ENVIAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"/><path d="M12 13l8-9"/></svg>';
 const ICONE_ZAP = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.5.5 0 0 0 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>';
 
 function selos(c) {
@@ -248,6 +254,7 @@ const PILARES = [
 const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
       <h2 class="h1" id="t-loja" style="font-size:26px">Compre com confiança</h2>
       <div class="loja-grade">${PILARES.map(([t, d]) => `<div class="loja-item"><b>${t}</b><span>${d}</span></div>`).join('')}</div>
+      <a class="google" href="${esc(CONFIG.google.link)}" target="_blank" rel="noopener">${CONFIG.google.nota ? `<span class="estrela" aria-hidden="true">★</span><b>${esc(CONFIG.google.nota)}</b> no Google${CONFIG.google.total ? ` · ${esc(CONFIG.google.total)} avaliações` : ''}` : 'Ver nossas avaliações no Google'} →</a>
       <div class="endereco"><b>Venha ver de perto:</b> ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)} · <a href="${B}/loja/">como chegar</a></div>
     </section>`;
 const FAIXA_CONFIANCA = `<ul class="pilares" aria-label="Por que comprar na Grid">${PILARES.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ul>`;
@@ -274,6 +281,11 @@ function paginaCarro(c, loja) {
       <div class="cab"><h1 class="h1">${esc(nomeCurto(c))}</h1>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}${precoHtml(c)}${selos(c)}</div>
       <dl class="specs"><div><dt>Ano</dt><dd>${anos}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio || '—')}</dd></div><div><dt>Combustível</dt><dd>${esc(c.combustivel || '—')}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor || '—')}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor || '—')}</dd></div></dl>
       <a class="zap zap-ficha" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a>
+      <div class="intencoes">
+        <a class="botao2" data-zap="${esc(`Olá! Tenho interesse no ${nomeCompleto(c)} (${brl(precoFinal(c))}) e tenho um carro para dar na troca.`)}" data-depois="Meu carro é: " data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_TROCA}Tenho um carro para trocar</a>
+        <a class="botao2" data-zap="${esc(`Olá! Quero simular o financiamento do ${nomeCompleto(c)} (${brl(precoFinal(c))}).`)}" data-depois="Valor de entrada: R$ " data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_FIN}Simular financiamento</a>
+        <button type="button" class="botao2" data-compartilhar data-titulo="${esc(`${nomeCompleto(c)} · ${brl(precoFinal(c))}`)}" data-url="${esc(`${CONFIG.dominio}/carro/${c.slug}/`)}">${ICONE_ENVIAR}Enviar para alguém</button>
+      </div>
       ${o.raros.length || o.procurados.length ? `<section class="bloco"><h2>Destaques</h2>
         ${o.raros.length ? `<div class="sub">Diferenciais</div><div class="destaques">${o.raros.map(d => `<div class="dest raro">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div>` : ''}
         ${o.procurados.length ? `<div class="sub">Os mais procurados</div><div class="destaques">${o.procurados.map(d => `<div class="dest">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div>` : ''}

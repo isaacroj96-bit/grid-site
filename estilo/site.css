@@ -159,6 +159,13 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .endereco{color:var(--ink2);font-size:14px}
 .endereco b{color:var(--ink)}
 .zap-ficha{display:none}
+.intencoes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.botao2{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:1px solid var(--linha);color:var(--ink);border-radius:var(--raio);padding:11px 12px;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;text-align:center;line-height:1.2}
+.botao2:hover{border-color:var(--amarelo)}
+.botao2 svg{width:18px;height:18px;flex:none;stroke:var(--amarelo);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.intencoes [data-compartilhar]{grid-column:1/-1}
+.google{display:inline-flex;align-items:center;gap:6px;color:var(--ink);text-decoration:none;font-size:14px;border-bottom:1px solid var(--amarelo);justify-self:start;padding-bottom:2px}
+.google .estrela{color:var(--amarelo)}
 .rodape-zap{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(18,18,20,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--linha);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
 .rodape-zap .wrap{display:flex;gap:12px;align-items:center;justify-content:space-between;padding-inline:0}
 .rodape-zap .zap{flex:1;max-width:420px;padding:14px}

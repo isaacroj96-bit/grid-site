@@ -18,13 +18,13 @@
   }
   var ORIGEM = origemDaVisita();
 
-  function linkZap(msg, ref) {
-    var texto = msg + (ref ? ' [ref ' + ref + ' · ' + ORIGEM + ']' : ' [' + ORIGEM + ']');
+  function linkZap(msg, ref, depois) {
+    var texto = msg + (ref ? ' [ref ' + ref + ' · ' + ORIGEM + ']' : ' [' + ORIGEM + ']') + (depois ? '\n' + depois : '');
     return 'https://wa.me/' + NUMERO + '?text=' + encodeURIComponent(texto);
   }
   function prepararZaps(raiz) {
     (raiz || document).querySelectorAll('a[data-zap]').forEach(function (a) {
-      a.href = linkZap(a.getAttribute('data-zap'), a.getAttribute('data-ref'));
+      a.href = linkZap(a.getAttribute('data-zap'), a.getAttribute('data-ref'), a.getAttribute('data-depois'));
       a.target = '_blank'; a.rel = 'noopener';
       if (!a.dataset.ouvindo) {
         a.dataset.ouvindo = '1';
@@ -156,6 +156,19 @@
     fotos.forEach(function (f, i) { f.addEventListener('click', function () { abrirTela(i); }); });
     document.getElementById('ampliar').addEventListener('click', function () { abrirTela(atual()); });
   }
+
+  // ---------- enviar o carro para alguém ----------
+  document.querySelectorAll('[data-compartilhar]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var titulo = b.getAttribute('data-titulo'), url = b.getAttribute('data-url');
+      if (navigator.share) {
+        navigator.share({ title: titulo, text: 'Olha esse carro na Grid: ' + titulo, url: url }).catch(function () {});
+      } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent('Olha esse carro na Grid: ' + titulo + ' ' + url), '_blank', 'noopener');
+      }
+      if (window.fbq) window.fbq('trackCustom', 'Compartilhar');
+    });
+  });
 
   // ---------- aviso de cookies (só com o pixel ligado) ----------
   if (document.body.getAttribute('data-pixel') === '1') {
