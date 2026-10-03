@@ -279,6 +279,8 @@ function paginaCarro(c, loja) {
         ${o.procurados.length ? `<div class="sub">Os mais procurados</div><div class="destaques">${o.procurados.map(d => `<div class="dest">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div>` : ''}
       </section>` : ''}
       ${o.procedencia.length ? `<section class="bloco"><h2>Procedência</h2><div class="proc"><ul>${o.procedencia.map(p => `<li><span class="ok" aria-hidden="true">✓</span>${esc(p)}</li>`).join('')}</ul></div></section>` : ''}
+    </div>
+    <div class="info">
       ${grupos.length ? `<section class="bloco"><h2>Todos os itens</h2><div>${grupos.map(([g, l]) => `<details><summary>${esc(g)}<span>${l.length} ${l.length === 1 ? 'item' : 'itens'}</span></summary><ul>${l.map(x => '<li>' + esc(x) + '</li>').join('')}</ul></details>`).join('')}</div></section>` : ''}
       ${c.descricao ? `<section class="bloco"><h2>Sobre este carro</h2><p class="descricao">${esc(c.descricao)}</p></section>` : ''}
     </div>

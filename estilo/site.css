@@ -109,9 +109,9 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 /* página do carro */
 .carro{padding-bottom:120px}
 .voltar{display:inline-block;color:var(--ink2);padding:16px 0;font-size:14px;text-decoration:none}
-.layout-carro{display:grid;gap:26px;grid-template-columns:minmax(0,1fr);grid-template-areas:"gal" "lado" "loja"}
+.layout-carro{display:grid;gap:26px;grid-template-columns:minmax(0,1fr);grid-template-areas:"gal" "lado" "info" "loja"}
 .layout-carro>*{min-width:0}
-.gal{grid-area:gal}.lado{grid-area:lado;display:grid;gap:22px;align-content:start}.loja{grid-area:loja}
+.gal{grid-area:gal}.lado{grid-area:lado;display:grid;gap:22px;align-content:start}.loja{grid-area:loja}.info{grid-area:info;display:grid;gap:22px;align-content:start}
 .galeria{position:relative;background:var(--sup2);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px -18px rgba(0,0,0,.8)}
 .trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .trilho::-webkit-scrollbar{display:none}
@@ -165,7 +165,7 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .rodape-zap .p{font-family:var(--display);font-style:italic;font-weight:900;font-stretch:80%;font-size:25px;white-space:nowrap;font-variant-numeric:tabular-nums}
 @media (max-width:380px){.loja-grade{grid-template-columns:minmax(0,1fr)}}
 @media (min-width:920px){
-  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-areas:"gal lado" "loja lado";grid-template-rows:auto 1fr;align-items:start}
+  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-areas:"gal lado" "info lado" "loja lado";grid-template-rows:auto auto 1fr;align-items:start}
   .loja{align-self:start}
   .lado{position:sticky;top:76px}
   .rodape-zap{display:none}
