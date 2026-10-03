@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const crypto = require('crypto');
 
 // ---------- configuração ----------
 const CONFIG = {
@@ -25,6 +26,11 @@ const CONFIG = {
   base: (process.env.BASE || '').replace(/\/$/, '')
 };
 const B = CONFIG.base;
+// Versão dos arquivos de estilo e script no link (?v=...): o navegador não usa uma cópia velha
+// guardada quando o arquivo muda.
+const VERSAO_ASSETS = crypto.createHash('md5')
+  .update(fs.readFileSync(path.join(__dirname, 'estilo', 'site.css')))
+  .update(fs.readFileSync(path.join(__dirname, 'estilo', 'site.js'))).digest('hex').slice(0, 8);
 // Foto da frente da loja: aparece na vitrine (bloco "Venha nos visitar") e no topo de /loja/
 // só quando o arquivo existir em estatico/.
 const FOTO_LOJA = ['loja-fachada.jpg', 'loja-fachada.jpeg', 'loja-fachada.png', 'loja-fachada.webp']
@@ -192,7 +198,7 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twi
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="${B}/assets/site.css">
+<link rel="stylesheet" href="${B}/assets/site.css?v=${VERSAO_ASSETS}">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
 </head>
@@ -216,7 +222,7 @@ ${corpo}
 </div></footer>
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
 <div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
-<script src="${B}/assets/site.js" defer></script>
+<script src="${B}/assets/site.js?v=${VERSAO_ASSETS}" defer></script>
 </body>
 </html>
 `;
