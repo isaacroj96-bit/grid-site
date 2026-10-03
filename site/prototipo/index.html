@@ -65,7 +65,12 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 .preco .por{font-family:var(--display);font-style:italic;font-weight:900;font-stretch:80%;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
 .mini-dest{display:flex;gap:6px;flex-wrap:wrap}
 .mini-dest span{font-size:12px;color:var(--ink2);background:rgba(255,255,255,.04);border:1px solid var(--linha);border-radius:4px;padding:2px 8px}
-.selo{position:absolute;top:10px;left:10px;background:var(--amarelo);color:var(--amarelo-ink);font-weight:800;font-size:12px;padding:3px 9px;border-radius:4px;z-index:2}
+.selo{display:inline-flex;align-items:center;gap:7px;background:rgba(12,12,14,.74);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:5px 10px 5px 14px;font-size:12.5px;line-height:1;position:relative;overflow:hidden;white-space:nowrap}
+.selo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),linear-gradient(45deg,#fff 25%,#111 25%,#111 75%,#fff 75%);background-size:6px 6px;background-position:0 0,3px 3px}
+.selo svg{width:12px;height:12px;stroke:var(--amarelo);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.selo .t{text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-size:11px;color:#d9d7cf}
+.selo .v{font-family:var(--dado);font-weight:500;font-variant-numeric:tabular-nums}
+.foto .selo{position:absolute;top:10px;left:10px;z-index:2}
 .vazio{padding:28px;border:1px dashed var(--linha);border-radius:12px;display:grid;gap:10px;justify-items:start;margin-bottom:48px}
 .vazio .h1{font-size:32px}
 
@@ -192,6 +197,7 @@ let estado={faixa:'todos',ordem:'recentes'};
 const FAIXAS=[['todos','Todos'],['ate80','Até R$ 80 mil'],['80a120','R$ 80 a 120 mil'],['mais120','Acima de R$ 120 mil']];
 function filtra(){let l=CARROS.filter(c=>{const p=preco(c);return estado.faixa==='todos'||(estado.faixa==='ate80'&&p<=80000)||(estado.faixa==='80a120'&&p>80000&&p<=120000)||(estado.faixa==='mais120'&&p>120000)});
   if(estado.ordem==='menor')l=l.slice().sort((a,b)=>preco(a)-preco(b));if(estado.ordem==='maior')l=l.slice().sort((a,b)=>preco(b)-preco(a));return l}
+function selo(c){if(!(c.promo&&c.promo<c.preco))return '';return `<span class="selo"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5v8M2.5 6.5 6 10l3.5-3.5"/></svg><span class="t">Baixou</span><span class="v">${brl(c.preco-c.promo)}</span></span>`}
 function precoHtml(c){return '<div class="preco">'+(c.promo&&c.promo<c.preco?'<span class="de">'+brl(c.preco)+'</span>':'')+'<span class="por">'+brl(preco(c))+'</span></div>'}
 function vitrine(){document.getElementById('zap-topo').href=linkZap(null);
   const l=filtra();
@@ -199,7 +205,7 @@ function vitrine(){document.getElementById('zap-topo').href=linkZap(null);
   <div class="filtros" role="group" aria-label="Faixa de preço">${FAIXAS.map(([k,n])=>`<button type="button" class="chip" data-faixa="${k}" aria-pressed="${estado.faixa===k}">${n}</button>`).join('')}
   <select id="ordem" class="ordem" aria-label="Ordenar"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option></select></div>
   ${l.length?`<div class="vitrine">${l.map(c=>`<button type="button" class="card" data-id="${c.id}">
-    <div class="foto">${c.promo&&c.promo<c.preco?'<span class="selo">Preço baixou</span>':''}<img loading="lazy" src="${c.fotos[0]}" alt="${esc(c.titulo)}"></div>
+    <div class="foto">${selo(c)}<img loading="lazy" src="${c.fotos[0]}" alt="${esc(c.titulo)}"></div>
     <div class="ficha"><div class="nome">${esc(c.titulo)}</div><div class="linha-dados"><span>${c.ano}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
     <div class="mini-dest">${c.dest.slice(0,3).map(d=>'<span>'+esc(frase(d))+'</span>').join('')}</div></div></button>`).join('')}</div>`
   :`<div class="vazio"><div class="h1">Não temos agora.</div><p>Diga o que você procura e avisamos quando chegar.</p><a class="zap" target="_blank" rel="noopener" href="${linkZap(null)}">Me avise quando chegar</a></div>`}`;
@@ -242,7 +248,7 @@ function carro(c){document.getElementById('zap-topo').href=linkZap(c);
       <div class="endereco"><b>Venha ver de perto:</b> Av. Dom Pedro II, 1900 · Carlos Prates · Belo Horizonte</div>
     </section>
    <div class="lado">
-    <div class="cab"><h1 class="h1">${esc(c.titulo)}</h1>${precoHtml(c)}</div>
+    <div class="cab"><h1 class="h1">${esc(c.titulo)}</h1>${precoHtml(c)}${selo(c)?'<div>'+selo(c)+'</div>':''}</div>
     <dl class="specs"><div><dt>Ano</dt><dd>${c.ano}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio)}</dd></div><div><dt>Combustível</dt><dd>${esc(c.comb)}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor)}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor||'—')}</dd></div></dl>
     <a class="zap zap-ficha" style="padding:15px" target="_blank" rel="noopener" href="${linkZap(c)}">Chamar no WhatsApp</a>
     ${c.dest.length?`<section class="bloco"><h2>Destaques</h2><div class="destaques">${c.dest.map(d=>`<div class="dest">${icone(d)}<span>${esc(frase(d))}</span></div>`).join('')}</div></section>`:''}
