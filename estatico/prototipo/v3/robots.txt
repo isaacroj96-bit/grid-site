@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /prototipo/
+Sitemap: https://www.gridbh.com/sitemap.xml
