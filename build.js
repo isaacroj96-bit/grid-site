@@ -344,7 +344,7 @@ function visiteHtml(loja) {
     <img src="${B}/${FOTO_LOJA}" alt="Fachada da Grid Automóveis" loading="lazy">
     <div class="visite-texto">
       <div class="eyebrow">Venha nos visitar</div>
-      <h2 class="h1" id="t-visite">A Grid fica no ${esc(loja.bairro)}</h2>
+      <h2 class="h1" id="t-visite">A Grid fica no Portal Auto Shopping</h2>
       <p>${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)}</p>
       <a class="hero-link" href="${esc(linkMapa(loja))}" target="_blank" rel="noopener">Abrir no mapa</a>
     </div>
