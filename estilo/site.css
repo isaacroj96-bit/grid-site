@@ -51,6 +51,12 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 .hero-carro img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;box-shadow:0 40px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06)}
 .hero-legenda{display:block;margin-top:12px;font-size:13px;color:var(--ink3);letter-spacing:.04em}
 .hero-legenda b{color:var(--ink);font-weight:600}
+.pilares{list-style:none;margin:0 0 34px;padding:18px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;border-top:1px solid var(--linha)}
+.pilares li{display:grid;gap:4px;min-width:0}
+.pilares b{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);font-weight:600}
+.pilares b::before{content:"";display:inline-block;width:6px;height:6px;background:var(--amarelo);margin-right:8px;vertical-align:middle;transform:rotate(45deg) translateY(-1px)}
+.pilares span{color:var(--ink2);font-size:14px;line-height:1.4}
+@media (min-width:860px){.pilares{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .eyebrow-secao{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink3);font-weight:500;padding-top:22px;border-top:1px solid var(--linha);scroll-margin-top:90px}
 @media (min-width:860px){.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;padding-block:64px 44px}}
 

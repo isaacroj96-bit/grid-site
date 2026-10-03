@@ -221,16 +221,19 @@ function cardHtml(c, i) {
     ${(() => { const m = o.raros.concat(o.procurados.filter(x => !/^Câmbio/.test(x))).slice(0, 3); return m.length ? `<div class="mini-dest">${m.map((d, k) => `<span${k < o.raros.length ? ' class="raro"' : ''}>` + esc(d) + '</span>').join('')}</div>` : ''; })()}</div></a>`;
 }
 
+// Confiança e procedência (Isaac, 03/10): é o que o cliente procura na loja.
+const PILARES = [
+  ['Procedência', 'Todo carro com laudo cautelar 100% aprovado.'],
+  ['Selecionados', 'Cada carro é escolhido e avaliado antes de entrar no estoque.'],
+  ['Preparados', 'Revisamos e preparamos o carro antes de ele ir para a vitrine.'],
+  ['Facilidade', 'Seu carro na troca, financiamento e transferência pela loja.']
+];
 const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
-      <h2 class="h1" id="t-loja" style="font-size:26px">Comprar na Grid</h2>
-      <div class="loja-grade">
-        <div class="loja-item"><b>Fotos do próprio carro</b><span>Todas as fotos são feitas aqui na loja, do carro que você vai ver.</span></div>
-        <div class="loja-item"><b>Seu carro na troca</b><span>Avaliamos o seu usado como parte do pagamento.</span></div>
-        <div class="loja-item"><b>Financiamento</b><span>Fazemos a simulação com os bancos com que trabalhamos.</span></div>
-        <div class="loja-item"><b>Transferência pela loja</b><span>Cuidamos da documentação para você sair dirigindo tranquilo.</span></div>
-      </div>
+      <h2 class="h1" id="t-loja" style="font-size:26px">Compre com confiança</h2>
+      <div class="loja-grade">${PILARES.map(([t, d]) => `<div class="loja-item"><b>${t}</b><span>${d}</span></div>`).join('')}</div>
       <div class="endereco"><b>Venha ver de perto:</b> ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)} · <a href="${B}/loja/">como chegar</a></div>
     </section>`;
+const FAIXA_CONFIANCA = `<ul class="pilares" aria-label="Por que comprar na Grid">${PILARES.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ul>`;
 
 function paginaCarro(c, loja) {
   const o = organizarOpcionais(c);
@@ -349,6 +352,7 @@ function montar() {
   const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']];
   const vitrine = `<main class="wrap">
   ${heroHtml(carros, loja)}
+  ${FAIXA_CONFIANCA}
   <div class="eyebrow-secao" id="carros">Na loja agora</div>
   <div class="filtros" role="group" aria-label="Faixa de preço">${FAIXAS.map(([k, n]) => `<button type="button" class="chip" data-faixa="${k}" aria-pressed="${k === 'todos'}">${n}</button>`).join('')}
     <select id="ordem" class="ordem" aria-label="Ordenar"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option></select></div>
