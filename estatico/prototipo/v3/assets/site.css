@@ -74,7 +74,7 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 .pilares span{color:var(--ink2);font-size:14px;line-height:1.4}
 @media (min-width:860px){.pilares{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .eyebrow-secao{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink3);font-weight:500;padding-top:22px;border-top:1px solid var(--linha);scroll-margin-top:90px}
-@media (min-width:860px){.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;padding-block:64px 44px}}
+@media (min-width:860px){.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;padding-block:64px 44px;align-items:start}}
 
 /* vitrine: a foto flutua, solta da ficha */
 .vitrine{display:grid;gap:44px 26px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));padding-bottom:56px}
@@ -109,9 +109,9 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 /* página do carro */
 .carro{padding-bottom:120px}
 .voltar{display:inline-block;color:var(--ink2);padding:16px 0;font-size:14px;text-decoration:none}
-.layout-carro{display:grid;gap:26px;grid-template-columns:minmax(0,1fr);grid-template-areas:"gal" "lado" "loja"}
+.layout-carro{display:grid;gap:26px;grid-template-columns:minmax(0,1fr);grid-template-areas:"gal" "lado" "info" "loja"}
 .layout-carro>*{min-width:0}
-.gal{grid-area:gal}.lado{grid-area:lado;display:grid;gap:22px;align-content:start}.loja{grid-area:loja}
+.gal{grid-area:gal}.lado{grid-area:lado;display:grid;gap:22px;align-content:start}.loja{grid-area:loja}.info{grid-area:info;display:grid;gap:22px;align-content:start}
 .galeria{position:relative;background:var(--sup2);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px -18px rgba(0,0,0,.8)}
 .trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .trilho::-webkit-scrollbar{display:none}
@@ -159,13 +159,20 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .endereco{color:var(--ink2);font-size:14px}
 .endereco b{color:var(--ink)}
 .zap-ficha{display:none}
+.intencoes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.botao2{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:1px solid var(--linha);color:var(--ink);border-radius:var(--raio);padding:11px 12px;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;text-align:center;line-height:1.2}
+.botao2:hover{border-color:var(--amarelo)}
+.botao2 svg{width:18px;height:18px;flex:none;stroke:var(--amarelo);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.intencoes [data-compartilhar]{grid-column:1/-1}
+.google{display:inline-flex;align-items:center;gap:6px;color:var(--ink);text-decoration:none;font-size:14px;border-bottom:1px solid var(--amarelo);justify-self:start;padding-bottom:2px}
+.google .estrela{color:var(--amarelo)}
 .rodape-zap{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(18,18,20,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--linha);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
 .rodape-zap .wrap{display:flex;gap:12px;align-items:center;justify-content:space-between;padding-inline:0}
 .rodape-zap .zap{flex:1;max-width:420px;padding:14px}
 .rodape-zap .p{font-family:var(--display);font-style:italic;font-weight:900;font-stretch:80%;font-size:25px;white-space:nowrap;font-variant-numeric:tabular-nums}
 @media (max-width:380px){.loja-grade{grid-template-columns:minmax(0,1fr)}}
 @media (min-width:920px){
-  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-areas:"gal lado" "loja lado";grid-template-rows:auto 1fr;align-items:start}
+  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-areas:"gal lado" "info lado" "loja lado";grid-template-rows:auto auto 1fr;align-items:start}
   .loja{align-self:start}
   .lado{position:sticky;top:76px}
   .rodape-zap{display:none}
@@ -200,6 +207,9 @@ footer.rodape-site address{font-style:normal;color:var(--ink2);line-height:1.6}
 .rodape-links svg{width:18px;height:18px}
 .rodape-fino{font-size:13px}
 footer.rodape-site a{color:var(--ink2)}
+.assinatura{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:12px;padding-top:18px;border-top:1px solid var(--linha);width:min(220px,100%)}
+.assinatura span{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3)}
+.assinatura img{width:90px;height:auto;opacity:.85}
 .rodape-links a{color:var(--ink)}
 /* venha nos visitar */
 .visite{display:grid;gap:20px;align-items:center;margin-block:10px 50px;padding-top:30px;border-top:1px solid var(--linha);grid-template-columns:minmax(0,1fr)}
