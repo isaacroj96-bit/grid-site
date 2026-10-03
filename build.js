@@ -212,7 +212,7 @@ ${pixel}
 <header class="topo">
   <div class="wrap">
     <a href="${B}/" aria-label="Grid Automóveis, início"><img class="logo" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40"></a>
-    <a class="zap" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}WhatsApp</a>
+    <div class="topo-acoes"><a class="link-topo" href="${B}/venda-seu-carro/">Venda seu carro</a><a class="zap" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}WhatsApp</a></div>
   </div>
   <div class="flag" aria-hidden="true"></div>
 </header>
@@ -224,7 +224,7 @@ ${corpo}
     <a data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
     <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
   </div>
-  <div class="rodape-fino"><a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
+  <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
   <div class="assinatura"><span>Tecnologia</span><img src="${B}/icon-logo.png" alt="Ícon" width="90" height="32" loading="lazy"></div>
 </div></footer>
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
@@ -282,7 +282,7 @@ function paginaCarro(c, loja) {
       <dl class="specs"><div><dt>Ano</dt><dd>${anos}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio || '—')}</dd></div><div><dt>Combustível</dt><dd>${esc(c.combustivel || '—')}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor || '—')}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor || '—')}</dd></div></dl>
       <a class="zap zap-ficha" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a>
       <div class="intencoes">
-        <a class="botao2" data-zap="${esc(`Olá! Tenho interesse no ${nomeCompleto(c)} (${brl(precoFinal(c))}) e tenho um carro para dar na troca.`)}" data-depois="Meu carro é: " data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_TROCA}Tenho um carro para trocar</a>
+        <a class="botao2" href="${B}/venda-seu-carro/?troca=${esc(c.id)}">${ICONE_TROCA}Tenho um carro para trocar</a>
         <a class="botao2" data-zap="${esc(`Olá! Quero simular o financiamento do ${nomeCompleto(c)} (${brl(precoFinal(c))}).`)}" data-depois="Valor de entrada: R$ " data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_FIN}Simular financiamento</a>
         <button type="button" class="botao2" data-compartilhar data-titulo="${esc(`${nomeCompleto(c)} · ${brl(precoFinal(c))}`)}" data-url="${esc(`${CONFIG.dominio}/carro/${c.slug}/`)}">${ICONE_ENVIAR}Enviar para alguém</button>
       </div>
@@ -391,6 +391,83 @@ function heroHtml(carros, loja) {
   </section>`;
 }
 
+const MARCAS = ['Audi', 'BMW', 'BYD', 'Caoa Chery', 'Chevrolet', 'Citroën', 'Fiat', 'Ford', 'GWM', 'Honda', 'Hyundai', 'Jeep',
+  'Kia', 'Land Rover', 'Mercedes-Benz', 'Mitsubishi', 'Nissan', 'Peugeot', 'Ram', 'Renault', 'Toyota', 'Volkswagen', 'Volvo'];
+// Venda ou troca do carro do cliente (fase 1): passo a passo no próprio navegador, sem guardar
+// nada no site. No fim, monta a mensagem e abre o WhatsApp da loja. As fotos vão na conversa.
+function paginaVendaSeuCarro(carros, loja) {
+  const anoAtual = new Date().getFullYear() + 1;
+  const anos = []; for (let a = anoAtual; a >= anoAtual - 25; a--) anos.push(a);
+  const interesses = carros.map(c => ({ id: c.id, nome: `${nomeCompleto(c)} (${brl(precoFinal(c))})` }));
+  const corpo = `<main class="wrap venda" id="venda" data-interesses="${esc(JSON.stringify(interesses))}">
+  <div class="venda-topo">
+    <div class="eyebrow">Avaliação do seu carro</div>
+    <h1 class="h1 venda-titulo">Venda ou troque seu carro <em>na Grid</em>.</h1>
+    <p class="venda-sub">Responda em menos de um minuto. A conversa continua no WhatsApp, com quem avalia o carro.</p>
+  </div>
+  <div class="progresso" aria-hidden="true"><i id="barra"></i><span class="chegada"></span></div>
+
+  <form id="form-venda" novalidate>
+    <section class="passo" data-passo="1">
+      <h2 class="pergunta">O que você quer fazer?</h2>
+      <div class="opcoes" role="radiogroup" aria-label="O que você quer fazer">
+        <button type="button" class="opcao" data-campo="intencao" data-valor="vender"><b>Vender meu carro</b><span>A Grid compra o seu carro.</span></button>
+        <button type="button" class="opcao" data-campo="intencao" data-valor="trocar"><b>Trocar por um carro da Grid</b><span>Seu carro entra como parte do pagamento.</span></button>
+        <button type="button" class="opcao" data-campo="intencao" data-valor="consignar"><b>Deixar em consignação</b><span>A Grid vende o seu carro para você.</span></button>
+      </div>
+    </section>
+
+    <section class="passo" data-passo="2" hidden>
+      <h2 class="pergunta">Qual é o seu carro?</h2>
+      <div class="campos">
+        <label>Marca<input id="marca" list="lista-marcas" autocomplete="off" placeholder="Ex.: Fiat" required></label>
+        <datalist id="lista-marcas">${MARCAS.map(m => `<option value="${esc(m)}">`).join('')}</datalist>
+        <label>Modelo<input id="modelo" autocomplete="off" placeholder="Ex.: Argo" required></label>
+        <label>Versão <small>(se souber)</small><input id="versao" autocomplete="off" placeholder="Ex.: Drive 1.0"></label>
+        <label>Ano do modelo<select id="ano" required><option value="">Escolha</option>${anos.map(a => `<option>${a}</option>`).join('')}</select></label>
+        <label>Quilometragem<input id="km" inputmode="numeric" autocomplete="off" placeholder="Ex.: 45.000" required></label>
+        <label>Câmbio<select id="cambio"><option value="">Escolha</option><option>Automático</option><option>Manual</option></select></label>
+      </div>
+      <p class="erro" id="erro2" hidden>Preencha marca, modelo, ano e quilometragem.</p>
+      <div class="navegar"><button type="button" class="voltar-passo">‹ Voltar</button><button type="button" class="zap avancar">Continuar</button></div>
+    </section>
+
+    <section class="passo" data-passo="3" hidden>
+      <h2 class="pergunta">Como ele está?</h2>
+      <p class="dica">Toque no que for verdade. Pode pular.</p>
+      <div class="marcas">
+        <button type="button" class="marca" data-sinal="Único dono" aria-pressed="false">Único dono</button>
+        <button type="button" class="marca" data-sinal="IPVA pago" aria-pressed="false">IPVA pago</button>
+        <button type="button" class="marca" data-sinal="Revisões em dia" aria-pressed="false">Revisões em dia</button>
+        <button type="button" class="marca" data-sinal="Manual e chave reserva" aria-pressed="false">Manual e chave reserva</button>
+        <button type="button" class="marca" data-sinal="Financiado (ainda pagando)" aria-pressed="false">Ainda está financiado</button>
+        <button type="button" class="marca" data-sinal="Já teve batida" aria-pressed="false">Já teve batida</button>
+      </div>
+      <label class="largo">Algo mais que a gente deva saber? <small>(opcional)</small><textarea id="obs" rows="3" placeholder="Ex.: pneus novos, pequeno risco na porta"></textarea></label>
+      <div class="navegar"><button type="button" class="voltar-passo">‹ Voltar</button><button type="button" class="zap avancar">Continuar</button></div>
+    </section>
+
+    <section class="passo" data-passo="4" hidden>
+      <h2 class="pergunta">Quase lá.</h2>
+      <div class="campos">
+        <label>Seu nome<input id="nome" autocomplete="given-name" placeholder="Como podemos te chamar?"></label>
+        <label class="so-troca" hidden>Carro da Grid que te interessou <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
+        <datalist id="lista-interesses"></datalist>
+      </div>
+      <div class="resumo" id="resumo"></div>
+      <p class="dica">Na conversa, mande 4 fotos: frente, traseira, interior e painel mostrando a quilometragem. Com elas a avaliação sai mais rápido.</p>
+      <div class="navegar"><button type="button" class="voltar-passo">‹ Voltar</button><a class="zap" id="enviar-venda" data-zap="" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Enviar pelo WhatsApp</a></div>
+      <p class="letra-miuda">Nada fica salvo neste site. As informações vão só na mensagem que você decidir enviar.</p>
+    </section>
+  </form>
+</main>`;
+  return pagina({
+    titulo: 'Venda ou troque seu carro · Grid Automóveis',
+    descricao: `Avaliação do seu carro para venda, troca ou consignação na Grid Automóveis, ${loja.cidade}.`,
+    url: CONFIG.dominio + '/venda-seu-carro/', corpo, loja
+  });
+}
+
 // ---------- montagem ----------
 function montar() {
   const dados = JSON.parse(fs.readFileSync(path.join(RAIZ, 'dados', 'estoque.json'), 'utf8'));
@@ -446,6 +523,8 @@ function montar() {
   ${BLOCO_LOJA(loja)}
 </main>`
   }));
+
+  escrever('venda-seu-carro/index.html', paginaVendaSeuCarro(carros, loja));
 
   escrever('privacidade/index.html', pagina({
     titulo: 'Privacidade · Grid Automóveis', descricao: 'Como o site da Grid Automóveis usa dados e cookies.',

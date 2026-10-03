@@ -170,6 +170,88 @@
     });
   });
 
+  // ---------- venda ou troca do carro do cliente ----------
+  var venda = document.getElementById('venda');
+  if (venda) {
+    var dados = { intencao: '', sinais: [] };
+    var passos = venda.querySelectorAll('.passo');
+    var barraV = document.getElementById('barra');
+    var atualV = 1;
+    var interesses = [];
+    try { interesses = JSON.parse(venda.getAttribute('data-interesses') || '[]'); } catch (e) {}
+    var dl = document.getElementById('lista-interesses');
+    interesses.forEach(function (c) { var o = document.createElement('option'); o.value = c.nome; dl.appendChild(o); });
+    var q = new URLSearchParams(location.search);
+    var trocaId = q.get('troca');
+    var $ = function (id) { return document.getElementById(id); };
+    function vai(n) {
+      atualV = n;
+      passos.forEach(function (p) { p.hidden = +p.getAttribute('data-passo') !== n; });
+      barraV.style.width = (n * 25) + '%';
+      if (n === 4) montaResumo();
+      venda.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function rotulo(i) { return i === 'vender' ? 'Quero vender meu carro para a Grid.' : i === 'trocar' ? 'Quero trocar meu carro por um da Grid.' : 'Quero deixar meu carro em consignação na Grid.'; }
+    function montaResumo() {
+      var linhas = [];
+      linhas.push('Olá' + ($('nome').value.trim() ? ', sou ' + $('nome').value.trim() : '') + '! ' + rotulo(dados.intencao));
+      var carro = [$('marca').value, $('modelo').value, $('versao').value].map(function (s) { return s.trim(); }).filter(Boolean).join(' ');
+      linhas.push('Meu carro: ' + carro + ' ' + $('ano').value + ($('cambio').value ? ', ' + $('cambio').value.toLowerCase() : '') + ', ' + $('km').value.trim() + ' km.');
+      if (dados.sinais.length) linhas.push('Situação: ' + dados.sinais.join(', ') + '.');
+      if ($('obs').value.trim()) linhas.push('Obs.: ' + $('obs').value.trim());
+      if (dados.intencao === 'trocar' && $('interesse').value.trim()) linhas.push('Tenho interesse no ' + $('interesse').value.trim() + '.');
+      var texto = linhas.join('\n');
+      $('resumo').textContent = texto;
+      var a = $('enviar-venda');
+      a.setAttribute('data-zap', texto);
+      var ref = '';
+      if (dados.intencao === 'trocar' && trocaId) ref = trocaId;
+      if (ref) a.setAttribute('data-ref', ref); else a.removeAttribute('data-ref');
+      a.removeAttribute('data-ouvindo');
+      prepararZaps(a.parentNode);
+    }
+    venda.querySelectorAll('.opcao').forEach(function (b) {
+      b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', 'false');
+      b.addEventListener('click', function () {
+        dados.intencao = b.getAttribute('data-valor');
+        venda.querySelectorAll('.opcao').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); });
+        venda.querySelector('.so-troca').hidden = dados.intencao !== 'trocar';
+        setTimeout(function () { vai(2); }, 180);
+      });
+    });
+    venda.querySelectorAll('.marca').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var on = b.getAttribute('aria-pressed') !== 'true';
+        b.setAttribute('aria-pressed', String(on));
+        var s = b.getAttribute('data-sinal');
+        dados.sinais = dados.sinais.filter(function (x) { return x !== s; });
+        if (on) dados.sinais.push(s);
+      });
+    });
+    venda.querySelectorAll('.voltar-passo').forEach(function (b) { b.addEventListener('click', function () { vai(Math.max(1, atualV - 1)); }); });
+    venda.querySelectorAll('.avancar').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (atualV === 2) {
+          var ok = $('marca').value.trim() && $('modelo').value.trim() && $('ano').value && $('km').value.trim();
+          $('erro2').hidden = !!ok; if (!ok) return;
+        }
+        vai(atualV + 1);
+      });
+    });
+    ['nome', 'interesse'].forEach(function (id) { $(id).addEventListener('input', montaResumo); });
+    $('km').addEventListener('input', function () {
+      var d = $('km').value.replace(/\D/g, '').slice(0, 7);
+      $('km').value = d ? Number(d).toLocaleString('pt-BR') : '';
+    });
+    $('form-venda').addEventListener('submit', function (e) { e.preventDefault(); });
+    if (trocaId) {
+      var c = interesses.find(function (x) { return String(x.id) === trocaId; });
+      var bt = venda.querySelector('.opcao[data-valor="trocar"]');
+      if (c) $('interesse').value = c.nome;
+      if (bt) bt.click();
+    }
+  }
+
   // ---------- aviso de cookies (só com o pixel ligado) ----------
   if (document.body.getAttribute('data-pixel') === '1') {
     var visto = null;
