@@ -74,7 +74,7 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 .pilares span{color:var(--ink2);font-size:14px;line-height:1.4}
 @media (min-width:860px){.pilares{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .eyebrow-secao{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink3);font-weight:500;padding-top:22px;border-top:1px solid var(--linha);scroll-margin-top:90px}
-@media (min-width:860px){.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;padding-block:64px 44px}}
+@media (min-width:860px){.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;padding-block:64px 44px;align-items:start}}
 
 /* vitrine: a foto flutua, solta da ficha */
 .vitrine{display:grid;gap:44px 26px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));padding-bottom:56px}
