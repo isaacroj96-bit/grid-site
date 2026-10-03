@@ -25,7 +25,7 @@ const CONFIG = {
 };
 const B = CONFIG.base;
 const RAIZ = __dirname;
-const SAIDA = path.join(RAIZ, process.env.SAIDA || '_site');
+const SAIDA = path.resolve(RAIZ, process.env.SAIDA || '_site');
 
 // ---------- utilidades ----------
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
