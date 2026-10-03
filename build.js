@@ -183,7 +183,7 @@ const nomeCurto = c => [c.marca, c.modelo].filter(Boolean).join(' ') || c.titulo
 const nomeCompleto = c => [c.marca, c.modelo, c.versao, c.ano_modelo].filter(Boolean).join(' ') || c.titulo;
 const msgCarro = c => `Olá! Vi o ${nomeCompleto(c)} (${brl(precoFinal(c))}) no site da Grid.`;
 
-function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jsonld }) {
+function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jsonld, semFlutuante }) {
   const px = CONFIG.pixelId;
   const pixel = px ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${esc(px)}');fbq('track','PageView');${evento || ''}</script>` : '';
   return `<!doctype html>
@@ -230,6 +230,7 @@ ${corpo}
   <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
   <div class="assinatura"><span>Tecnologia</span><img src="${B}/icon-logo.png" alt="Ícon" width="90" height="32" loading="lazy"></div>
 </div></footer>
+${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a Grid no WhatsApp">${ICONE_ZAP}</a>`}
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
 <div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
 <script src="${B}/assets/site.js?v=${VERSAO_ASSETS}" defer></script>
@@ -467,7 +468,7 @@ function paginaVendaSeuCarro(carros, loja) {
   return pagina({
     titulo: 'Venda ou troque seu carro · Grid Automóveis',
     descricao: `Avaliação do seu carro para venda, troca ou consignação na Grid Automóveis, ${loja.cidade}.`,
-    url: CONFIG.dominio + '/venda-seu-carro/', corpo, loja
+    url: CONFIG.dominio + '/venda-seu-carro/', corpo, loja, semFlutuante: true
   });
 }
 
