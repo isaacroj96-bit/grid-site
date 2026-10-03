@@ -19,10 +19,13 @@ const CONFIG = {
   dominio: 'https://www.gridbh.com',
   // ID do pixel da Meta. Vazio = sem pixel e sem aviso de cookies.
   pixelId: process.env.PIXEL_ID || '',
-  whatsappPadrao: '5531996011999'
+  whatsappPadrao: '5531996011999',
+  // Prévia: BASE=/prototipo/v3 SAIDA=estatico/prototipo/v3 node build.js gera o site inteiro numa subpasta.
+  base: (process.env.BASE || '').replace(/\/$/, '')
 };
+const B = CONFIG.base;
 const RAIZ = __dirname;
-const SAIDA = path.join(RAIZ, '_site');
+const SAIDA = path.join(RAIZ, process.env.SAIDA || '_site');
 
 // ---------- utilidades ----------
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -155,18 +158,18 @@ function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jso
 <meta property="og:url" content="${esc(url)}">
 ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twitter:card" content="summary_large_image">` : ''}
 <meta name="theme-color" content="#121214">
-<link rel="icon" href="/grid-logo.png">
+<link rel="icon" href="${B}/grid-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="${B}/assets/site.css">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
 </head>
 <body data-whatsapp="${esc(loja.whatsapp)}" data-pixel="${px ? '1' : '0'}">
 <header class="topo">
   <div class="wrap">
-    <a href="/" aria-label="Grid Automóveis, início"><img class="logo" src="/grid-logo.png" alt="Grid Automóveis" width="88" height="40"></a>
+    <a href="${B}/" aria-label="Grid Automóveis, início"><img class="logo" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40"></a>
     <a class="zap" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}WhatsApp</a>
   </div>
   <div class="flag" aria-hidden="true"></div>
@@ -174,11 +177,11 @@ ${pixel}
 ${corpo}
 <footer class="rodape-site"><div class="wrap">
   <div><b>Grid Automóveis</b> · ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)}</div>
-  <div>WhatsApp ${esc(loja.telefone)} · <a href="/loja/">Como chegar</a> · <a href="/privacidade/">Privacidade</a></div>
+  <div>WhatsApp ${esc(loja.telefone)} · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
 </div></footer>
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
-<div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
-<script src="/assets/site.js" defer></script>
+<div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
+<script src="${B}/assets/site.js" defer></script>
 </body>
 </html>
 `;
@@ -187,8 +190,8 @@ ${corpo}
 function cardHtml(c, i) {
   const o = organizarOpcionais(c);
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
-  return `<a class="card" href="/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}">
-    <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || '/grid-logo.png')}" alt="${esc(nomeCompleto(c))}"></div>
+  return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}">
+    <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/grid-logo.png')}" alt="${esc(nomeCompleto(c))}"></div>
     <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
     ${o.destaques.length ? `<div class="mini-dest">${o.destaques.slice(0, 3).map(d => '<span>' + esc(d) + '</span>').join('')}</div>` : ''}</div></a>`;
 }
@@ -201,7 +204,7 @@ const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
         <div class="loja-item"><b>Financiamento</b><span>Fazemos a simulação com os bancos com que trabalhamos.</span></div>
         <div class="loja-item"><b>Transferência pela loja</b><span>Cuidamos da documentação para você sair dirigindo tranquilo.</span></div>
       </div>
-      <div class="endereco"><b>Venha ver de perto:</b> ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)} · <a href="/loja/">como chegar</a></div>
+      <div class="endereco"><b>Venha ver de perto:</b> ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)} · <a href="${B}/loja/">como chegar</a></div>
     </section>`;
 
 function paginaCarro(c, loja) {
@@ -209,9 +212,9 @@ function paginaCarro(c, loja) {
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
   const url = `${CONFIG.dominio}/carro/${c.slug}/`;
   const grupos = Object.entries(o.grupos).filter(([, l]) => l && l.length);
-  const fotos = c.fotos.length ? c.fotos : ['/grid-logo.png'];
+  const fotos = c.fotos.length ? c.fotos : [B + '/grid-logo.png'];
   const corpo = `<main class="wrap carro">
-  <a class="voltar" href="/">‹ Ver todos os carros</a>
+  <a class="voltar" href="${B}/">‹ Ver todos os carros</a>
   <div class="layout-carro">
     <div class="gal">
       <div class="galeria">
@@ -350,7 +353,7 @@ function montar() {
     titulo: 'Página não encontrada · Grid Automóveis', descricao: 'Esta página não existe. Veja os carros da Grid Automóveis.',
     url: CONFIG.dominio + '/', loja,
     corpo: `<main class="wrap vendido"><h1 class="h1" style="font-size:clamp(32px,6vw,48px)">Esta página não existe</h1><p>Mas os carros existem. Veja os que estão na loja agora.</p>
-  <div class="vitrine">${carros.slice(0, 6).map(cardHtml).join('')}</div><p><a class="zap" href="/">Ver todos os carros</a></p></main>`
+  <div class="vitrine">${carros.slice(0, 6).map(cardHtml).join('')}</div><p><a class="zap" href="${B}/">Ver todos os carros</a></p></main>`
   }));
 
   const urls = ['/', '/loja/'].concat(carros.map(c => `/carro/${c.slug}/`));
