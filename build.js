@@ -158,6 +158,7 @@ function icone(nome) {
 }
 
 // ---------- pedaços de página ----------
+const ICONE_CARRO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V12l2-5h10l2 5v4"/><path d="M3 12h18v4H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg>';
 const ICONE_CHAVE = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg>';
 const ICONE_TROCA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>';
 const ICONE_FIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></svg>';
@@ -209,12 +210,12 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twi
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
 </head>
-<body data-whatsapp="${esc(loja.whatsapp)}" data-pixel="${px ? '1' : '0'}">
+<body data-whatsapp="${esc(loja.whatsapp)}" data-pixel="${px ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
 <header class="topo">
   <div class="wrap">
-    <a class="zap topo-zap" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>WhatsApp</span></a>
+    <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
     <a class="topo-logo" href="${B}/" aria-label="Grid Automóveis, página inicial"><img class="logo" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40"></a>
-    <a class="topo-vender" href="${B}/venda-seu-carro/">${ICONE_CHAVE}<span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a>
+    <a class="topo-botao topo-vender" href="${B}/venda-seu-carro/">${ICONE_CHAVE}<span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a>
   </div>
   <div class="flag" aria-hidden="true"></div>
 </header>
