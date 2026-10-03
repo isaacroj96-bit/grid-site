@@ -72,7 +72,11 @@ header.topo .wrap{display:flex;align-items:center;justify-content:space-between;
 /* página do carro */
 .carro{padding-bottom:120px}
 .voltar{background:none;border:0;color:var(--ink2);cursor:pointer;padding:16px 0;font-size:14px}
-.layout-carro{display:grid;gap:26px}
+.layout-carro{display:grid;gap:26px;grid-template-columns:minmax(0,1fr);grid-template-areas:"gal" "lado" "loja"}
+.layout-carro>*{min-width:0}
+.gal{grid-area:gal;min-width:0}.lado{grid-area:lado;display:grid;gap:22px;align-content:start}.loja{grid-area:loja}
+.trilho img{min-width:0}
+.zap-ficha{display:none}
 .galeria{position:relative;background:var(--sup2);border-radius:10px;overflow:hidden;box-shadow:0 20px 40px -18px rgba(0,0,0,.8)}
 .trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .trilho::-webkit-scrollbar{display:none}
@@ -111,7 +115,8 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .msg{font-size:12.5px;color:var(--ink3);font-family:var(--dado);border:1px dashed var(--linha);padding:9px 11px;border-radius:8px}
 /* a loja, embaixo das fotos */
 .loja{display:grid;gap:12px;margin-top:6px}
-.loja-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.loja-grade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:380px){.loja-grade{grid-template-columns:minmax(0,1fr)}}
 .loja-item{border:1px solid var(--linha);border-radius:10px;padding:14px;display:grid;gap:4px;background:rgba(255,255,255,.02)}
 .loja-item b{font-family:var(--display);font-style:italic;font-weight:850;font-stretch:80%;font-size:18px}
 .loja-item span{color:var(--ink2);font-size:14px}
@@ -122,8 +127,10 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .rodape-zap .zap{flex:1;max-width:420px;padding:14px}
 .rodape-zap .p{font-family:var(--display);font-style:italic;font-weight:900;font-stretch:80%;font-size:25px;white-space:nowrap;font-variant-numeric:tabular-nums}
 @media (min-width:920px){
-  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}
+  .layout-carro{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);grid-template-areas:"gal lado" "loja lado";grid-template-rows:auto 1fr;align-items:start}
+  .loja{align-self:start}
   .lado{position:sticky;top:76px}
+  .zap-ficha{display:inline-flex}
   .rodape-zap{display:none}
 }
 /* tela cheia */
@@ -217,8 +224,7 @@ function carro(c){document.getElementById('zap-topo').href=linkZap(c);
   const grupos=Object.entries(c.grupos).filter(([,l])=>l.length);
   app.innerHTML=`<div class="carro"><button type="button" class="voltar" id="voltar">‹ Ver todos os carros</button>
   <div class="layout-carro">
-   <div style="display:grid;gap:26px;min-width:0">
-    <div>
+    <div class="gal">
      <div class="galeria"><div class="trilho" id="trilho">${c.fotos.map((f,i)=>`<img ${i?'loading="lazy"':''} src="${f}" alt="${esc(c.titulo)}, foto ${i+1}" data-i="${i}">`).join('')}</div>
       <button type="button" class="seta ant" aria-label="Foto anterior">‹</button><button type="button" class="seta prox" aria-label="Próxima foto">›</button>
       <button type="button" class="ampliar" id="ampliar">⤢ Tela cheia</button>
@@ -235,11 +241,10 @@ function carro(c){document.getElementById('zap-topo').href=linkZap(c);
       </div>
       <div class="endereco"><b>Venha ver de perto:</b> Av. Dom Pedro II, 1900 · Carlos Prates · Belo Horizonte</div>
     </section>
-   </div>
-   <div class="lado" style="display:grid;gap:22px;min-width:0">
+   <div class="lado">
     <div class="cab"><h1 class="h1">${esc(c.titulo)}</h1>${precoHtml(c)}</div>
     <dl class="specs"><div><dt>Ano</dt><dd>${c.ano}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio)}</dd></div><div><dt>Combustível</dt><dd>${esc(c.comb)}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor)}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor||'—')}</dd></div></dl>
-    <a class="zap" style="padding:15px" target="_blank" rel="noopener" href="${linkZap(c)}">Chamar no WhatsApp</a>
+    <a class="zap zap-ficha" style="padding:15px" target="_blank" rel="noopener" href="${linkZap(c)}">Chamar no WhatsApp</a>
     ${c.dest.length?`<section class="bloco"><h2>Destaques</h2><div class="destaques">${c.dest.map(d=>`<div class="dest">${icone(d)}<span>${esc(frase(d))}</span></div>`).join('')}</div></section>`:''}
     ${c.proc.length?`<section class="bloco"><h2>Procedência</h2><div class="proc"><ul>${c.proc.map(p=>`<li><span class="ok" aria-hidden="true">✓</span>${esc(frase(p))}</li>`).join('')}</ul></div></section>`:''}
     <section class="bloco"><h2>Todos os itens</h2><div>${grupos.map(([g,l])=>`<details><summary>${g}<span>${l.length} itens</span></summary><ul>${l.map(i=>'<li>'+esc(frase(i))+'</li>').join('')}</ul></details>`).join('')}</div></section>
