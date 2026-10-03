@@ -223,9 +223,9 @@ function cardHtml(c, i) {
 
 // Confiança e procedência (Isaac, 03/10): é o que o cliente procura na loja.
 const PILARES = [
-  ['Procedência', 'Todo carro com laudo cautelar 100% aprovado.'],
+  ['Procedência', 'Carros com laudo cautelar aprovado.'],
   ['Selecionados', 'Cada carro é escolhido e avaliado antes de entrar no estoque.'],
-  ['Preparados', 'Revisamos e preparamos o carro antes de ele ir para a vitrine.'],
+  ['Preparados', 'Preparamos cada carro antes de ele ir para a vitrine.'],
   ['Facilidade', 'Seu carro na troca, financiamento e transferência pela loja.']
 ];
 const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
