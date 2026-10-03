@@ -319,8 +319,12 @@ function carrosDoHistorico() {
 
 // Topo da vitrine: o slogan da loja e um carro em destaque (o de maior preço), como a luz da cena.
 function heroHtml(carros, loja) {
-  const vitrine = carros.filter(c => c.status !== 'em_preparacao' && c.fotos.length);
-  const c = vitrine.slice().sort((a, b) => precoFinal(b) - precoFinal(a))[0];
+  // Vitrine giratória: todos os carros disponíveis com foto, começando pelo de maior preço.
+  // Troca a cada 7 s (estilo/site.js). Sem contador: o site nunca mostra o tamanho do estoque.
+  const lista = carros.filter(c => c.status !== 'em_preparacao' && c.fotos.length)
+    .sort((a, b) => precoFinal(b) - precoFinal(a))
+    .map(c => ({ img: c.fotos[0], nome: nomeCurto(c), ano: String(c.ano_modelo), preco: brl(precoFinal(c)), href: `${B}/carro/${c.slug}/`, alt: nomeCompleto(c) }));
+  const c = lista[0];
   return `<section class="hero">
     <div class="hero-texto">
       <div class="eyebrow">Grid Automóveis · ${esc(loja.cidade)}</div>
@@ -329,9 +333,14 @@ function heroHtml(carros, loja) {
       <div class="hero-regua" aria-hidden="true"></div>
       <a class="hero-link" href="#carros">Ver os carros</a>
     </div>
-    ${c ? `<a class="hero-carro" href="${B}/carro/${esc(c.slug)}/">
-      <img src="${esc(c.fotos[0])}" alt="${esc(nomeCompleto(c))}">
-      <span class="hero-legenda"><b>${esc(nomeCurto(c))}</b> ${esc(String(c.ano_modelo))} · ${brl(precoFinal(c))}</span>
+    ${c ? `<a class="hero-carro" id="hero-carro" href="${esc(c.href)}" data-lista="${esc(JSON.stringify(lista))}">
+      <span class="hero-frame">
+        <span class="sombra" aria-hidden="true"></span>
+        <span class="janela"><img class="ativa" src="${esc(c.img)}" alt="${esc(c.alt)}"><img alt="" aria-hidden="true"></span>
+        <span class="canto" aria-hidden="true"></span>
+      </span>
+      <span class="hero-barra" aria-hidden="true"><i></i></span>
+      <span class="hero-legenda"><span><b>${esc(c.nome)}</b> <span class="ano">${esc(c.ano)}</span></span><span class="preco-h">${esc(c.preco)}</span><span class="ver">Ver carro →</span></span>
     </a>` : ''}
   </section>`;
 }
