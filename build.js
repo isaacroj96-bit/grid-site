@@ -42,6 +42,7 @@ function escrever(rel, conteudo) {
 function copiarPasta(origem, destino) {
   if (!fs.existsSync(origem)) return;
   for (const nome of fs.readdirSync(origem)) {
+    if (B && nome === 'prototipo') continue;   // prévia não carrega as prévias antigas
     const o = path.join(origem, nome), d = path.join(destino, nome);
     if (fs.statSync(o).isDirectory()) copiarPasta(o, d);
     else { fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(o, d); }
@@ -51,34 +52,52 @@ function copiarPasta(origem, destino) {
 // ---------- opcionais: destaques, procedência e grupos ----------
 // Se o feed já mandar destaques/procedencia/grupos (docs/site.md seção 5), eles valem.
 // Senão, a separação é feita aqui, pelos nomes que o Integrador publica (padrão do Autocerto).
-const DESTAQUES = ['Teto panorâmico', 'Teto solar', 'Bancos de Couro', 'Bancos elétricos', 'Câmera 360', 'Câmera de ré',
-  'Piloto automático', 'Controle de velocidade', 'Carregador por indução', 'Chave presencial', 'Alerta de ponto cego',
-  'Assistente de permanência em faixa', 'Park Assist', 'Tração 4x4', '7 lugares', 'Multimídia', 'Porta-malas elétrico',
-  'Farol de LED', 'Sensor de estacionamento', 'Rodas de liga leve'].map(chave);
+// Destaques em duas classes (Isaac, 03/10):
+// - RAROS: o que faz alguém escolher este carro e não outro igual. Sempre na frente.
+// - MAIS PROCURADOS: o que o cliente pergunta primeiro e decide a compra. O câmbio entra sempre
+//   (automático ou manual), vindo do campo câmbio. Ar-condicionado: só a melhor variante.
+const RAROS = ['Teto panorâmico', 'Teto solar', 'Tração 4x4', '7 lugares', 'Câmera 360'].map(chave);
+const PROCURADOS = ['Ar condicionado Digital', 'Ar condicionado dual zone', 'Ar condicionado', 'Câmera de ré', 'Bancos de Couro',
+  'Multimídia', 'Direção Elétrica', 'Sensor de estacionamento', 'Piloto automático', 'Controle de velocidade',
+  'Chave presencial', 'Carregador por indução', 'Rodas de liga leve'].map(chave);
+const AR = ['ar condicionado digital', 'ar condicionado dual zone', 'ar condicionado'];
 const PROCEDENCIA = ['Único Dono', 'IPVA Pago', 'Licenciado', 'Garantia de Fábrica', 'Revisado em Concessionária',
   'Manual do proprietário', 'Chave Reserva'].map(chave);
-const MAX_DESTAQUES = 6;
+const MAX_PROCURADOS = 6;
 const GRUPO_SEGURANCA = ['abs', 'airbag', 'alarme', 'rampa', 'estabilidade', 'tracao', 'encosto de cabeca', 'farol', 'farois',
   'isofix', 'desembacador', 'sensor', 'camera', 'ponto cego', 'permanencia', 'auto hold', 'freio', 'park assist', 'drl', 'acendimento'];
 const GRUPO_TECNOLOGIA = ['multimidia', 'bluetooth', 'usb', 'computador', 'gps', 'cd player', 'carregador', 'som no volante',
   'chave presencial', 'start stop', 'piloto', 'controle de velocidade', 'espelhamento', 'painel digital', 'wi-fi'];
 
 function organizarOpcionais(c) {
-  if (c.destaques || c.procedencia || c.grupos) {
-    return { destaques: c.destaques || [], procedencia: c.procedencia || [], grupos: c.grupos || {} };
+  if (c.raros || c.procurados || c.procedencia || c.grupos) {
+    return { raros: c.raros || [], procurados: c.procurados || [], procedencia: c.procedencia || [], grupos: c.grupos || {} };
   }
   const lista = c.opcionais || [];
+  const acha = k => lista.find(o => chave(o) === k);
   const procedencia = lista.filter(o => PROCEDENCIA.includes(chave(o)));
-  const destaques = DESTAQUES.map(d => lista.find(o => chave(o) === d)).filter(Boolean).slice(0, MAX_DESTAQUES);
+  const raros = RAROS.map(acha).filter(Boolean)
+    .filter((o, i, l) => !(chave(o) === 'teto solar' && l.some(x => chave(x) === 'teto panoramico')));
+  const procurados = [];
+  const cambio = String(c.cambio || '');
+  if (/autom|cvt/i.test(cambio)) procurados.push('Câmbio automático');
+  else if (/manual/i.test(cambio)) procurados.push('Câmbio manual');
+  let temAr = false;
+  PROCURADOS.forEach(k => {
+    if (procurados.length >= MAX_PROCURADOS) return;
+    if (AR.includes(k)) { if (temAr) return; const o = acha(k); if (o) { procurados.push(o); temAr = true; } return; }
+    const o = acha(k); if (o) procurados.push(o);
+  });
+  const usados = new Set(raros.concat(procurados).concat(procedencia));
   const grupos = { 'Segurança': [], 'Conforto': [], 'Tecnologia': [] };
   lista.forEach(o => {
-    if (procedencia.includes(o) || destaques.includes(o)) return;
+    if (usados.has(o)) return;
     const k = chave(o);
     if (GRUPO_TECNOLOGIA.some(p => k.includes(p))) grupos['Tecnologia'].push(o);
     else if (GRUPO_SEGURANCA.some(p => k.includes(p))) grupos['Segurança'].push(o);
     else grupos['Conforto'].push(o);
   });
-  return { destaques, procedencia, grupos };
+  return { raros, procurados, procedencia, grupos };
 }
 
 const ICONES = {
@@ -96,11 +115,17 @@ const ICONES = {
   tracao: '<rect x="4" y="3" width="4" height="7" rx="1"/><rect x="16" y="3" width="4" height="7" rx="1"/><rect x="4" y="14" width="4" height="7" rx="1"/><rect x="16" y="14" width="4" height="7" rx="1"/><path d="M8 6.5h8M8 17.5h8M12 6.5v11"/>',
   alerta: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
   raio: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  cambio: '<circle cx="6" cy="5" r="1.6"/><circle cx="12" cy="5" r="1.6"/><circle cx="18" cy="5" r="1.6"/><circle cx="6" cy="19" r="1.6"/><circle cx="12" cy="19" r="1.6"/><path d="M6 6.6v10.8M12 6.6v10.8M18 6.6V12H6"/>',
+  ar: '<path d="M12 2v20M4 6.5l16 11M20 6.5l-16 11"/><path d="M9.5 3.5L12 5l2.5-1.5M9.5 20.5L12 19l2.5 1.5"/>',
+  direcao: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M3.5 10.5l6.4 1M14.1 11.5l6.4-1M12 14.2V21"/>',
   padrao: '<path d="M5 12.5l4.5 4.5L19 7"/>'
 };
 function icone(nome) {
   const n = chave(nome);
-  const k = n.includes('couro') || n.includes('bancos eletricos') ? 'couro'
+  const k = n.includes('cambio') ? 'cambio'
+    : n.includes('ar condicionado') ? 'ar'
+    : n.includes('direcao') ? 'direcao'
+    : n.includes('couro') || n.includes('bancos eletricos') ? 'couro'
     : n.includes('camera') ? 'camera'
     : n.includes('velocidade') || n.includes('piloto') ? 'velocidade'
     : n.includes('multimidia') ? 'tela'
@@ -147,7 +172,7 @@ function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jso
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${esc(titulo)}</title>
+${B ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
 <link rel="canonical" href="${esc(url)}">
 <meta property="og:site_name" content="Grid Automóveis">
@@ -161,7 +186,7 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twi
 <link rel="icon" href="${B}/grid-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="${B}/assets/site.css">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
@@ -193,7 +218,7 @@ function cardHtml(c, i) {
   return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}">
     <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/grid-logo.png')}" alt="${esc(nomeCompleto(c))}"></div>
     <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
-    ${o.destaques.length ? `<div class="mini-dest">${o.destaques.slice(0, 3).map(d => '<span>' + esc(d) + '</span>').join('')}</div>` : ''}</div></a>`;
+    ${(() => { const m = o.raros.concat(o.procurados.filter(x => !/^Câmbio/.test(x))).slice(0, 3); return m.length ? `<div class="mini-dest">${m.map((d, k) => `<span${k < o.raros.length ? ' class="raro"' : ''}>` + esc(d) + '</span>').join('')}</div>` : ''; })()}</div></a>`;
 }
 
 const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
@@ -229,7 +254,10 @@ function paginaCarro(c, loja) {
       <div class="cab"><h1 class="h1">${esc(nomeCurto(c))}</h1>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}${precoHtml(c)}${selos(c)}</div>
       <dl class="specs"><div><dt>Ano</dt><dd>${anos}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio || '—')}</dd></div><div><dt>Combustível</dt><dd>${esc(c.combustivel || '—')}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor || '—')}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor || '—')}</dd></div></dl>
       <a class="zap zap-ficha" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a>
-      ${o.destaques.length ? `<section class="bloco"><h2>Destaques</h2><div class="destaques">${o.destaques.map(d => `<div class="dest">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div></section>` : ''}
+      ${o.raros.length || o.procurados.length ? `<section class="bloco"><h2>Destaques</h2>
+        ${o.raros.length ? `<div class="sub">Diferenciais</div><div class="destaques">${o.raros.map(d => `<div class="dest raro">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div>` : ''}
+        ${o.procurados.length ? `<div class="sub">Os mais procurados</div><div class="destaques">${o.procurados.map(d => `<div class="dest">${icone(d)}<span>${esc(d)}</span></div>`).join('')}</div>` : ''}
+      </section>` : ''}
       ${o.procedencia.length ? `<section class="bloco"><h2>Procedência</h2><div class="proc"><ul>${o.procedencia.map(p => `<li><span class="ok" aria-hidden="true">✓</span>${esc(p)}</li>`).join('')}</ul></div></section>` : ''}
       ${grupos.length ? `<section class="bloco"><h2>Todos os itens</h2><div>${grupos.map(([g, l]) => `<details><summary>${esc(g)}<span>${l.length} ${l.length === 1 ? 'item' : 'itens'}</span></summary><ul>${l.map(x => '<li>' + esc(x) + '</li>').join('')}</ul></details>`).join('')}</div></section>` : ''}
       ${c.descricao ? `<section class="bloco"><h2>Sobre este carro</h2><p class="descricao">${esc(c.descricao)}</p></section>` : ''}
@@ -286,6 +314,25 @@ function carrosDoHistorico() {
   return vistos;
 }
 
+// Topo da vitrine: o slogan da loja e um carro em destaque (o de maior preço), como a luz da cena.
+function heroHtml(carros, loja) {
+  const vitrine = carros.filter(c => c.status !== 'em_preparacao' && c.fotos.length);
+  const c = vitrine.slice().sort((a, b) => precoFinal(b) - precoFinal(a))[0];
+  return `<section class="hero">
+    <div class="hero-texto">
+      <div class="eyebrow">Grid Automóveis · ${esc(loja.cidade)}</div>
+      <h1 class="hero-titulo">Vem pra <em>Grid</em>.</h1>
+      <p class="hero-sub">A largada do seu próximo carro começa aqui.</p>
+      <div class="hero-regua" aria-hidden="true"></div>
+      <a class="hero-link" href="#carros">Ver os carros</a>
+    </div>
+    ${c ? `<a class="hero-carro" href="${B}/carro/${esc(c.slug)}/">
+      <img src="${esc(c.fotos[0])}" alt="${esc(nomeCompleto(c))}">
+      <span class="hero-legenda"><b>${esc(nomeCurto(c))}</b> ${esc(String(c.ano_modelo))} · ${brl(precoFinal(c))}</span>
+    </a>` : ''}
+  </section>`;
+}
+
 // ---------- montagem ----------
 function montar() {
   const dados = JSON.parse(fs.readFileSync(path.join(RAIZ, 'dados', 'estoque.json'), 'utf8'));
@@ -301,7 +348,8 @@ function montar() {
   // vitrine
   const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']];
   const vitrine = `<main class="wrap">
-  <section class="intro"><h1 class="h1">Seminovos selecionados em BH</h1><p>Fotos de verdade, ficha completa e o preço na tela. Gostou de um? Chama a gente no WhatsApp.</p></section>
+  ${heroHtml(carros, loja)}
+  <div class="eyebrow-secao" id="carros">Na loja agora</div>
   <div class="filtros" role="group" aria-label="Faixa de preço">${FAIXAS.map(([k, n]) => `<button type="button" class="chip" data-faixa="${k}" aria-pressed="${k === 'todos'}">${n}</button>`).join('')}
     <select id="ordem" class="ordem" aria-label="Ordenar"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option></select></div>
   <div class="vitrine" id="vitrine">${carros.map(cardHtml).join('')}</div>
