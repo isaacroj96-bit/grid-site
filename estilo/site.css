@@ -277,3 +277,20 @@ footer.rodape-site a{color:var(--ink2)}
 .resumo{background:var(--sup);border:1px solid var(--linha);border-radius:10px;padding:14px 16px;font-family:var(--dado);font-size:13.5px;color:var(--ink2);white-space:pre-wrap}
 .letra-miuda{margin:0;color:var(--ink3);font-size:12.5px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- autorama do rodapé: a pista contorna as informações; o carro amarelo é do visitante ---------- */
+.autorama{--pv:58px;--ph:150px;position:relative;width:min(100%,920px);padding:var(--pv) var(--ph);display:grid;gap:14px;justify-items:center;text-align:center}
+.autorama .pista{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:2}
+.autorama .pista .toque{pointer-events:stroke;cursor:pointer;touch-action:none}
+.autorama > :not(.pista){position:relative;z-index:1}
+.painel-pista{display:grid;gap:9px;justify-items:center;margin-top:4px;width:100%}
+.painel-pista .velo{width:min(220px,100%);height:4px;background:var(--linha);border-radius:2px;overflow:hidden}
+.painel-pista .velo i{display:block;height:100%;width:0;background:var(--amarelo)}
+.painel-pista .velo i.perigo{background:#e5484d}
+.placar{display:flex;gap:16px;font-family:var(--dado);font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.placar b{color:var(--ink);font-weight:500}
+.acelerar{border:0;background:var(--amarelo);color:var(--amarelo-ink);font-weight:800;font-size:14px;padding:11px 22px;border-radius:999px;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.acelerar.on{transform:scale(.97);filter:brightness(1.08)}
+.aviso-pista{font-size:12.5px;color:var(--ink3);min-height:19px}
+.aviso-pista.forte{color:#ff8a8d}
+@media (max-width:640px){.autorama{--pv:112px;--ph:52px}}

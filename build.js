@@ -221,6 +221,8 @@ ${pixel}
 </header>
 ${corpo}
 <footer class="rodape-site"><div class="wrap">
+  <div class="autorama" id="autorama">
+  <svg class="pista" aria-hidden="true" focusable="false"></svg>
   <img class="logo-rodape" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40">
   <address>${esc(loja.endereco)} · ${esc(loja.bairro)}<br>${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}</address>
   <div class="rodape-links">
@@ -228,6 +230,13 @@ ${corpo}
     <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
   </div>
   <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
+  <div class="painel-pista">
+    <div class="velo" aria-hidden="true"><i></i></div>
+    <div class="placar" aria-live="polite"><span>Volta <b data-volta>—</b></span><span>Melhor <b data-melhor>—</b></span></div>
+    <button class="acelerar" type="button">Segure para acelerar</button>
+    <div class="aviso-pista" data-aviso>Segure o botão ou a própria pista.</div>
+  </div>
+  </div>
   <div class="assinatura"><span>Tecnologia</span><img src="${B}/icon-logo.png" alt="Ícon" width="90" height="32" loading="lazy"></div>
 </div></footer>
 ${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a Grid no WhatsApp">${ICONE_ZAP}</a>`}

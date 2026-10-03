@@ -252,6 +252,139 @@
     }
   }
 
+  // ---------- autorama do rodapé ----------
+  // A pista é desenhada no tamanho da caixa: deitada no computador, em pé no celular.
+  // Carro amarelo = visitante (segura para acelerar). Carro branco = adversário automático.
+  // Na curva, o limite de velocidade segue a física: v = raiz(aceleração lateral × raio).
+  (function () {
+    var caixa = document.getElementById('autorama');
+    if (!caixa || !window.requestAnimationFrame) return;
+    var svg = caixa.querySelector('.pista'), botao = caixa.querySelector('.acelerar');
+    var barra = caixa.querySelector('.velo i'), aviso = caixa.querySelector('[data-aviso]');
+    var elVolta = caixa.querySelector('[data-volta]'), elMelhor = caixa.querySelector('[data-melhor]');
+    var NS = 'http://www.w3.org/2000/svg';
+    var LARG = 44, FAIXA = 11, ACEL_LATERAL = 1000, VMAX = 640;
+    var reduzir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var g = null, ext, int, eu, rival, LE = 1, LI = 1, limEu = 0, limRival = 0;
+    var s = 0, v = 0, sr = 0, apertado = false, fora = null, entradaCurva = 0, naCurva = false;
+    var inicioVolta = null, melhor = null, visivel = true, ultimo = null;
+
+    function el(nome, attrs, pai) {
+      var e = document.createElementNS(NS, nome);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (pai) pai.appendChild(e);
+      return e;
+    }
+    function estadio(W, H, recuo) {
+      var x = recuo, y = recuo, w = W - 2 * recuo, h = H - 2 * recuo;
+      if (w >= h) {
+        var r = h / 2;
+        return { r: r, d: 'M' + (x + w / 2) + ',' + (y + h) + ' H' + (x + w - r) + ' A' + r + ' ' + r + ' 0 0 0 ' + (x + w - r) + ',' + y +
+          ' H' + (x + r) + ' A' + r + ' ' + r + ' 0 0 0 ' + (x + r) + ',' + (y + h) + ' Z',
+          curvas: 'M' + (x + w - r) + ',' + (y + h) + ' A' + r + ' ' + r + ' 0 0 0 ' + (x + w - r) + ',' + y +
+          ' M' + (x + r) + ',' + y + ' A' + r + ' ' + r + ' 0 0 0 ' + (x + r) + ',' + (y + h) };
+      }
+      var R = w / 2;
+      return { r: R, d: 'M' + (x + w) + ',' + (y + h / 2) + ' V' + (y + R) + ' A' + R + ' ' + R + ' 0 0 0 ' + x + ',' + (y + R) +
+        ' V' + (y + h - R) + ' A' + R + ' ' + R + ' 0 0 0 ' + (x + w) + ',' + (y + h - R) + ' Z',
+        curvas: 'M' + (x + w) + ',' + (y + R) + ' A' + R + ' ' + R + ' 0 0 0 ' + x + ',' + (y + R) +
+        ' M' + x + ',' + (y + h - R) + ' A' + R + ' ' + R + ' 0 0 0 ' + (x + w) + ',' + (y + h - R) };
+    }
+    function carro(cor, pai) {
+      var c = el('g', { style: 'color:' + cor }, pai), k = el('g', { transform: 'scale(1.1)' }, c);
+      [[-15, -7, 3.5, 14, '#0c0c0e'], [-10, -8.6, 6, 3, '#0c0c0e'], [-10, 5.6, 6, 3, '#0c0c0e'], [5, -8, 5, 2.6, '#0c0c0e'], [5, 5.4, 5, 2.6, '#0c0c0e'],
+       [-13, -4, 25, 8, 'currentColor', 3.5], [-7, -5.6, 10, 11.2, 'currentColor', 2.5], [11, -6.5, 3, 13, 'currentColor']].forEach(function (p) {
+        el('rect', { x: p[0], y: p[1], width: p[2], height: p[3], rx: p[5] || 1, fill: p[4] }, k);
+      });
+      el('ellipse', { cx: -1, cy: 0, rx: 3, ry: 2.2, fill: '#0c0c0e' }, k);
+      return c;
+    }
+    var W = 0, H = 0, deitada = true;
+    function montar() {
+      var nW = caixa.clientWidth, nH = caixa.clientHeight;
+      if (!nW || !nH || (nW === W && nH === H)) return;
+      var fracEu = s / LE, fracRival = sr / LI;
+      W = nW; H = nH; deitada = W >= H;
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      g = el('g', {}, svg);
+      var m = LARG / 2 + 6, meio = estadio(W, H, m);
+      var defs = el('defs', {}, g), pat = el('pattern', { id: 'xadrez-pista', width: 6, height: 6, patternUnits: 'userSpaceOnUse' }, defs);
+      el('rect', { width: 6, height: 6, fill: '#f3f2ed' }, pat); el('rect', { width: 3, height: 3, fill: '#121214' }, pat); el('rect', { x: 3, y: 3, width: 3, height: 3, fill: '#121214' }, pat);
+      el('path', { d: meio.d, fill: 'none', stroke: '#26262b', 'stroke-width': LARG, 'class': 'toque' }, g);
+      var zebra = estadio(W, H, m - LARG / 2 - 2).curvas;
+      el('path', { d: zebra, fill: 'none', stroke: '#121214', 'stroke-width': 4 }, g);
+      el('path', { d: zebra, fill: 'none', stroke: '#f2c200', 'stroke-width': 4, 'stroke-dasharray': '7 7' }, g);
+      el('path', { d: estadio(W, H, m - LARG / 2).d, fill: 'none', stroke: '#3a3a41', 'stroke-width': 1 }, g);
+      el('path', { d: estadio(W, H, m + LARG / 2).d, fill: 'none', stroke: '#3a3a41', 'stroke-width': 1 }, g);
+      var e = estadio(W, H, m - FAIXA), i = estadio(W, H, m + FAIXA);
+      ext = el('path', { d: e.d, fill: 'none', stroke: '#0c0c0e', 'stroke-width': 2.2 }, g);
+      int = el('path', { d: i.d, fill: 'none', stroke: '#0c0c0e', 'stroke-width': 2.2 }, g);
+      if (deitada) el('rect', { x: W / 2 - 6, y: H - m - LARG / 2, width: 12, height: LARG, fill: 'url(#xadrez-pista)' }, g);
+      else el('rect', { x: W - m - LARG / 2, y: H / 2 - 6, width: LARG, height: 12, fill: 'url(#xadrez-pista)' }, g);
+      LE = ext.getTotalLength(); LI = int.getTotalLength();
+      limEu = Math.sqrt(ACEL_LATERAL * e.r); limRival = Math.sqrt(ACEL_LATERAL * i.r) * 0.86;
+      rival = carro('#f3f2ed', g); eu = carro('#f2c200', g);
+      s = (fracEu || 0) * LE; sr = (isFinite(fracRival) && fracRival ? fracRival : 0.5) * LI;
+      por(eu, pos(ext, s, LE)); por(rival, pos(int, sr, LI));
+      svg.querySelector('.toque').addEventListener('pointerdown', apertar);
+    }
+    function pos(c, x, L) {
+      x = ((x % L) + L) % L;
+      var a = c.getPointAtLength(x), b = c.getPointAtLength((x + 1) % L);
+      return { x: a.x, y: a.y, ang: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI };
+    }
+    function por(c, p) { c.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + p.ang.toFixed(1) + ')'); }
+    function emCurva(p) { return deitada ? (p.x < H / 2 - 1 || p.x > W - H / 2 + 1) : (p.y < W / 2 - 1 || p.y > H - W / 2 + 1); }
+    function seg(ms) { return (ms / 1000).toFixed(2).replace('.', ',') + 's'; }
+    function apertar(e) { if (e) e.preventDefault(); apertado = true; botao.classList.add('on'); }
+    function soltar() { apertado = false; botao.classList.remove('on'); }
+
+    botao.addEventListener('pointerdown', apertar);
+    botao.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') apertar(e); });
+    botao.addEventListener('keyup', soltar);
+    botao.addEventListener('blur', soltar);
+    botao.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    window.addEventListener('pointerup', soltar);
+    window.addEventListener('pointercancel', soltar);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visivel = es[0].isIntersecting; }).observe(caixa);
+    if ('ResizeObserver' in window) new ResizeObserver(montar).observe(caixa); else window.addEventListener('resize', montar);
+    montar();
+
+    function passo(t) {
+      var dt = ultimo == null ? 0 : Math.min(0.05, (t - ultimo) / 1000); ultimo = t;
+      if (visivel && g) {
+        if (!reduzir) { var pr = pos(int, sr, LI); sr = (sr + (emCurva(pr) ? limRival : 430) * dt) % LI; por(rival, pos(int, sr, LI)); }
+        if (fora) {
+          fora.t += dt; fora.vel *= 0.94; fora.giro += 540 * dt;
+          fora.x += Math.cos(fora.dir) * fora.vel * dt; fora.y += Math.sin(fora.dir) * fora.vel * dt;
+          eu.setAttribute('transform', 'translate(' + fora.x.toFixed(1) + ' ' + fora.y.toFixed(1) + ') rotate(' + (fora.ang + fora.giro).toFixed(1) + ')');
+          eu.style.opacity = Math.max(0, 1 - fora.t / 0.9);
+          if (fora.t > 1.1) { s = entradaCurva; v = 0; fora = null; eu.style.opacity = 1; inicioVolta = null; aviso.textContent = 'De volta à pista. Alivie antes da curva.'; aviso.className = 'aviso-pista'; }
+        } else {
+          v = Math.max(0, Math.min(VMAX, v + (apertado ? 540 : -380) * dt));
+          var antes = s; s += v * dt;
+          if (s >= LE) {
+            s -= LE; var agora = performance.now();
+            if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } }
+            inicioVolta = agora;
+          }
+          var p = pos(ext, s, LE), curva = emCurva(p);
+          if (curva && !naCurva) entradaCurva = antes;
+          naCurva = curva;
+          if (curva && v > limEu) {
+            fora = { x: p.x, y: p.y, ang: p.ang, dir: p.ang * Math.PI / 180, vel: v, giro: 0, t: 0 };
+            aviso.textContent = 'Saiu da pista! Rápido demais na curva.'; aviso.className = 'aviso-pista forte';
+          } else por(eu, p);
+        }
+        barra.style.width = (v / VMAX * 100).toFixed(0) + '%';
+        barra.className = v > limEu ? 'perigo' : '';
+      }
+      requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
+  })();
+
   // ---------- aviso de cookies (só com o pixel ligado) ----------
   if (document.body.getAttribute('data-pixel') === '1') {
     var visto = null;
