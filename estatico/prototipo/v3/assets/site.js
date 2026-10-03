@@ -37,6 +37,45 @@
   }
   prepararZaps();
 
+  // ---------- topo: carro do estoque trocando a cada 7 s ----------
+  var hero = document.getElementById('hero-carro');
+  if (hero) {
+    var lista = [];
+    try { lista = JSON.parse(hero.getAttribute('data-lista') || '[]'); } catch (e) {}
+    var imgs = hero.querySelectorAll('.janela img');
+    var barra = hero.querySelector('.hero-barra i');
+    var leg = hero.querySelector('.hero-legenda');
+    var calmo = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var idx = 0, frente = 0, timer = null, pausado = false;
+    function correBarra() { barra.classList.remove('corre'); void barra.offsetWidth; if (!calmo) barra.classList.add('corre'); }
+    function precarrega(i) { var c = lista[i % lista.length]; if (c) { var im = new Image(); im.src = c.img; } }
+    function mostra(i) {
+      var c = lista[i]; if (!c) return;
+      var tras = imgs[1 - frente];
+      tras.src = c.img; tras.alt = c.alt; tras.removeAttribute('aria-hidden');
+      var troca = function () {
+        imgs[frente].classList.remove('ativa'); imgs[frente].setAttribute('aria-hidden', 'true'); imgs[frente].alt = '';
+        tras.classList.add('ativa'); frente = 1 - frente;
+        hero.href = c.href;
+        leg.querySelector('b').textContent = c.nome;
+        leg.querySelector('.ano').textContent = c.ano;
+        leg.querySelector('.preco-h').textContent = c.preco;
+        correBarra(); precarrega(i + 1);
+      };
+      if (tras.complete && tras.naturalWidth) troca(); else { tras.onload = troca; tras.onerror = function () { idx++; }; }
+    }
+    function proximo() { if (pausado || document.hidden || lista.length < 2) return; idx = (idx + 1) % lista.length; mostra(idx); }
+    if (lista.length > 1 && !calmo) {
+      correBarra(); precarrega(1);
+      timer = setInterval(proximo, 7000);
+      var reinicia = function () { clearInterval(timer); correBarra(); timer = setInterval(proximo, 7000); };
+      hero.addEventListener('mouseenter', function () { pausado = true; barra.classList.remove('corre'); });
+      hero.addEventListener('mouseleave', function () { pausado = false; reinicia(); });
+      hero.addEventListener('focus', function () { pausado = true; });
+      hero.addEventListener('blur', function () { pausado = false; });
+    }
+  }
+
   // ---------- vitrine: faixa de preço e ordem ----------
   var vitrine = document.getElementById('vitrine');
   if (vitrine) {
