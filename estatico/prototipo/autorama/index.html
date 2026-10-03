@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Grid — autorama no rodapé</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#121214;--sup:#1b1b1f;--linha:#2f2f35;--ink:#f3f2ed;--ink2:#bab8b0;--ink3:#86847c;--amarelo:#f2c200;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;padding-inline:16px}
+main{max-width:900px;margin:0 auto;padding-block:26px 60px;display:grid;gap:26px}
+h1{font-size:20px;margin:0}
+.intro{color:var(--ink3);font-size:14px;margin:4px 0 0}
+.op{border:1px solid var(--linha);border-radius:12px;overflow:hidden}
+.rotulo{padding:12px 16px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amarelo);font-weight:700;border-bottom:1px solid var(--linha)}
+.rotulo span{color:var(--ink3);letter-spacing:.02em;text-transform:none;font-weight:400;margin-left:8px}
+footer.rodape-site{color:var(--ink3);font-size:14px}
+footer.rodape-site .wrap{padding:30px 16px 34px;display:grid;gap:14px;justify-items:center;text-align:center}
+footer.rodape-site address{font-style:normal;color:var(--ink2);line-height:1.6}
+.rodape-links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.rodape-links a{text-decoration:none;color:var(--ink);border:1px solid var(--linha);border-radius:999px;padding:8px 14px;font-size:14px}
+.rodape-fino{font-size:13px}.rodape-fino a{color:var(--ink2)}
+.assinatura{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:12px;padding-top:18px;border-top:1px solid var(--linha);width:min(220px,100%)}
+.assinatura span{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3)}
+.assinatura img{width:90px;height:auto;opacity:.85}
+.pista{width:min(520px,100%);height:auto;display:block}
+.painel{display:grid;gap:10px;justify-items:center;width:min(520px,100%)}
+.placar{display:flex;gap:16px;font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;min-height:20px}
+.placar b{color:var(--ink);font-weight:500}
+.velo{width:100%;max-width:260px;height:4px;background:var(--linha);border-radius:2px;overflow:hidden}
+.velo i{display:block;height:100%;width:0;background:var(--amarelo)}
+.velo i.perigo{background:#e5484d}
+.acelerar{border:0;background:var(--amarelo);color:#121214;font-weight:800;font-size:15px;padding:13px 26px;border-radius:999px;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.acelerar:active,.acelerar.on{transform:scale(.97);filter:brightness(1.08)}
+.aviso{font-size:13px;color:var(--ink3);min-height:20px}
+.aviso.forte{color:#ff8a8d}
+</style>
+</head>
+<body>
+<main>
+<div>
+  <h1>Autorama no rodapé</h1>
+  <p class="intro">A pista é desenhada em código (alguns KB, sem imagem pesada). O logo da Grid fica no meio da oval. Abra no celular.</p>
+</div>
+
+<section class="op">
+  <div class="rotulo">A · Só animação <span>os dois carros correm sozinhos; para quem desligou animações no celular, ficam parados</span></div>
+  <footer class="rodape-site"><div class="wrap">
+  <svg class="pista" id="pa" viewBox="0 0 520 170" role="img" aria-label="Pista de autorama com o logo da Grid no centro">
+  <defs><g id="carro" transform="scale(1.2)">
+  <rect x="-15" y="-7" width="3.5" height="14" rx="1" fill="#0c0c0e"/>
+  <rect x="-10" y="-8.6" width="6" height="3" rx="1" fill="#0c0c0e"/><rect x="-10" y="5.6" width="6" height="3" rx="1" fill="#0c0c0e"/>
+  <rect x="5" y="-8" width="5" height="2.6" rx="1" fill="#0c0c0e"/><rect x="5" y="5.4" width="5" height="2.6" rx="1" fill="#0c0c0e"/>
+  <rect x="-13" y="-4" width="25" height="8" rx="3.5" fill="currentColor"/>
+  <rect x="-7" y="-5.6" width="10" height="11.2" rx="2.5" fill="currentColor"/>
+  <rect x="11" y="-6.5" width="3" height="13" rx="1" fill="currentColor"/>
+  <ellipse cx="-1" cy="0" rx="3" ry="2.2" fill="#0c0c0e"/>
+</g>
+    <pattern id="pa-xadrez" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#f3f2ed"/><rect width="3" height="3" fill="#121214"/><rect x="3" y="3" width="3" height="3" fill="#121214"/></pattern></defs>
+  <path d="M260,139 H415 A54 54 0 0 0 415,31 H105 A54 54 0 0 0 105,139 Z" fill="none" stroke="#2b2b31" stroke-width="50"/>
+  <path d="M415,163 A78 78 0 0 0 415,7 M105,7 A78 78 0 0 0 105,163" fill="none" stroke="#121214" stroke-width="4"/>
+  <path d="M415,163 A78 78 0 0 0 415,7 M105,7 A78 78 0 0 0 105,163" fill="none" stroke="#f2c200" stroke-width="4" stroke-dasharray="7 7"/>
+  <path d="M260,164 H415 A79 79 0 0 0 415,6 H105 A79 79 0 0 0 105,164 Z" fill="none" stroke="#3a3a41" stroke-width="1"/>
+  <path d="M260,114 H415 A29 29 0 0 0 415,56 H105 A29 29 0 0 0 105,114 Z" fill="none" stroke="#3a3a41" stroke-width="1"/>
+  <path id="pa-ext" d="M260,149 H415 A64 64 0 0 0 415,21 H105 A64 64 0 0 0 105,149 Z" fill="none" stroke="#0c0c0e" stroke-width="2.2"/>
+  <path id="pa-int" d="M260,129 H415 A44 44 0 0 0 415,41 H105 A44 44 0 0 0 105,129 Z" fill="none" stroke="#0c0c0e" stroke-width="2.2"/>
+  <rect x="254" y="115" width="12" height="48" fill="url(#pa-xadrez)"/>
+  <image href="../../grid-logo.png" x="203" y="59" width="114" height="52"/>
+  
+  <use href="#carro" style="color:#f3f2ed"><animateMotion dur="4.3s" repeatCount="indefinite" rotate="auto" keyPoints="0;0.1729;0.3271;0.6729;0.8271;1" keyTimes="0;0.1454;0.3546;0.6454;0.8546;1" calcMode="linear"><mpath href="#pa-int"/></animateMotion></use>
+  <use href="#carro" style="color:#f2c200"><animateMotion dur="4.5s" repeatCount="indefinite" rotate="auto" keyPoints="0;0.1516;0.3484;0.6516;0.8484;1" keyTimes="0;0.1222;0.3778;0.6222;0.8778;1" calcMode="linear"><mpath href="#pa-ext"/></animateMotion></use>
+</svg>
+  <address>Avenida Dom Pedro II, 1900 · Carlos Prates<br>Belo Horizonte · MG</address>
+  <div class="rodape-links"><a href="#">31 99601-1999</a><a href="#">@gridbh.auto</a></div>
+  <div class="rodape-fino"><a href="#">Venda ou troque seu carro</a> · <a href="#">Como chegar</a> · <a href="#">Privacidade</a></div>
+  <div class="assinatura"><span>Tecnologia</span><img src="../../icon-logo.png" alt="Ícon" width="90" height="32"></div>
+</div></footer>
+</section>
+
+<section class="op">
+  <div class="rotulo">B · Interativo <span>segure para acelerar; rápido demais na curva, o carro sai da pista</span></div>
+  <footer class="rodape-site"><div class="wrap">
+  <svg class="pista" id="pj" viewBox="0 0 520 170" role="img" aria-label="Pista de autorama com o logo da Grid no centro">
+  <defs><g id="carro" transform="scale(1.2)">
+  <rect x="-15" y="-7" width="3.5" height="14" rx="1" fill="#0c0c0e"/>
+  <rect x="-10" y="-8.6" width="6" height="3" rx="1" fill="#0c0c0e"/><rect x="-10" y="5.6" width="6" height="3" rx="1" fill="#0c0c0e"/>
+  <rect x="5" y="-8" width="5" height="2.6" rx="1" fill="#0c0c0e"/><rect x="5" y="5.4" width="5" height="2.6" rx="1" fill="#0c0c0e"/>
+  <rect x="-13" y="-4" width="25" height="8" rx="3.5" fill="currentColor"/>
+  <rect x="-7" y="-5.6" width="10" height="11.2" rx="2.5" fill="currentColor"/>
+  <rect x="11" y="-6.5" width="3" height="13" rx="1" fill="currentColor"/>
+  <ellipse cx="-1" cy="0" rx="3" ry="2.2" fill="#0c0c0e"/>
+</g>
+    <pattern id="pj-xadrez" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#f3f2ed"/><rect width="3" height="3" fill="#121214"/><rect x="3" y="3" width="3" height="3" fill="#121214"/></pattern></defs>
+  <path d="M260,139 H415 A54 54 0 0 0 415,31 H105 A54 54 0 0 0 105,139 Z" fill="none" stroke="#2b2b31" stroke-width="50"/>
+  <path d="M415,163 A78 78 0 0 0 415,7 M105,7 A78 78 0 0 0 105,163" fill="none" stroke="#121214" stroke-width="4"/>
+  <path d="M415,163 A78 78 0 0 0 415,7 M105,7 A78 78 0 0 0 105,163" fill="none" stroke="#f2c200" stroke-width="4" stroke-dasharray="7 7"/>
+  <path d="M260,164 H415 A79 79 0 0 0 415,6 H105 A79 79 0 0 0 105,164 Z" fill="none" stroke="#3a3a41" stroke-width="1"/>
+  <path d="M260,114 H415 A29 29 0 0 0 415,56 H105 A29 29 0 0 0 105,114 Z" fill="none" stroke="#3a3a41" stroke-width="1"/>
+  <path id="pj-ext" d="M260,149 H415 A64 64 0 0 0 415,21 H105 A64 64 0 0 0 105,149 Z" fill="none" stroke="#0c0c0e" stroke-width="2.2"/>
+  <path id="pj-int" d="M260,129 H415 A44 44 0 0 0 415,41 H105 A44 44 0 0 0 105,129 Z" fill="none" stroke="#0c0c0e" stroke-width="2.2"/>
+  <rect x="254" y="115" width="12" height="48" fill="url(#pj-xadrez)"/>
+  <image href="../../grid-logo.png" x="203" y="59" width="114" height="52"/>
+  
+  <use href="#carro" id="pj-rival" style="color:#f3f2ed"/>
+  <use href="#carro" id="pj-eu" style="color:#f2c200"/>
+</svg>
+  <div class="painel">
+    <div class="velo"><i id="pj-velo"></i></div>
+    <div class="placar"><span>Volta <b id="pj-volta">—</b></span><span>Melhor <b id="pj-melhor">—</b></span></div>
+    <button class="acelerar" id="pj-botao" type="button">Segure para acelerar</button>
+    <div class="aviso" id="pj-aviso">Barra de espaço também acelera.</div>
+  </div>
+  <address>Avenida Dom Pedro II, 1900 · Carlos Prates<br>Belo Horizonte · MG</address>
+  <div class="rodape-links"><a href="#">31 99601-1999</a><a href="#">@gridbh.auto</a></div>
+  <div class="rodape-fino"><a href="#">Venda ou troque seu carro</a> · <a href="#">Como chegar</a> · <a href="#">Privacidade</a></div>
+  <div class="assinatura"><span>Tecnologia</span><img src="../../icon-logo.png" alt="Ícon" width="90" height="32"></div>
+</div></footer>
+</section>
+</main>
+<script>
+(function () {
+  var reduzir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduzir) { var pa = document.getElementById('pa'); if (pa && pa.pauseAnimations) pa.pauseAnimations(); }
+
+  var XL = 105, XR = 415;
+  var ext = document.getElementById('pj-ext'), int = document.getElementById('pj-int');
+  var eu = document.getElementById('pj-eu'), rival = document.getElementById('pj-rival');
+  var botao = document.getElementById('pj-botao'), barra = document.getElementById('pj-velo');
+  var aviso = document.getElementById('pj-aviso'), elVolta = document.getElementById('pj-volta'), elMelhor = document.getElementById('pj-melhor');
+  var LE = ext.getTotalLength(), LI = int.getTotalLength();
+  var VMAX = 560, LIMITE = 330;
+  var s = 0, v = 0, apertado = false, fora = null, inicioVolta = null, melhor = null;
+  var sr = LI * 0.5, visivel = true, ultimo = null;
+
+  function pos(caminho, x, L) {
+    x = ((x % L) + L) % L;
+    var a = caminho.getPointAtLength(x), b = caminho.getPointAtLength((x + 1) % L);
+    return { x: a.x, y: a.y, ang: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI };
+  }
+  function por(el, p, extra) { el.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + (p.ang + (extra || 0)).toFixed(1) + ')'); }
+  function emCurva(p) { return p.x < XL - 2 || p.x > XR + 2; }
+  function seg(ms) { return (ms / 1000).toFixed(2).replace('.', ',') + 's'; }
+
+  function apertar(e) { if (e) e.preventDefault(); apertado = true; botao.classList.add('on'); }
+  function soltar() { apertado = false; botao.classList.remove('on'); }
+  botao.addEventListener('pointerdown', apertar);
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (t) { botao.addEventListener(t, soltar); });
+  botao.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) { if (e.code === 'Space' && visivel) { apertar(e); } });
+  document.addEventListener('keyup', function (e) { if (e.code === 'Space') soltar(); });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { visivel = es[0].isIntersecting; }).observe(document.getElementById('pj'));
+  }
+
+  function passo(t) {
+    var dt = ultimo == null ? 0 : Math.min(0.05, (t - ultimo) / 1000); ultimo = t;
+    if (visivel) {
+      if (!reduzir) {
+        var pr = pos(int, sr, LI);
+        sr += (emCurva(pr) ? 205 : 290) * dt;
+        por(rival, pos(int, sr, LI));
+      }
+      if (fora) {
+        fora.t += dt; fora.vel *= 0.94;
+        fora.x += Math.cos(fora.dir) * fora.vel * dt; fora.y += Math.sin(fora.dir) * fora.vel * dt;
+        fora.giro += 540 * dt;
+        eu.setAttribute('transform', 'translate(' + fora.x.toFixed(1) + ' ' + fora.y.toFixed(1) + ') rotate(' + (fora.ang + fora.giro).toFixed(1) + ')');
+        eu.style.opacity = Math.max(0, 1 - fora.t / 0.9);
+        if (fora.t > 1.1) { s = fora.volta; v = 0; fora = null; eu.style.opacity = 1; inicioVolta = null; aviso.textContent = 'De volta à pista. Alivie antes da curva.'; aviso.className = 'aviso'; }
+      } else {
+        v += (apertado ? 520 : -360) * dt; v = Math.max(0, Math.min(VMAX, v));
+        var antes = s; s += v * dt;
+        if (s >= LE) { s -= LE; var agora = performance.now();
+          if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } }
+          inicioVolta = agora;
+        } else if (antes === 0 && s > 0 && inicioVolta == null) { inicioVolta = performance.now(); }
+        var p = pos(ext, s, LE);
+        if (emCurva(p) && v > LIMITE) {
+          var rad = p.ang * Math.PI / 180;
+          var volta = p.x > XR ? 155 : 666;
+          fora = { x: p.x, y: p.y, ang: p.ang, dir: rad, vel: v, giro: 0, t: 0, volta: volta };
+          aviso.textContent = 'Saiu da pista! Rápido demais na curva.'; aviso.className = 'aviso forte';
+        } else { por(eu, p); }
+      }
+      barra.style.width = (v / VMAX * 100).toFixed(0) + '%';
+      barra.className = v > LIMITE ? 'perigo' : '';
+    }
+    requestAnimationFrame(passo);
+  }
+  por(eu, pos(ext, 0, LE)); por(rival, pos(int, sr, LI));
+  requestAnimationFrame(passo);
+})();
+</script>
+</body>
+</html>
