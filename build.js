@@ -20,10 +20,15 @@ const CONFIG = {
   // ID do pixel da Meta. Vazio = sem pixel e sem aviso de cookies.
   pixelId: process.env.PIXEL_ID || '',
   whatsappPadrao: '5531996011999',
+  instagram: 'gridbh.auto',
   // Prévia: BASE=/prototipo/v3 SAIDA=estatico/prototipo/v3 node build.js gera o site inteiro numa subpasta.
   base: (process.env.BASE || '').replace(/\/$/, '')
 };
 const B = CONFIG.base;
+// Foto da frente da loja: aparece na vitrine (bloco "Venha nos visitar") e no topo de /loja/
+// só quando o arquivo existir em estatico/.
+const FOTO_LOJA = ['loja-fachada.jpg', 'loja-fachada.jpeg', 'loja-fachada.png', 'loja-fachada.webp']
+  .find(n => fs.existsSync(path.join(__dirname, 'estatico', n))) || '';
 const RAIZ = __dirname;
 const SAIDA = path.resolve(RAIZ, process.env.SAIDA || '_site');
 
@@ -201,8 +206,13 @@ ${pixel}
 </header>
 ${corpo}
 <footer class="rodape-site"><div class="wrap">
-  <div><b>Grid Automóveis</b> · ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)}</div>
-  <div>WhatsApp ${esc(loja.telefone)} · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
+  <img class="logo-rodape" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40">
+  <address>${esc(loja.endereco)} · ${esc(loja.bairro)}<br>${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}</address>
+  <div class="rodape-links">
+    <a data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
+    <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
+  </div>
+  <div class="rodape-fino"><a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
 </div></footer>
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
 <div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
@@ -318,6 +328,22 @@ function carrosDoHistorico() {
 }
 
 // Topo da vitrine: o slogan da loja e um carro em destaque (o de maior preço), como a luz da cena.
+function linkMapa(loja) {
+  return loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Grid Automóveis, ${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
+}
+function visiteHtml(loja) {
+  if (!FOTO_LOJA) return '';
+  return `<section class="visite" aria-labelledby="t-visite">
+    <img src="${B}/${FOTO_LOJA}" alt="Fachada da Grid Automóveis" loading="lazy">
+    <div class="visite-texto">
+      <div class="eyebrow">Venha nos visitar</div>
+      <h2 class="h1" id="t-visite">A Grid fica no ${esc(loja.bairro)}</h2>
+      <p>${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)}</p>
+      <a class="hero-link" href="${esc(linkMapa(loja))}" target="_blank" rel="noopener">Abrir no mapa</a>
+    </div>
+  </section>`;
+}
 function heroHtml(carros, loja) {
   // Vitrine giratória: todos os carros disponíveis com foto, começando pelo de maior preço.
   // Troca a cada 7 s (estilo/site.js). Sem contador: o site nunca mostra o tamanho do estoque.
@@ -366,6 +392,7 @@ function montar() {
     <select id="ordem" class="ordem" aria-label="Ordenar"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option></select></div>
   <div class="vitrine" id="vitrine">${carros.map(cardHtml).join('')}</div>
   <div class="vazio" id="vazio" ${carros.length ? 'hidden' : ''}><div class="h1">Não temos agora.</div><p>Diga o que você procura e avisamos quando chegar.</p><a class="zap" data-zap="Olá! Estou procurando um carro e queria ser avisado quando chegar." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Me avise quando chegar</a></div>
+  ${visiteHtml(loja)}
 </main>`;
   escrever('index.html', pagina({
     titulo: 'Grid Automóveis · Seminovos em Belo Horizonte',
@@ -389,6 +416,7 @@ function montar() {
     titulo: 'A loja · Grid Automóveis', descricao: `Grid Automóveis: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/loja/', loja,
     corpo: `<main class="wrap texto">
+  ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da Grid Automóveis">` : ''}
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">A loja</h1>
   <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
   <p><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a></p>
