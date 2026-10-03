@@ -1,5 +1,7 @@
 name: Publicar site
 
+# Roda a cada mudança na main (inclusive quando o Integrador grava dados/estoque.json)
+# e pode ser disparado à mão na aba Actions.
 on:
   push:
     branches: [main]
@@ -22,9 +24,18 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # histórico completo: é dele que saem as páginas de "vendido"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Montar o site
+        run: node build.js
+        env:
+          PIXEL_ID: ${{ vars.PIXEL_ID }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _site
       - id: deploy
         uses: actions/deploy-pages@v4
