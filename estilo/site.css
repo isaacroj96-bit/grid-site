@@ -228,7 +228,7 @@ footer.rodape-site a{color:var(--ink2)}
 @media (max-width:919px){.tem-barra footer.rodape-site .wrap{padding-bottom:110px}}
 .assinatura{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:12px;padding-top:18px;border-top:1px solid var(--linha);width:min(220px,100%)}
 .assinatura span{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3)}
-.assinatura img{width:90px;height:auto;opacity:.85}
+.assinatura svg{width:72px;height:auto;display:block;color:var(--ink2)}
 .rodape-links a{color:var(--ink)}
 /* venha nos visitar */
 .visite{display:grid;gap:20px;align-items:center;margin-block:10px 50px;padding-top:30px;border-top:1px solid var(--linha);grid-template-columns:minmax(0,1fr)}
