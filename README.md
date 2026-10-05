@@ -8,6 +8,13 @@ Site da Grid Automóveis em **www.gridbh.com**, publicado pelo GitHub Pages.
 2. Cada mudança na `main` dispara o fluxo `.github/workflows/pages.yml`, que roda `node build.js` e publica a pasta `_site/`.
 3. `build.js` gera a vitrine, uma página por carro (`/carro/<slug>/`, com a prévia do link no WhatsApp), a página "vendido" para todo carro que já saiu (lida do histórico do git, então o link nunca quebra), `/loja/`, `/privacidade/`, `404.html`, `sitemap.xml` e `robots.txt`.
 
+## Motor e cliente
+
+- `build.js` é o motor: monta as páginas e não tem nada desta loja.
+- `cliente.js` é a configuração da loja: nome, domínio, logo, contato, mensagens do WhatsApp, textos e pilares.
+- Outro cliente: outro arquivo de configuração, apontado com `CLIENTE=caminho/do/cliente.js node build.js`. O motor não muda.
+- Ainda no motor (próximos passos): as cores e fontes em `estilo/site.css` e o vocabulário de veículos (km, câmbio, opcionais).
+
 ## Pastas
 
 - `dados/` — estoque publicado pelo Integrador. Também fica em `www.gridbh.com/dados/` (a Meta lê o `meta.csv` daí).

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /*
- * Monta o site da Grid a partir de dados/estoque.json (publicado pelo Integrador).
+ * Motor do site: monta as páginas a partir de dados/estoque.json (publicado pelo Integrador).
+ * Tudo o que é do cliente (nome, contato, textos, logo) fica em cliente.js.
  * Sem dependências: só Node. Saída em _site/ (o GitHub Actions publica essa pasta).
  *
  *   node build.js
@@ -16,18 +17,19 @@ const { execSync } = require('child_process');
 const crypto = require('crypto');
 
 // ---------- configuração ----------
+// Cliente: cliente.js na raiz, ou outro arquivo com CLIENTE=caminho node build.js.
+const C = require(path.resolve(__dirname, process.env.CLIENTE || 'cliente.js'));
 const CONFIG = {
-  dominio: 'https://www.gridbh.com',
+  dominio: C.dominio,
   // ID do pixel da Meta. Vazio = sem pixel e sem aviso de cookies.
   pixelId: process.env.PIXEL_ID || '',
-  whatsappPadrao: '5531996011999',
-  instagram: 'gridbh.auto',
-  // Avaliações do Google: sempre os números reais do Perfil da Empresa, atualizados à mão.
-  // Sem nota preenchida, aparece só o link "Ver avaliações no Google".
-  google: { nota: '', total: '', link: 'https://www.google.com/maps/search/?api=1&query=Grid+Autom%C3%B3veis+Belo+Horizonte' },
+  whatsappPadrao: C.whatsappPadrao,
+  instagram: C.instagram,
+  google: C.google,
   // Prévia: BASE=/prototipo/v3 SAIDA=estatico/prototipo/v3 node build.js gera o site inteiro numa subpasta.
   base: (process.env.BASE || '').replace(/\/$/, '')
 };
+const LOGO = C.logo.arquivo;
 const B = CONFIG.base;
 // Versão dos arquivos de estilo e script no link (?v=...): o navegador não usa uma cópia velha
 // guardada quando o arquivo muda.
@@ -181,7 +183,7 @@ function precoHtml(c) {
 const nomeCurto = c => [c.marca, c.modelo].filter(Boolean).join(' ') || c.titulo;
 // Título completo para mensagem, aba e prévia do link: marca, modelo, versão e ano.
 const nomeCompleto = c => [c.marca, c.modelo, c.versao, c.ano_modelo].filter(Boolean).join(' ') || c.titulo;
-const msgCarro = c => `Olá! Vi o ${nomeCompleto(c)} (${brl(precoFinal(c))}) no site da Grid.`;
+const msgCarro = c => C.msgCarro(nomeCompleto(c), brl(precoFinal(c)));
 
 function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jsonld, semFlutuante }) {
   const px = CONFIG.pixelId;
@@ -194,18 +196,18 @@ function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jso
 ${B ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
 <link rel="canonical" href="${esc(url)}">
-<meta property="og:site_name" content="Grid Automóveis">
+<meta property="og:site_name" content="${esc(C.nome)}">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="${tipo || 'website'}">
 <meta property="og:title" content="${esc(titulo)}">
 <meta property="og:description" content="${esc(descricao)}">
 <meta property="og:url" content="${esc(url)}">
 ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twitter:card" content="summary_large_image">` : ''}
-<meta name="theme-color" content="#121214">
-<link rel="icon" href="${B}/grid-logo.png">
+<meta name="theme-color" content="${esc(C.corTema)}">
+<link rel="icon" href="${B}/${LOGO}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="${C.fontes}">
 <link rel="stylesheet" href="${B}/assets/site.css?v=${VERSAO_ASSETS}">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
@@ -214,7 +216,7 @@ ${pixel}
 <header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
-    <a class="topo-logo" href="${B}/" aria-label="Grid Automóveis, página inicial"><img class="logo" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40"></a>
+    <a class="topo-logo" href="${B}/" aria-label="${esc(C.nome)}, página inicial"><img class="logo" src="${B}/${LOGO}" alt="${esc(C.nome)}" width="${C.logo.largura}" height="${C.logo.altura}"></a>
     <a class="topo-botao topo-vender" href="${B}/venda-seu-carro/">${ICONE_CHAVE}<span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a>
   </div>
   <div class="flag" aria-hidden="true"></div>
@@ -223,10 +225,10 @@ ${corpo}
 <footer class="rodape-site"><div class="wrap">
   <div class="autorama" id="autorama">
   <svg class="pista" aria-hidden="true" focusable="false"></svg>
-  <img class="logo-rodape" src="${B}/grid-logo.png" alt="Grid Automóveis" width="88" height="40">
+  <img class="logo-rodape" src="${B}/${LOGO}" alt="${esc(C.nome)}" width="${C.logo.largura}" height="${C.logo.altura}">
   <address>${esc(loja.endereco)} · ${esc(loja.bairro)}<br>${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}</address>
   <div class="rodape-links">
-    <a data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
+    <a data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
     <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
   </div>
   <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
@@ -239,7 +241,7 @@ ${corpo}
   </div>
   <div class="assinatura"><span>Tecnologia</span><svg viewBox="4.04 8 310.05 87" width="72" height="20" role="img" aria-label="Aires"><defs><clipPath id="aires-assinatura"><rect x="-10" y="8" width="120" height="87"/></clipPath></defs><path d="M-1.35 112.68 L63.35 -9.68 M51.72 -11.87 L66.28 114.87 M82 0 V110" clip-path="url(#aires-assinatura)" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="butt"/><path d="M127.1 6.96Q132.06 6.96 136.96 8.39Q141.86 9.81 145.89 12.85Q149.92 15.89 152.4 20.6Q154.88 25.31 154.88 31.88Q154.88 36.84 153.39 41.49Q151.9 46.14 148.55 49.86Q145.2 53.58 139.87 55.82Q134.54 58.05 126.73 58.05H113.09V95.0H107.01V6.96ZM126.36 52.22Q132.93 52.22 137.27 50.36Q141.61 48.5 144.09 45.52Q146.57 42.55 147.62 39.01Q148.68 35.48 148.68 32.13Q148.68 28.16 147.25 24.69Q145.82 21.22 143.1 18.55Q140.37 15.89 136.52 14.34Q132.68 12.79 127.97 12.79H113.09V52.22ZM139 54.95 163.43 95.0H156.36L131.81 55.07ZM185.5 6.96H239.82V12.79H191.58V47.76H234.98V53.58H191.58V89.17H241.55V95.0H185.5ZM308.76 16.88Q304.92 15.02 299.34 13.41Q293.76 11.8 288.18 11.8Q279.5 11.8 274.29 16.14Q269.08 20.48 269.08 27.05Q269.08 32.01 272.06 35.29Q275.03 38.58 279.87 40.87Q284.7 43.17 290.16 45.28Q294.5 46.89 298.78 48.87Q303.06 50.86 306.53 53.71Q310.0 56.56 312.05 60.78Q314.09 64.99 314.09 71.19Q314.09 78.51 310.62 84.15Q307.15 89.79 300.95 92.89Q294.75 95.99 286.56 95.99Q279.99 95.99 274.6 94.38Q269.2 92.77 265.17 90.6Q261.14 88.43 258.79 86.94L261.64 81.98Q264.37 83.96 268.27 85.95Q272.18 87.93 276.77 89.3Q281.36 90.66 285.94 90.66Q291.28 90.66 296.3 88.55Q301.32 86.44 304.61 82.17Q307.89 77.89 307.89 71.32Q307.89 64.99 304.79 61.09Q301.69 57.18 296.86 54.7Q292.02 52.22 286.56 50.24Q282.35 48.62 278.13 46.83Q273.92 45.03 270.44 42.49Q266.97 39.94 264.93 36.35Q262.88 32.75 262.88 27.67Q262.88 21.34 266.1 16.63Q269.33 11.92 274.85 9.25Q280.36 6.59 287.43 6.46Q293.63 6.46 300.02 8.08Q306.4 9.69 311.12 12.17Z" fill="currentColor"/></svg></div>
 </div></footer>
-${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a Grid no WhatsApp">${ICONE_ZAP}</a>`}
+${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a ${esc(C.nomeCurto)} no WhatsApp">${ICONE_ZAP}</a>`}
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
 <div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
 <script src="${B}/assets/site.js?v=${VERSAO_ASSETS}" defer></script>
@@ -252,32 +254,27 @@ function cardHtml(c, i) {
   const o = organizarOpcionais(c);
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
   return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}">
-    <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/grid-logo.png')}" alt="${esc(nomeCompleto(c))}"></div>
+    <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/' + LOGO)}" alt="${esc(nomeCompleto(c))}"></div>
     <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
     ${(() => { const m = o.raros.concat(o.procurados.filter(x => !/^Câmbio/.test(x))).slice(0, 3); return m.length ? `<div class="mini-dest">${m.map((d, k) => `<span${k < o.raros.length ? ' class="raro"' : ''}>` + esc(d) + '</span>').join('')}</div>` : ''; })()}</div></a>`;
 }
 
 // Confiança e procedência (Isaac, 03/10): é o que o cliente procura na loja.
-const PILARES = [
-  ['Procedência', 'Carros com laudo cautelar aprovado.'],
-  ['Selecionados', 'Cada carro é escolhido e avaliado antes de entrar no estoque.'],
-  ['Preparados', 'Preparamos cada carro antes de ele ir para a vitrine.'],
-  ['Facilidade', 'Seu carro na troca, financiamento e transferência pela loja.']
-];
+const PILARES = C.pilares;
 const BLOCO_LOJA = loja => `<section class="loja" aria-labelledby="t-loja">
       <h2 class="h1" id="t-loja" style="font-size:26px">Compre com confiança</h2>
       <div class="loja-grade">${PILARES.map(([t, d]) => `<div class="loja-item"><b>${t}</b><span>${d}</span></div>`).join('')}</div>
       <a class="google" href="${esc(CONFIG.google.link)}" target="_blank" rel="noopener">${CONFIG.google.nota ? `<span class="estrela" aria-hidden="true">★</span><b>${esc(CONFIG.google.nota)}</b> no Google${CONFIG.google.total ? ` · ${esc(CONFIG.google.total)} avaliações` : ''}` : 'Ver nossas avaliações no Google'} →</a>
       <div class="endereco"><b>Venha ver de perto:</b> ${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)} · <a href="${B}/loja/">como chegar</a></div>
     </section>`;
-const FAIXA_CONFIANCA = `<ul class="pilares" aria-label="Por que comprar na Grid">${PILARES.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ul>`;
+const FAIXA_CONFIANCA = `<ul class="pilares" aria-label="${esc(C.textos.porqueComprar)}">${PILARES.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ul>`;
 
 function paginaCarro(c, loja) {
   const o = organizarOpcionais(c);
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
   const url = `${CONFIG.dominio}/carro/${c.slug}/`;
   const grupos = Object.entries(o.grupos).filter(([, l]) => l && l.length);
-  const fotos = c.fotos.length ? c.fotos : [B + '/grid-logo.png'];
+  const fotos = c.fotos.length ? c.fotos : [B + '/' + LOGO];
   const corpo = `<main class="wrap carro">
   <a class="voltar" href="${B}/">‹ Ver todos os carros</a>
   <div class="layout-carro">
@@ -323,7 +320,7 @@ function paginaCarro(c, loja) {
   };
   return pagina({
     titulo: `${nomeCompleto(c)} · ${brl(precoFinal(c))}`,
-    descricao: `${km(c.km)} · ${c.cambio || ''} · ${c.combustivel || ''}. Grid Automóveis, ${loja.bairro}, ${loja.cidade}.`,
+    descricao: `${km(c.km)} · ${c.cambio || ''} · ${c.combustivel || ''}. ${C.nome}, ${loja.bairro}, ${loja.cidade}.`,
     url, imagem: c.fotos[0], tipo: 'product', corpo, loja, jsonld,
     evento: `fbq('track','ViewContent',{content_ids:['${esc(c.id)}'],content_type:'vehicle'});`
   });
@@ -342,7 +339,7 @@ function paginaVendido(antigo, atuais, loja) {
   ${parecidos.length ? `<h2 class="h1" style="font-size:28px">Carros parecidos</h2><div class="vitrine">${parecidos.map(cardHtml).join('')}</div>` : ''}
 </main>`;
   return pagina({
-    titulo: `${antigo.titulo} · vendido · Grid Automóveis`, descricao: `O ${antigo.titulo} já foi vendido. Veja carros parecidos na Grid Automóveis.`,
+    titulo: `${antigo.titulo} · vendido · ${C.nome}`, descricao: `O ${antigo.titulo} já foi vendido. Veja carros parecidos na ${C.nome}.`,
     url: `${CONFIG.dominio}/carro/${antigo.slug}/`, imagem: antigo.foto, corpo, loja
   });
 }
@@ -364,15 +361,15 @@ function carrosDoHistorico() {
 // Topo da vitrine: o slogan da loja e um carro em destaque (o de maior preço), como a luz da cena.
 function linkMapa(loja) {
   return loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Grid Automóveis, ${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${C.nome}, ${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
 }
 function visiteHtml(loja) {
   if (!FOTO_LOJA) return '';
   return `<section class="visite" aria-labelledby="t-visite">
-    <img src="${B}/${FOTO_LOJA}" alt="Fachada da Grid Automóveis" loading="lazy">
+    <img src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}" loading="lazy">
     <div class="visite-texto">
       <div class="eyebrow">Venha nos visitar</div>
-      <h2 class="h1" id="t-visite">A Grid fica no Portal Auto Shopping</h2>
+      <h2 class="h1" id="t-visite">${esc(C.textos.visiteTitulo)}</h2>
       <p>${esc(loja.endereco)} · ${esc(loja.bairro)} · ${esc(loja.cidade)}</p>
       <a class="hero-link" href="${esc(linkMapa(loja))}" target="_blank" rel="noopener">Abrir no mapa</a>
     </div>
@@ -387,8 +384,8 @@ function heroHtml(carros, loja) {
   const c = lista[0];
   return `<section class="hero">
     <div class="hero-texto">
-      <div class="eyebrow">Grid Automóveis · ${esc(loja.cidade)}</div>
-      <h1 class="hero-titulo"><span class="pre">Acelera e</span> Vem pra <em>Grid</em>.</h1>
+      <div class="eyebrow">${esc(C.nome)} · ${esc(loja.cidade)}</div>
+      <h1 class="hero-titulo">${C.textos.heroHtml}</h1>
       <div class="hero-regua" aria-hidden="true"></div>
       <a class="hero-link" href="#carros">Ver os carros</a>
     </div>
@@ -415,7 +412,7 @@ function paginaVendaSeuCarro(carros, loja) {
   const corpo = `<main class="wrap venda" id="venda" data-interesses="${esc(JSON.stringify(interesses))}">
   <div class="venda-topo">
     <div class="eyebrow">Avaliação do seu carro</div>
-    <h1 class="h1 venda-titulo">Venda ou troque seu carro <em>na Grid</em>.</h1>
+    <h1 class="h1 venda-titulo">${C.textos.vendaTituloHtml}</h1>
     <p class="venda-sub">Responda em menos de um minuto. A conversa continua no WhatsApp, com quem avalia o carro.</p>
   </div>
   <div class="progresso" aria-hidden="true"><i id="barra"></i><span class="chegada"></span></div>
@@ -424,9 +421,9 @@ function paginaVendaSeuCarro(carros, loja) {
     <section class="passo" data-passo="1">
       <h2 class="pergunta">O que você quer fazer?</h2>
       <div class="opcoes" role="radiogroup" aria-label="O que você quer fazer">
-        <button type="button" class="opcao" data-campo="intencao" data-valor="vender"><b>Vender meu carro</b><span>A Grid compra o seu carro.</span></button>
-        <button type="button" class="opcao" data-campo="intencao" data-valor="trocar"><b>Trocar por um carro da Grid</b><span>Seu carro entra como parte do pagamento.</span></button>
-        <button type="button" class="opcao" data-campo="intencao" data-valor="consignar"><b>Deixar em consignação</b><span>A Grid vende o seu carro para você.</span></button>
+        <button type="button" class="opcao" data-campo="intencao" data-valor="vender"><b>Vender meu carro</b><span>${esc(C.textos.vendaOpcoes.vender)}</span></button>
+        <button type="button" class="opcao" data-campo="intencao" data-valor="trocar"><b>${esc(C.textos.vendaOpcoes.trocar)}</b><span>Seu carro entra como parte do pagamento.</span></button>
+        <button type="button" class="opcao" data-campo="intencao" data-valor="consignar"><b>Deixar em consignação</b><span>${esc(C.textos.vendaOpcoes.consignar)}</span></button>
       </div>
     </section>
 
@@ -464,7 +461,7 @@ function paginaVendaSeuCarro(carros, loja) {
       <h2 class="pergunta">Quase lá.</h2>
       <div class="campos">
         <label>Seu nome<input id="nome" autocomplete="given-name" placeholder="Como podemos te chamar?"></label>
-        <label class="so-troca" hidden>Carro da Grid que te interessou <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
+        <label class="so-troca" hidden>${esc(C.textos.vendaInteresse)} <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
         <datalist id="lista-interesses"></datalist>
       </div>
       <div class="resumo" id="resumo"></div>
@@ -475,8 +472,8 @@ function paginaVendaSeuCarro(carros, loja) {
   </form>
 </main>`;
   return pagina({
-    titulo: 'Venda ou troque seu carro · Grid Automóveis',
-    descricao: `Avaliação do seu carro para venda, troca ou consignação na Grid Automóveis, ${loja.cidade}.`,
+    titulo: `Venda ou troque seu carro · ${C.nome}`,
+    descricao: `Avaliação do seu carro para venda, troca ou consignação na ${C.nome}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/venda-seu-carro/', corpo, loja, semFlutuante: true
   });
 }
@@ -484,7 +481,7 @@ function paginaVendaSeuCarro(carros, loja) {
 // ---------- montagem ----------
 function montar() {
   const dados = JSON.parse(fs.readFileSync(path.join(RAIZ, 'dados', 'estoque.json'), 'utf8'));
-  const loja = Object.assign({ whatsapp: CONFIG.whatsappPadrao, telefone: '31 99601-1999' }, dados.loja || {});
+  const loja = Object.assign({ whatsapp: CONFIG.whatsappPadrao, telefone: C.telefonePadrao }, dados.loja || {});
   const carros = (dados.carros || []).filter(c => c && c.slug && c.id);
 
   fs.rmSync(SAIDA, { recursive: true, force: true });
@@ -506,8 +503,8 @@ function montar() {
   ${visiteHtml(loja)}
 </main>`;
   escrever('index.html', pagina({
-    titulo: 'Grid Automóveis · Seminovos em Belo Horizonte',
-    descricao: `Seminovos selecionados em ${loja.cidade}. Fotos de verdade, ficha completa e o preço na tela.`,
+    titulo: C.textos.tituloInicio,
+    descricao: C.textos.descricaoInicio(loja.cidade),
     url: CONFIG.dominio + '/', imagem: carros[0] && carros[0].fotos[0], corpo: vitrine, loja
   }));
 
@@ -524,15 +521,15 @@ function montar() {
   const mapa = loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
   escrever('loja/index.html', pagina({
-    titulo: 'A loja · Grid Automóveis', descricao: `Grid Automóveis: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
+    titulo: `A loja · ${C.nome}`, descricao: `${C.nome}: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/loja/', loja,
     corpo: `<main class="wrap texto">
-  ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da Grid Automóveis">` : ''}
+  ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}">` : ''}
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">A loja</h1>
   <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
   <p><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a></p>
   <p>WhatsApp: <b>${esc(loja.telefone)}</b></p>
-  <p><a class="zap" data-zap="Olá! Vim pelo site da Grid." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></p>
+  <p><a class="zap" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></p>
   ${BLOCO_LOJA(loja)}
 </main>`
   }));
@@ -540,7 +537,7 @@ function montar() {
   escrever('venda-seu-carro/index.html', paginaVendaSeuCarro(carros, loja));
 
   escrever('privacidade/index.html', pagina({
-    titulo: 'Privacidade · Grid Automóveis', descricao: 'Como o site da Grid Automóveis usa dados e cookies.',
+    titulo: `Privacidade · ${C.nome}`, descricao: `Como o site da ${C.nome} usa dados e cookies.`,
     url: CONFIG.dominio + '/privacidade/', loja,
     corpo: `<main class="wrap texto">
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">Privacidade</h1>
@@ -551,7 +548,7 @@ function montar() {
   }));
 
   escrever('404.html', pagina({
-    titulo: 'Página não encontrada · Grid Automóveis', descricao: 'Esta página não existe. Veja os carros da Grid Automóveis.',
+    titulo: `Página não encontrada · ${C.nome}`, descricao: `Esta página não existe. Veja os carros da ${C.nome}.`,
     url: CONFIG.dominio + '/', loja,
     corpo: `<main class="wrap vendido"><h1 class="h1" style="font-size:clamp(32px,6vw,48px)">Esta página não existe</h1><p>Mas os carros existem. Veja os que estão na loja agora.</p>
   <div class="vitrine">${carros.slice(0, 6).map(cardHtml).join('')}</div><p><a class="zap" href="${B}/">Ver todos os carros</a></p></main>`
