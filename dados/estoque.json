@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-07T17:23:29-03:00",
+  "gerado_em": "2026-10-07T18:53:31-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -438,7 +438,7 @@
       "ano_modelo": 2023,
       "km": 39123,
       "preco": 112900,
-      "preco_promocional": 109900,
+      "preco_promocional": null,
       "cor": "Vermelho",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -487,7 +487,7 @@
       "descricao": "Fiat Fastback 2023, vermelho, flex, 39.123 km. Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Ar condicionado.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-28T14:08:22-03:00"
+      "atualizado_em": "2026-10-07T15:30:50-03:00"
     },
     {
       "id": "8547239",
