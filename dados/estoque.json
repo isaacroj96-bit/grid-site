@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-07T13:22:22-03:00",
+  "gerado_em": "2026-10-07T17:23:29-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -12,52 +12,6 @@
     "cep": "30710010"
   },
   "carros": [
-    {
-      "id": "8547239",
-      "slug": "fiat-fiorino-ie-1995-8547239",
-      "status": "disponivel",
-      "titulo": "Fiat Fiorino 1995",
-      "marca": "Fiat",
-      "modelo": "Fiorino",
-      "versao": "Ie",
-      "ano_fabricacao": 1994,
-      "ano_modelo": 1995,
-      "km": 154537,
-      "preco": 34900,
-      "preco_promocional": null,
-      "cor": "Cinza",
-      "combustivel": "Alcool",
-      "cambio": "Manual",
-      "portas": 2,
-      "motor": "0.0",
-      "opcionais": [
-        "Ar quente",
-        "Rodas de liga leve",
-        "Capota Marítima",
-        "IPVA Pago",
-        "Licenciado"
-      ],
-      "fotos": [
-        "https://s3.carro57.com.br/FC/3586/8547239_4_W_4740c482c7.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_2_W_943d26290e.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_3_W_baad2c1541.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_1_W_8d4ab6d8c7.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_4_W_7447bfd508.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_4_W_b77bbef645.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_0_W_85b9b95619.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_12_W_8e6aa97a22.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_9_W_37da55eb1d.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_10_W_a7cf23e593.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_13_W_3293258da1.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_11_W_e990f52c53.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_7_W_a95196e66d.jpeg",
-        "https://s3.carro57.com.br/FC/3586/8547239_8_W_dd823235bb.jpeg"
-      ],
-      "descricao": "Fiat Fiorino 1995, cinza, alcool, 154.537 km. IPVA Pago, Rodas de liga leve, Ar quente, Capota Marítima, Licenciado.",
-      "novo_no_estoque": true,
-      "destaque": true,
-      "atualizado_em": "2026-10-07T10:18:18-03:00"
-    },
     {
       "id": "8495217",
       "slug": "citroen-aircross-7-xtr-1-0-tb-200-aut-2026-8495217",
@@ -534,6 +488,52 @@
       "novo_no_estoque": false,
       "destaque": true,
       "atualizado_em": "2026-09-28T14:08:22-03:00"
+    },
+    {
+      "id": "8547239",
+      "slug": "fiat-fiorino-ie-1995-8547239",
+      "status": "disponivel",
+      "titulo": "Fiat Fiorino 1995",
+      "marca": "Fiat",
+      "modelo": "Fiorino",
+      "versao": "Ie",
+      "ano_fabricacao": 1994,
+      "ano_modelo": 1995,
+      "km": 154537,
+      "preco": 34900,
+      "preco_promocional": null,
+      "cor": "Cinza",
+      "combustivel": "Alcool",
+      "cambio": "Manual",
+      "portas": 2,
+      "motor": "0.0",
+      "opcionais": [
+        "Ar quente",
+        "Rodas de liga leve",
+        "Capota Marítima",
+        "IPVA Pago",
+        "Licenciado"
+      ],
+      "fotos": [
+        "https://s3.carro57.com.br/FC/3586/8547239_4_W_4740c482c7.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_2_W_943d26290e.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_3_W_baad2c1541.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_1_W_8d4ab6d8c7.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_4_W_7447bfd508.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_4_W_b77bbef645.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_0_W_85b9b95619.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_12_W_8e6aa97a22.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_9_W_37da55eb1d.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_10_W_a7cf23e593.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_13_W_3293258da1.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_11_W_e990f52c53.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_7_W_a95196e66d.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8547239_8_W_dd823235bb.jpeg"
+      ],
+      "descricao": "Fiat Fiorino 1995, cinza, alcool, 154.537 km. IPVA Pago, Rodas de liga leve, Ar quente, Capota Marítima, Licenciado.",
+      "novo_no_estoque": false,
+      "destaque": true,
+      "atualizado_em": "2026-10-07T10:18:18-03:00"
     },
     {
       "id": "8126994",
