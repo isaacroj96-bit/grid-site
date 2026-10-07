@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-06T15:07:11-03:00",
+  "gerado_em": "2026-10-07T13:22:22-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -23,7 +23,7 @@
       "ano_fabricacao": 1994,
       "ano_modelo": 1995,
       "km": 154537,
-      "preco": 49900,
+      "preco": 34900,
       "preco_promocional": null,
       "cor": "Cinza",
       "combustivel": "Alcool",
@@ -56,7 +56,7 @@
       "descricao": "Fiat Fiorino 1995, cinza, alcool, 154.537 km. IPVA Pago, Rodas de liga leve, Ar quente, Capota Marítima, Licenciado.",
       "novo_no_estoque": true,
       "destaque": true,
-      "atualizado_em": "2026-10-06T11:59:54-03:00"
+      "atualizado_em": "2026-10-07T10:18:18-03:00"
     },
     {
       "id": "8495217",
@@ -838,7 +838,7 @@
       "ano_modelo": 2017,
       "km": 66221,
       "preco": 70900,
-      "preco_promocional": null,
+      "preco_promocional": 69900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -893,7 +893,7 @@
       "descricao": "Hyundai HB20 2017, branco, flex, 66.221 km. Único Dono, IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-12T07:45:51-03:00"
+      "atualizado_em": "2026-10-07T10:21:48-03:00"
     },
     {
       "id": "8322489",
