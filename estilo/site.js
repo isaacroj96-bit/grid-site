@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var NUMERO = document.body.getAttribute('data-whatsapp');
+  var ENDPOINT_LEAD = document.body.getAttribute('data-lead-endpoint') || 'https://script.google.com/macros/s/AKfycbx7DP48bTN9lGJwMQhOCcncLoeAFrP7-IERQWeP-SmYV8VYsFq0BbW1AVY_ZEzvtkprFw/exec';
 
   // ---------- origem da visita (vai na mensagem do WhatsApp) ----------
   function origemDaVisita() {
@@ -18,6 +19,61 @@
   }
   var ORIGEM = origemDaVisita();
 
+  // ---------- envio automático de lead para o Integrador (Fase 5) ----------
+  var ultimoEnvioLead = 0;
+  var ultimaChaveLead = '';
+
+  function enviarLeadIntegrador(dados) {
+    if (!ENDPOINT_LEAD || !dados) return;
+    var chave = (dados.ref || '') + '|' + (dados.mensagem || '') + '|' + (dados.troca_modelo || '');
+    var agora = Date.now();
+    if (chave === ultimaChaveLead && agora - ultimoEnvioLead < 8000) return;
+    ultimaChaveLead = chave;
+    ultimoEnvioLead = agora;
+
+    try {
+      var q = new URLSearchParams(location.search);
+      var leadId = '';
+      try { leadId = sessionStorage.getItem('grid-lead-id') || ''; } catch (e) {}
+
+      var payload = {
+        action: 'capturarLeadSite',
+        lead_id: leadId,
+        nome: (dados.nome || '').trim() || 'Visitante do Site',
+        telefone: (dados.telefone || '').trim(),
+        ref: dados.ref || '',
+        placa_interesse: dados.placa_interesse || '',
+        modelo_interesse: dados.modelo_interesse || '',
+        mensagem: dados.mensagem || '',
+        notas: dados.notas || '',
+        utm_source: q.get('utm_source') || '',
+        utm_campaign: q.get('utm_campaign') || '',
+        utm_medium: q.get('utm_medium') || '',
+        pagina_origem: window.location.href,
+        valor_proposta: dados.valor_proposta || '',
+        condicao_pagamento: dados.condicao_pagamento || '',
+        troca_placa: dados.troca_placa || '',
+        troca_modelo: dados.troca_modelo || '',
+        troca_valor: dados.troca_valor || '',
+        empresa_verificacao: '',
+        consentimento_lgpd: true
+      };
+
+      fetch(ENDPOINT_LEAD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).then(function (r) {
+        return r.json();
+      }).then(function (res) {
+        if (res && res.lead_id) {
+          try { sessionStorage.setItem('grid-lead-id', res.lead_id); } catch (e) {}
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   function linkZap(msg, ref, depois) {
     var texto = msg + (ref ? ' [ref ' + ref + ' · ' + ORIGEM + ']' : ' [' + ORIGEM + ']') + (depois ? '\n' + depois : '');
     return 'https://wa.me/' + NUMERO + '?text=' + encodeURIComponent(texto);
@@ -30,6 +86,19 @@
         a.dataset.ouvindo = '1';
         a.addEventListener('click', function () {
           if (window.fbq) window.fbq('track', 'Contact', a.getAttribute('data-ref') ? { content_ids: [a.getAttribute('data-ref')], content_type: 'vehicle' } : {});
+          if (a.id === 'enviar-venda') return;
+
+          var ref = a.getAttribute('data-ref') || '';
+          var msg = a.getAttribute('data-zap') || '';
+          var depois = a.getAttribute('data-depois') || '';
+          var dadosLead = {
+            ref: ref,
+            mensagem: msg + (depois ? ' ' + depois : '')
+          };
+          if ((depois && depois.toLowerCase().indexOf('financiamento') >= 0) || (msg && msg.toLowerCase().indexOf('financiamento') >= 0)) {
+            dadosLead.condicao_pagamento = 'Financiamento';
+          }
+          enviarLeadIntegrador(dadosLead);
         });
       }
     });
@@ -238,7 +307,38 @@
         vai(atualV + 1);
       });
     });
-    ['nome', 'interesse'].forEach(function (id) { $(id).addEventListener('input', montaResumo); });
+    ['nome', 'interesse', 'telefone'].forEach(function (id) { var el = $(id); if (el) el.addEventListener('input', montaResumo); });
+    if ($('telefone')) {
+      $('telefone').addEventListener('input', function () {
+        var d = $('telefone').value.replace(/\D/g, '').slice(0, 11);
+        if (d.length > 10) $('telefone').value = '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+        else if (d.length > 6) $('telefone').value = '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+        else if (d.length > 2) $('telefone').value = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+        else if (d.length > 0) $('telefone').value = '(' + d;
+      });
+    }
+    var btEnviarVenda = $('enviar-venda');
+    if (btEnviarVenda) {
+      btEnviarVenda.addEventListener('click', function () {
+        var nomeCli = $('nome').value.trim();
+        var telCli = $('telefone') ? $('telefone').value.trim() : '';
+        var carroCli = [$('marca').value, $('modelo').value, $('versao').value, $('ano').value, ($('cambio').value || ''), ($('km').value ? $('km').value.trim() + ' km' : '')]
+          .map(function (s) { return (s || '').trim(); }).filter(Boolean).join(' ');
+        var notasCli = [];
+        if (dados.sinais && dados.sinais.length) notasCli.push('Situação: ' + dados.sinais.join(', '));
+        if ($('obs').value.trim()) notasCli.push('Obs.: ' + $('obs').value.trim());
+
+        enviarLeadIntegrador({
+          nome: nomeCli || 'Visitante (Venda/Troca)',
+          telefone: telCli,
+          ref: (dados.intencao === 'trocar' && trocaId) ? trocaId : '',
+          modelo_interesse: (dados.intencao === 'trocar' && $('interesse').value.trim()) ? $('interesse').value.trim() : '',
+          troca_modelo: carroCli,
+          mensagem: $('resumo').textContent || '',
+          notas: notasCli.join('\n')
+        });
+      });
+    }
     $('km').addEventListener('input', function () {
       var d = $('km').value.replace(/\D/g, '').slice(0, 7);
       $('km').value = d ? Number(d).toLocaleString('pt-BR') : '';

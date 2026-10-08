@@ -18,6 +18,8 @@ module.exports = {
   whatsappPadrao: '5531996011999',
   telefonePadrao: '31 99601-1999',
   instagram: 'gridbh.auto',
+  // Endpoint de captura pública de leads (Integrador / Porta pública)
+  leadEndpoint: 'https://script.google.com/macros/s/AKfycbx7DP48bTN9lGJwMQhOCcncLoeAFrP7-IERQWeP-SmYV8VYsFq0BbW1AVY_ZEzvtkprFw/exec',
   // Avaliações do Google: sempre os números reais do Perfil da Empresa, atualizados à mão.
   // Sem nota preenchida, aparece só o link "Ver avaliações no Google".
   google: { nota: '', total: '', link: 'https://www.google.com/maps/search/?api=1&query=Grid+Autom%C3%B3veis+Belo+Horizonte' },

@@ -23,6 +23,7 @@ const CONFIG = {
   dominio: C.dominio,
   // ID do pixel da Meta. Vazio = sem pixel e sem aviso de cookies.
   pixelId: process.env.PIXEL_ID || '',
+  leadEndpoint: process.env.LEAD_ENDPOINT || C.leadEndpoint || '',
   whatsappPadrao: C.whatsappPadrao,
   instagram: C.instagram,
   google: C.google,
@@ -212,7 +213,7 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twi
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
 </head>
-<body data-whatsapp="${esc(loja.whatsapp)}" data-pixel="${px ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
+<body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${px ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
 <header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
@@ -461,13 +462,14 @@ function paginaVendaSeuCarro(carros, loja) {
       <h2 class="pergunta">Quase lá.</h2>
       <div class="campos">
         <label>Seu nome<input id="nome" autocomplete="given-name" placeholder="Como podemos te chamar?"></label>
-        <label class="so-troca" hidden>${esc(C.textos.vendaInteresse)} <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
+        <label>WhatsApp <small>(opcional)</small><input id="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: 31 99999-9999"></label>
+        <label class="so-troca largo" hidden>${esc(C.textos.vendaInteresse)} <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
         <datalist id="lista-interesses"></datalist>
       </div>
       <div class="resumo" id="resumo"></div>
       <p class="dica">Na conversa, mande 4 fotos: frente, traseira, interior e painel mostrando a quilometragem. Com elas a avaliação sai mais rápido.</p>
       <div class="navegar"><button type="button" class="voltar-passo">‹ Voltar</button><a class="zap" id="enviar-venda" data-zap="" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Enviar pelo WhatsApp</a></div>
-      <p class="letra-miuda">Nada fica salvo neste site. As informações vão só na mensagem que você decidir enviar.</p>
+      <p class="letra-miuda">Ao enviar pelo WhatsApp, você concorda com o contato da equipe da Grid para atendimento e avaliação.</p>
     </section>
   </form>
 </main>`;
@@ -541,9 +543,9 @@ function montar() {
     url: CONFIG.dominio + '/privacidade/', loja,
     corpo: `<main class="wrap texto">
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">Privacidade</h1>
-  <p>Este site não pede cadastro nem guarda seus dados. Quando você toca em "Chamar no WhatsApp", a conversa acontece no WhatsApp, com a mensagem que você decidir enviar.</p>
+  <p>Este site não exige cadastro prévio para visualização do estoque. Quando você toca em "Chamar no WhatsApp", "Simular financiamento" ou solicita uma avaliação na página de venda/troca, seus dados de contato e interesse são processados com seu consentimento exclusivamente para que a equipe de vendas da ${esc(C.nome)} realize o atendimento solicitado.</p>
   <p>Usamos o pixel da Meta (Facebook e Instagram) para saber quais anúncios trazem visitas e contatos. Ele usa cookies do seu navegador. Você pode bloquear esses cookies nas configurações do navegador sem perder nada do site.</p>
-  <p>Dúvidas: fale com a gente pelo WhatsApp ${esc(loja.telefone)}.</p>
+  <p>Dúvidas sobre seus dados: fale com a gente pelo WhatsApp ${esc(loja.telefone)}.</p>
 </main>`
   }));
 
