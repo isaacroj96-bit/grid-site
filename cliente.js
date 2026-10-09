@@ -20,6 +20,13 @@ module.exports = {
   instagram: 'gridbh.auto',
   // Endpoint de captura pública de leads (Integrador / Porta pública)
   leadEndpoint: 'https://script.google.com/macros/s/AKfycbx7DP48bTN9lGJwMQhOCcncLoeAFrP7-IERQWeP-SmYV8VYsFq0BbW1AVY_ZEzvtkprFw/exec',
+
+  // Rastreamento (Pixel da Meta e Google Analytics / Ads)
+  // Preencher aqui ou nas variáveis do GitHub Actions / Vercel (PIXEL_ID, GA_ID, GADS_ID).
+  pixelId: '',             // Ex: '123456789012345' (Meta Pixel do Gerenciador de Eventos)
+  googleAnalyticsId: '',   // Ex: 'G-XXXXXXXXXX' (Google Analytics 4)
+  googleAdsId: '',         // Ex: 'AW-XXXXXXXXXX' (Google Ads / Tag de Conversão)
+
   // Avaliações do Google: sempre os números reais do Perfil da Empresa, atualizados à mão.
   // Sem nota preenchida, aparece só o link "Ver avaliações no Google".
   google: { nota: '', total: '', link: 'https://www.google.com/maps/search/?api=1&query=Grid+Autom%C3%B3veis+Belo+Horizonte' },

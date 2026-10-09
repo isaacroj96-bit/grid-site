@@ -21,8 +21,10 @@ const crypto = require('crypto');
 const C = require(path.resolve(__dirname, process.env.CLIENTE || 'cliente.js'));
 const CONFIG = {
   dominio: C.dominio,
-  // ID do pixel da Meta. Vazio = sem pixel e sem aviso de cookies.
-  pixelId: process.env.PIXEL_ID || '',
+  // Rastreamento: ID do pixel da Meta e Google Analytics / Ads.
+  pixelId: process.env.PIXEL_ID || C.pixelId || '',
+  googleAnalyticsId: process.env.GA_ID || C.googleAnalyticsId || '',
+  googleAdsId: process.env.GADS_ID || C.googleAdsId || '',
   leadEndpoint: process.env.LEAD_ENDPOINT || C.leadEndpoint || '',
   whatsappPadrao: C.whatsappPadrao,
   instagram: C.instagram,
@@ -186,9 +188,16 @@ const nomeCurto = c => [c.marca, c.modelo].filter(Boolean).join(' ') || c.titulo
 const nomeCompleto = c => [c.marca, c.modelo, c.versao, c.ano_modelo].filter(Boolean).join(' ') || c.titulo;
 const msgCarro = c => C.msgCarro(nomeCompleto(c), brl(precoFinal(c)));
 
-function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, jsonld, semFlutuante }) {
+function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, eventoGoogle, jsonld, semFlutuante }) {
   const px = CONFIG.pixelId;
+  const gaId = CONFIG.googleAnalyticsId;
+  const gadsId = CONFIG.googleAdsId;
+  const tagGoogleId = gaId || gadsId;
+
   const pixel = px ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${esc(px)}');fbq('track','PageView');${evento || ''}</script>` : '';
+
+  const googleTag = tagGoogleId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(tagGoogleId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${gaId ? `gtag('config','${esc(gaId)}');` : ''}${gadsId ? `gtag('config','${esc(gadsId)}');` : ''}${eventoGoogle || ''}</script>` : '';
+
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -212,8 +221,9 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}">\n<meta name="twi
 <link rel="stylesheet" href="${B}/assets/site.css?v=${VERSAO_ASSETS}">
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 ${pixel}
+${googleTag}
 </head>
-<body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${px ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
+<body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${(px || tagGoogleId) ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
 <header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
@@ -323,7 +333,8 @@ function paginaCarro(c, loja) {
     titulo: `${nomeCompleto(c)} · ${brl(precoFinal(c))}`,
     descricao: `${km(c.km)} · ${c.cambio || ''} · ${c.combustivel || ''}. ${C.nome}, ${loja.bairro}, ${loja.cidade}.`,
     url, imagem: c.fotos[0], tipo: 'product', corpo, loja, jsonld,
-    evento: `fbq('track','ViewContent',{content_ids:['${esc(c.id)}'],content_type:'vehicle'});`
+    evento: `fbq('track','ViewContent',{content_ids:['${esc(c.id)}'],content_name:'${esc(nomeCompleto(c))}',content_type:'vehicle',value:${precoFinal(c)},currency:'BRL'});`,
+    eventoGoogle: `gtag('event','view_item',{currency:'BRL',value:${precoFinal(c)},items:[{item_id:'${esc(c.id)}',item_name:'${esc(nomeCompleto(c))}',item_brand:'${esc(c.marca)}',price:${precoFinal(c)}}]});`
   });
 }
 
@@ -560,7 +571,7 @@ function montar() {
   escrever('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${CONFIG.dominio}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
   escrever('robots.txt', `User-agent: *\nDisallow: /prototipo/\nSitemap: ${CONFIG.dominio}/sitemap.xml\n`);
 
-  console.log(`Site montado: ${carros.length} carros, ${vendidos.length} páginas de vendido, pixel ${CONFIG.pixelId ? 'ligado' : 'desligado'}.`);
+  console.log(`Site montado: ${carros.length} carros, ${vendidos.length} páginas de vendido, pixel ${CONFIG.pixelId ? 'ligado' : 'desligado'}, google ${CONFIG.googleAnalyticsId || CONFIG.googleAdsId ? 'ligado' : 'desligado'}.`);
 }
 
 montar();

@@ -71,6 +71,19 @@
           try { sessionStorage.setItem('grid-lead-id', res.lead_id); } catch (e) {}
         }
       }).catch(function () {});
+
+      // Rastreamento de conversão de Lead
+      if (window.fbq) {
+        var paramsFbq = { content_name: dados.modelo_interesse || dados.troca_modelo || 'Lead Site' };
+        if (dados.ref) { paramsFbq.content_ids = [dados.ref]; paramsFbq.content_type = 'vehicle'; }
+        window.fbq('track', 'Lead', paramsFbq);
+      }
+      if (window.gtag) {
+        window.gtag('event', 'generate_lead', {
+          event_category: 'lead',
+          event_label: dados.ref || dados.modelo_interesse || 'site'
+        });
+      }
     } catch (e) {}
   }
 
@@ -86,6 +99,7 @@
         a.dataset.ouvindo = '1';
         a.addEventListener('click', function () {
           if (window.fbq) window.fbq('track', 'Contact', a.getAttribute('data-ref') ? { content_ids: [a.getAttribute('data-ref')], content_type: 'vehicle' } : {});
+          if (window.gtag) window.gtag('event', 'contact', { event_category: 'whatsapp', event_label: a.getAttribute('data-ref') || 'geral' });
           if (a.id === 'enviar-venda') return;
 
           var ref = a.getAttribute('data-ref') || '';
@@ -236,6 +250,7 @@
         window.open('https://wa.me/?text=' + encodeURIComponent('Olha esse carro na Grid: ' + titulo + ' ' + url), '_blank', 'noopener');
       }
       if (window.fbq) window.fbq('trackCustom', 'Compartilhar');
+      if (window.gtag) window.gtag('event', 'share', { method: 'whatsapp', content_type: 'vehicle' });
     });
   });
 
