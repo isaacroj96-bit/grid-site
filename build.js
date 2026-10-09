@@ -255,6 +255,28 @@ ${corpo}
 </div></footer>
 ${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a ${esc(C.nomeCurto)} no WhatsApp">${ICONE_ZAP}</a>`}
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
+<div class="modal-simulacao" id="modal-simulacao" hidden role="dialog" aria-modal="true" aria-label="Simular financiamento">
+  <div class="modal-conteudo">
+    <button type="button" class="modal-fechar" id="modal-fechar" aria-label="Fechar modal">×</button>
+    <div class="modal-cab">
+      <h3 class="modal-titulo">Simular financiamento</h3>
+      <p class="modal-sub" id="sim-sub">Receba uma simulação personalizada com as melhores taxas pelo WhatsApp.</p>
+    </div>
+    <form id="form-simulacao" novalidate>
+      <input type="hidden" id="sim-ref" value="">
+      <input type="hidden" id="sim-carro" value="">
+      <input type="hidden" id="sim-preco" value="">
+      <div class="modal-campos">
+        <label>Seu nome<input id="sim-nome" autocomplete="given-name" placeholder="Como podemos te chamar?" required></label>
+        <label>Seu WhatsApp <small>(com DDD)</small><input id="sim-telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: (31) 99999-9999" required></label>
+        <label>Valor de entrada <small>(opcional)</small><input id="sim-entrada" inputmode="numeric" placeholder="Ex.: R$ 20.000"></label>
+      </div>
+      <p class="erro" id="sim-erro" hidden></p>
+      <button type="submit" class="zap zap-modal" id="bt-enviar-simulacao">${ICONE_ZAP}Simular no WhatsApp</button>
+      <p class="letra-miuda">Ao continuar, seus dados serão tratados pela Grid exclusivamente para este atendimento.</p>
+    </form>
+  </div>
+</div>
 <div class="cookies" id="cookies" hidden><span>Usamos cookies para medir nossos anúncios. <a href="${B}/privacidade/">Saiba mais</a></span><button type="button">Entendi</button></div>
 <script src="${B}/assets/site.js?v=${VERSAO_ASSETS}" defer></script>
 </body>
@@ -305,7 +327,7 @@ function paginaCarro(c, loja) {
       <a class="zap zap-ficha" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a>
       <div class="intencoes">
         <a class="botao2" href="${B}/venda-seu-carro/?troca=${esc(c.id)}">${ICONE_TROCA}Tenho um carro para trocar</a>
-        <a class="botao2" data-zap="${esc(`Olá! Quero simular o financiamento do ${nomeCompleto(c)} (${brl(precoFinal(c))}).`)}" data-depois="Valor de entrada: R$ " data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_FIN}Simular financiamento</a>
+        <button type="button" class="botao2" id="bt-abrir-simulacao" data-carro="${esc(nomeCompleto(c))}" data-preco="${esc(brl(precoFinal(c)))}" data-ref="${esc(c.id)}">${ICONE_FIN}Simular financiamento</button>
         <button type="button" class="botao2" data-compartilhar data-titulo="${esc(`${nomeCompleto(c)} · ${brl(precoFinal(c))}`)}" data-url="${esc(`${CONFIG.dominio}/carro/${c.slug}/`)}">${ICONE_ENVIAR}Enviar para alguém</button>
       </div>
       ${o.raros.length || o.procurados.length ? `<section class="bloco"><h2>Destaques</h2>
@@ -474,7 +496,7 @@ function paginaVendaSeuCarro(carros, loja) {
       <h2 class="pergunta">Quase lá.</h2>
       <div class="campos">
         <label>Seu nome<input id="nome" autocomplete="given-name" placeholder="Como podemos te chamar?"></label>
-        <label>WhatsApp <small>(opcional)</small><input id="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: 31 99999-9999"></label>
+        <label>WhatsApp <small>(com DDD)</small><input id="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: 31 99999-9999" required></label>
         <label class="so-troca largo" hidden>${esc(C.textos.vendaInteresse)} <small>(opcional)</small><input id="interesse" list="lista-interesses" autocomplete="off" placeholder="Ex.: Jeep Compass"></label>
         <datalist id="lista-interesses"></datalist>
       </div>

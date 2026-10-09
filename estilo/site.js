@@ -100,25 +100,132 @@
         a.addEventListener('click', function () {
           if (window.fbq) window.fbq('track', 'Contact', a.getAttribute('data-ref') ? { content_ids: [a.getAttribute('data-ref')], content_type: 'vehicle' } : {});
           if (window.gtag) window.gtag('event', 'contact', { event_category: 'whatsapp', event_label: a.getAttribute('data-ref') || 'geral' });
-          if (a.id === 'enviar-venda') return;
-
-          var ref = a.getAttribute('data-ref') || '';
-          var msg = a.getAttribute('data-zap') || '';
-          var depois = a.getAttribute('data-depois') || '';
-          var dadosLead = {
-            ref: ref,
-            mensagem: msg + (depois ? ' ' + depois : '')
-          };
-          if ((depois && depois.toLowerCase().indexOf('financiamento') >= 0) || (msg && msg.toLowerCase().indexOf('financiamento') >= 0)) {
-            dadosLead.condicao_pagamento = 'Financiamento';
-          }
-          enviarLeadIntegrador(dadosLead);
         });
       }
     });
     (raiz || document).querySelectorAll('[data-origem]').forEach(function (el) { el.textContent = ORIGEM; });
   }
   prepararZaps();
+
+  // ---------- modal de simulação de financiamento (captura de lead com celular) ----------
+  (function () {
+    var modal = document.getElementById('modal-simulacao');
+    var btAbrir = document.getElementById('bt-abrir-simulacao');
+    if (!modal) return;
+
+    var btFechar = document.getElementById('modal-fechar');
+    var form = document.getElementById('form-simulacao');
+    var elSub = document.getElementById('sim-sub');
+    var elRef = document.getElementById('sim-ref');
+    var elCarro = document.getElementById('sim-carro');
+    var elPreco = document.getElementById('sim-preco');
+    var elNome = document.getElementById('sim-nome');
+    var elTel = document.getElementById('sim-telefone');
+    var elEntrada = document.getElementById('sim-entrada');
+    var elErro = document.getElementById('sim-erro');
+
+    function fechar() {
+      modal.hidden = true;
+      if (elErro) elErro.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    function abrir(carro, preco, ref) {
+      if (elCarro) elCarro.value = carro || '';
+      if (elPreco) elPreco.value = preco || '';
+      if (elRef) elRef.value = ref || '';
+      if (elSub && carro) elSub.textContent = 'Simulação para o ' + carro + (preco ? ' (' + preco + ')' : '');
+
+      try {
+        if (elNome && !elNome.value) elNome.value = localStorage.getItem('grid_nome') || '';
+        if (elTel && !elTel.value) elTel.value = localStorage.getItem('grid_tel') || '';
+      } catch (_) {}
+
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (elNome && !elNome.value) elNome.focus();
+      else if (elTel && !elTel.value) elTel.focus();
+      else if (elEntrada) elEntrada.focus();
+    }
+
+    if (btAbrir) {
+      btAbrir.addEventListener('click', function () {
+        abrir(btAbrir.getAttribute('data-carro'), btAbrir.getAttribute('data-preco'), btAbrir.getAttribute('data-ref'));
+      });
+    }
+
+    if (btFechar) btFechar.addEventListener('click', fechar);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) fechar();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) fechar();
+    });
+
+    if (elTel) {
+      elTel.addEventListener('input', function () {
+        var d = elTel.value.replace(/\D/g, '').slice(0, 11);
+        if (d.length > 10) elTel.value = '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+        else if (d.length > 6) elTel.value = '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+        else if (d.length > 2) elTel.value = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+        else if (d.length > 0) elTel.value = '(' + d;
+      });
+    }
+
+    if (elEntrada) {
+      elEntrada.addEventListener('input', function () {
+        var d = elEntrada.value.replace(/\D/g, '').slice(0, 8);
+        elEntrada.value = d ? 'R$ ' + Number(d).toLocaleString('pt-BR') : '';
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var nome = (elNome ? elNome.value : '').trim();
+        var tel = (elTel ? elTel.value : '').trim();
+        var dTel = tel.replace(/\D/g, '');
+        var entrada = (elEntrada ? elEntrada.value : '').trim();
+        var carro = (elCarro ? elCarro.value : '').trim();
+        var preco = (elPreco ? elPreco.value : '').trim();
+        var ref = (elRef ? elRef.value : '').trim();
+
+        if (!nome) {
+          if (elErro) { elErro.textContent = 'Por favor, informe seu nome.'; elErro.hidden = false; }
+          if (elNome) elNome.focus();
+          return;
+        }
+        if (dTel.length < 10) {
+          if (elErro) { elErro.textContent = 'Informe seu WhatsApp com DDD (mínimo 10 dígitos).'; elErro.hidden = false; }
+          if (elTel) elTel.focus();
+          return;
+        }
+
+        if (elErro) elErro.hidden = true;
+
+        try {
+          localStorage.setItem('grid_nome', nome);
+          localStorage.setItem('grid_tel', tel);
+        } catch (_) {}
+
+        var textoZap = 'Olá! Sou o ' + nome + '. Quero simular o financiamento do ' + carro + (preco ? ' (' + preco + ')' : '') + '.' + (entrada ? ' Valor de entrada pretendido: ' + entrada + '.' : '');
+        var urlZap = linkZap(textoZap, ref);
+
+        enviarLeadIntegrador({
+          nome: nome,
+          telefone: tel,
+          ref: ref,
+          modelo_interesse: carro,
+          valor_proposta: entrada ? entrada.replace(/[^\d,]/g, '') : '',
+          condicao_pagamento: 'Financiamento',
+          mensagem: textoZap
+        });
+
+        fechar();
+        window.open(urlZap, '_blank', 'noopener');
+      });
+    }
+  })();
 
   // ---------- topo: carro do estoque trocando a cada 7 s ----------
   var hero = document.getElementById('hero-carro');
@@ -322,6 +429,10 @@
         vai(atualV + 1);
       });
     });
+    try {
+      if ($('nome') && !$('nome').value && localStorage.getItem('grid_nome')) $('nome').value = localStorage.getItem('grid_nome');
+      if ($('telefone') && !$('telefone').value && localStorage.getItem('grid_tel')) $('telefone').value = localStorage.getItem('grid_tel');
+    } catch (_) {}
     ['nome', 'interesse', 'telefone'].forEach(function (id) { var el = $(id); if (el) el.addEventListener('input', montaResumo); });
     if ($('telefone')) {
       $('telefone').addEventListener('input', function () {
@@ -334,9 +445,22 @@
     }
     var btEnviarVenda = $('enviar-venda');
     if (btEnviarVenda) {
-      btEnviarVenda.addEventListener('click', function () {
+      btEnviarVenda.addEventListener('click', function (e) {
         var nomeCli = $('nome').value.trim();
         var telCli = $('telefone') ? $('telefone').value.trim() : '';
+        var numLimpo = telCli.replace(/\D/g, '');
+        if (numLimpo.length < 10) {
+          e.preventDefault();
+          alert('Por favor, informe seu WhatsApp com DDD para retorno da avaliação.');
+          if ($('telefone')) $('telefone').focus();
+          return;
+        }
+
+        try {
+          if (nomeCli) localStorage.setItem('grid_nome', nomeCli);
+          if (telCli) localStorage.setItem('grid_tel', telCli);
+        } catch (_) {}
+
         var carroCli = [$('marca').value, $('modelo').value, $('versao').value, $('ano').value, ($('cambio').value || ''), ($('km').value ? $('km').value.trim() + ' km' : '')]
           .map(function (s) { return (s || '').trim(); }).filter(Boolean).join(' ');
         var notasCli = [];
@@ -349,6 +473,7 @@
           ref: (dados.intencao === 'trocar' && trocaId) ? trocaId : '',
           modelo_interesse: (dados.intencao === 'trocar' && $('interesse').value.trim()) ? $('interesse').value.trim() : '',
           troca_modelo: carroCli,
+          condicao_pagamento: dados.intencao === 'trocar' ? 'Troca' : 'Venda',
           mensagem: $('resumo').textContent || '',
           notas: notasCli.join('\n')
         });
