@@ -255,24 +255,27 @@ ${corpo}
 </div></footer>
 ${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}" aria-label="Falar com a ${esc(C.nomeCurto)} no WhatsApp">${ICONE_ZAP}</a>`}
 <div class="tela" id="tela" hidden role="dialog" aria-modal="true" aria-label="Fotos em tela cheia"></div>
-<div class="modal-simulacao" id="modal-simulacao" hidden role="dialog" aria-modal="true" aria-label="Simular financiamento">
+<div class="modal-simulacao" id="modal-simulacao" hidden role="dialog" aria-modal="true" aria-label="Falar no WhatsApp">
   <div class="modal-conteudo">
     <button type="button" class="modal-fechar" id="modal-fechar" aria-label="Fechar modal">×</button>
     <div class="modal-cab">
-      <h3 class="modal-titulo">Simular financiamento</h3>
-      <p class="modal-sub" id="sim-sub">Receba uma simulação personalizada com as melhores taxas pelo WhatsApp.</p>
+      <h3 class="modal-titulo" id="sim-titulo">Falar com consultor</h3>
+      <p class="modal-sub" id="sim-sub">Informe seu contato para abrir a conversa no WhatsApp com nossa equipe.</p>
     </div>
     <form id="form-simulacao" novalidate>
       <input type="hidden" id="sim-ref" value="">
       <input type="hidden" id="sim-carro" value="">
       <input type="hidden" id="sim-preco" value="">
+      <input type="hidden" id="sim-modo" value="contato">
       <div class="modal-campos">
         <label>Seu nome<input id="sim-nome" autocomplete="given-name" placeholder="Como podemos te chamar?" required></label>
         <label>Seu WhatsApp <small>(com DDD)</small><input id="sim-telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ex.: (31) 99999-9999" required></label>
-        <label>Valor de entrada <small>(opcional)</small><input id="sim-entrada" inputmode="numeric" placeholder="Ex.: R$ 20.000"></label>
+        <div id="bloco-entrada" hidden>
+          <label>Valor de entrada <small>(opcional)</small><input id="sim-entrada" inputmode="numeric" placeholder="Ex.: R$ 20.000"></label>
+        </div>
       </div>
       <p class="erro" id="sim-erro" hidden></p>
-      <button type="submit" class="zap zap-modal" id="bt-enviar-simulacao">${ICONE_ZAP}Simular no WhatsApp</button>
+      <button type="submit" class="zap zap-modal" id="bt-enviar-simulacao">${ICONE_ZAP}<span id="sim-btn-texto">Continuar para o WhatsApp</span></button>
       <p class="letra-miuda">Ao continuar, seus dados serão tratados pela Grid exclusivamente para este atendimento.</p>
     </form>
   </div>

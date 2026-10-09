@@ -91,38 +91,28 @@
     var texto = msg + (ref ? ' [ref ' + ref + ' · ' + ORIGEM + ']' : ' [' + ORIGEM + ']') + (depois ? '\n' + depois : '');
     return 'https://wa.me/' + NUMERO + '?text=' + encodeURIComponent(texto);
   }
-  function prepararZaps(raiz) {
-    (raiz || document).querySelectorAll('a[data-zap]').forEach(function (a) {
-      a.href = linkZap(a.getAttribute('data-zap'), a.getAttribute('data-ref'), a.getAttribute('data-depois'));
-      a.target = '_blank'; a.rel = 'noopener';
-      if (!a.dataset.ouvindo) {
-        a.dataset.ouvindo = '1';
-        a.addEventListener('click', function () {
-          if (window.fbq) window.fbq('track', 'Contact', a.getAttribute('data-ref') ? { content_ids: [a.getAttribute('data-ref')], content_type: 'vehicle' } : {});
-          if (window.gtag) window.gtag('event', 'contact', { event_category: 'whatsapp', event_label: a.getAttribute('data-ref') || 'geral' });
-        });
-      }
-    });
-    (raiz || document).querySelectorAll('[data-origem]').forEach(function (el) { el.textContent = ORIGEM; });
-  }
-  prepararZaps();
-
-  // ---------- modal de simulação de financiamento (captura de lead com celular) ----------
+  // ---------- modal de contato e simulação (captura de lead com celular) ----------
+  var abrirModalLead = null;
   (function () {
     var modal = document.getElementById('modal-simulacao');
-    var btAbrir = document.getElementById('bt-abrir-simulacao');
     if (!modal) return;
 
     var btFechar = document.getElementById('modal-fechar');
     var form = document.getElementById('form-simulacao');
+    var elTitulo = document.getElementById('sim-titulo');
     var elSub = document.getElementById('sim-sub');
     var elRef = document.getElementById('sim-ref');
     var elCarro = document.getElementById('sim-carro');
     var elPreco = document.getElementById('sim-preco');
+    var elModo = document.getElementById('sim-modo');
+    var elBlocoEntrada = document.getElementById('bloco-entrada');
+    var elBtnTexto = document.getElementById('sim-btn-texto');
     var elNome = document.getElementById('sim-nome');
     var elTel = document.getElementById('sim-telefone');
     var elEntrada = document.getElementById('sim-entrada');
     var elErro = document.getElementById('sim-erro');
+
+    var zapMsgAtual = '';
 
     function fechar() {
       modal.hidden = true;
@@ -130,11 +120,30 @@
       document.body.style.overflow = '';
     }
 
-    function abrir(carro, preco, ref) {
-      if (elCarro) elCarro.value = carro || '';
-      if (elPreco) elPreco.value = preco || '';
-      if (elRef) elRef.value = ref || '';
-      if (elSub && carro) elSub.textContent = 'Simulação para o ' + carro + (preco ? ' (' + preco + ')' : '');
+    abrirModalLead = function (config) {
+      config = config || {};
+      var modo = config.modo || 'contato';
+      var carro = config.carro || '';
+      var preco = config.preco || '';
+      var ref = config.ref || '';
+      zapMsgAtual = config.zapMsg || '';
+
+      if (elCarro) elCarro.value = carro;
+      if (elPreco) elPreco.value = preco;
+      if (elRef) elRef.value = ref;
+      if (elModo) elModo.value = modo;
+
+      if (modo === 'simulacao') {
+        if (elTitulo) elTitulo.textContent = 'Simular financiamento';
+        if (elSub) elSub.textContent = 'Simulação para o ' + carro + (preco ? ' (' + preco + ')' : '');
+        if (elBlocoEntrada) elBlocoEntrada.hidden = false;
+        if (elBtnTexto) elBtnTexto.textContent = 'Simular no WhatsApp';
+      } else {
+        if (elTitulo) elTitulo.textContent = carro ? 'Falar com consultor' : 'Falar com a Grid';
+        if (elSub) elSub.textContent = carro ? 'Atendimento para o ' + carro : 'Informe seu contato para abrir a conversa no WhatsApp.';
+        if (elBlocoEntrada) elBlocoEntrada.hidden = true;
+        if (elBtnTexto) elBtnTexto.textContent = 'Continuar para o WhatsApp';
+      }
 
       try {
         if (elNome && !elNome.value) elNome.value = localStorage.getItem('grid_nome') || '';
@@ -145,12 +154,18 @@
       document.body.style.overflow = 'hidden';
       if (elNome && !elNome.value) elNome.focus();
       else if (elTel && !elTel.value) elTel.focus();
-      else if (elEntrada) elEntrada.focus();
-    }
+      else if (modo === 'simulacao' && elEntrada) elEntrada.focus();
+    };
 
-    if (btAbrir) {
-      btAbrir.addEventListener('click', function () {
-        abrir(btAbrir.getAttribute('data-carro'), btAbrir.getAttribute('data-preco'), btAbrir.getAttribute('data-ref'));
+    var btAbrirSim = document.getElementById('bt-abrir-simulacao');
+    if (btAbrirSim) {
+      btAbrirSim.addEventListener('click', function () {
+        abrirModalLead({
+          modo: 'simulacao',
+          carro: btAbrirSim.getAttribute('data-carro'),
+          preco: btAbrirSim.getAttribute('data-preco'),
+          ref: btAbrirSim.getAttribute('data-ref')
+        });
       });
     }
 
@@ -185,6 +200,7 @@
         var nome = (elNome ? elNome.value : '').trim();
         var tel = (elTel ? elTel.value : '').trim();
         var dTel = tel.replace(/\D/g, '');
+        var modo = (elModo ? elModo.value : 'contato');
         var entrada = (elEntrada ? elEntrada.value : '').trim();
         var carro = (elCarro ? elCarro.value : '').trim();
         var preco = (elPreco ? elPreco.value : '').trim();
@@ -208,7 +224,19 @@
           localStorage.setItem('grid_tel', tel);
         } catch (_) {}
 
-        var textoZap = 'Olá! Sou o ' + nome + '. Quero simular o financiamento do ' + carro + (preco ? ' (' + preco + ')' : '') + '.' + (entrada ? ' Valor de entrada pretendido: ' + entrada + '.' : '');
+        var textoZap = '';
+        var condicao = '';
+        if (modo === 'simulacao') {
+          condicao = 'Financiamento';
+          textoZap = 'Olá! Sou o ' + nome + '. Quero simular o financiamento do ' + carro + (preco ? ' (' + preco + ')' : '') + '.' + (entrada ? ' Valor de entrada pretendido: ' + entrada + '.' : '');
+        } else if (zapMsgAtual) {
+          textoZap = 'Olá! Sou o ' + nome + '. ' + zapMsgAtual;
+        } else if (carro) {
+          textoZap = 'Olá! Sou o ' + nome + '. Vi o ' + carro + ' no site da Grid.';
+        } else {
+          textoZap = 'Olá! Sou o ' + nome + '. Vim pelo site da Grid.';
+        }
+
         var urlZap = linkZap(textoZap, ref);
 
         enviarLeadIntegrador({
@@ -217,7 +245,7 @@
           ref: ref,
           modelo_interesse: carro,
           valor_proposta: entrada ? entrada.replace(/[^\d,]/g, '') : '',
-          condicao_pagamento: 'Financiamento',
+          condicao_pagamento: condicao,
           mensagem: textoZap
         });
 
@@ -226,6 +254,32 @@
       });
     }
   })();
+
+  function prepararZaps(raiz) {
+    (raiz || document).querySelectorAll('a[data-zap]').forEach(function (a) {
+      if (a.id === 'enviar-venda') return;
+      a.href = linkZap(a.getAttribute('data-zap'), a.getAttribute('data-ref'), a.getAttribute('data-depois'));
+      a.target = '_blank'; a.rel = 'noopener';
+      if (!a.dataset.ouvindo) {
+        a.dataset.ouvindo = '1';
+        a.addEventListener('click', function (e) {
+          if (abrirModalLead) {
+            e.preventDefault();
+            var h1 = document.querySelector('.layout-carro .h1');
+            var nomeCarro = h1 ? h1.textContent.trim() : '';
+            abrirModalLead({
+              modo: 'contato',
+              carro: nomeCarro,
+              ref: a.getAttribute('data-ref') || '',
+              zapMsg: a.getAttribute('data-zap') || ''
+            });
+          }
+        });
+      }
+    });
+    (raiz || document).querySelectorAll('[data-origem]').forEach(function (el) { el.textContent = ORIGEM; });
+  }
+  prepararZaps();
 
   // ---------- topo: carro do estoque trocando a cada 7 s ----------
   var hero = document.getElementById('hero-carro');
