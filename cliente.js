@@ -23,7 +23,7 @@ module.exports = {
 
   // Rastreamento (Pixel da Meta e Google Analytics / Ads)
   // Preencher aqui ou nas variáveis do GitHub Actions / Vercel (PIXEL_ID, GA_ID, GADS_ID).
-  pixelId: '1137935252130697', // Meta Pixel (Grid Automóveis)
+  pixelId: ['1118877635384992', '1137935252130697'], // Meta Pixels (Grid Automóveis BH + Novo)
   googleAnalyticsId: 'G-L6R6QT828K', // Google Analytics 4 (Grid Automóveis)
   googleAdsId: '',         // Ex: 'AW-XXXXXXXXXX' (Google Ads / Tag de Conversão)
 

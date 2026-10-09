@@ -189,12 +189,13 @@ const nomeCompleto = c => [c.marca, c.modelo, c.versao, c.ano_modelo].filter(Boo
 const msgCarro = c => C.msgCarro(nomeCompleto(c), brl(precoFinal(c)));
 
 function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, eventoGoogle, jsonld, semFlutuante }) {
-  const px = CONFIG.pixelId;
+  const pxList = (Array.isArray(CONFIG.pixelId) ? CONFIG.pixelId : String(CONFIG.pixelId || '').split(','))
+    .map(s => String(s || '').trim()).filter(Boolean);
   const gaId = CONFIG.googleAnalyticsId;
   const gadsId = CONFIG.googleAdsId;
   const tagGoogleId = gaId || gadsId;
 
-  const pixel = px ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${esc(px)}');fbq('track','PageView');${evento || ''}</script><noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${esc(px)}&ev=PageView&noscript=1"></noscript>` : '';
+  const pixel = pxList.length ? `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');${pxList.map(id => `fbq('init','${esc(id)}');`).join('')}fbq('track','PageView');${evento || ''}</script>${pxList.map(id => `<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${esc(id)}&ev=PageView&noscript=1"></noscript>`).join('')}` : '';
 
   const googleTag = tagGoogleId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(tagGoogleId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${gaId ? `gtag('config','${esc(gaId)}');` : ''}${gadsId ? `gtag('config','${esc(gadsId)}');` : ''}${eventoGoogle || ''}</script>` : '';
 
@@ -223,7 +224,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
 ${pixel}
 ${googleTag}
 </head>
-<body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${(px || tagGoogleId) ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
+<body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${(pxList.length || tagGoogleId) ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
 <header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
