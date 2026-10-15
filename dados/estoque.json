@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-13T13:11:58-03:00",
+  "gerado_em": "2026-10-15T10:29:35-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -928,7 +928,7 @@
       "ano_modelo": 2019,
       "km": 13000,
       "preco": 99900,
-      "preco_promocional": null,
+      "preco_promocional": 94900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -988,7 +988,7 @@
       "descricao": "Jeep Compass 2019, branco, flex, 13.000 km. Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-18T08:57:16-03:00"
+      "atualizado_em": "2026-10-15T07:16:27-03:00"
     },
     {
       "id": "8518858",
@@ -1181,8 +1181,8 @@
       "ano_fabricacao": 2023,
       "ano_modelo": 2024,
       "km": 43412,
-      "preco": 89900,
-      "preco_promocional": 86900,
+      "preco": 86900,
+      "preco_promocional": 84900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -1241,7 +1241,7 @@
       "descricao": "Peugeot 2008 2024, branco, flex, 43.412 km. Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-26T08:03:42-03:00"
+      "atualizado_em": "2026-10-15T07:26:13-03:00"
     },
     {
       "id": "8458802",
