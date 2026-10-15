@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-15T10:29:35-03:00",
+  "gerado_em": "2026-10-15T11:44:44-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -113,7 +113,7 @@
       "ano_modelo": 2025,
       "km": 16309,
       "preco": 99900,
-      "preco_promocional": null,
+      "preco_promocional": 95900,
       "cor": "Cinza",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -179,7 +179,7 @@
       "descricao": "Citroen Basalt 2025, cinza, flex, 16.309 km. Único Dono, IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-26T06:52:59-03:00"
+      "atualizado_em": "2026-10-15T08:31:35-03:00"
     },
     {
       "id": "8211089",
@@ -250,7 +250,7 @@
       "ano_modelo": 2025,
       "km": 19869,
       "preco": 86900,
-      "preco_promocional": null,
+      "preco_promocional": 84900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Manual",
@@ -303,7 +303,7 @@
       "descricao": "Fiat Argo 2025, branco, flex, 19.869 km. Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-10T12:53:35-03:00"
+      "atualizado_em": "2026-10-15T08:32:05-03:00"
     },
     {
       "id": "8428692",
@@ -727,7 +727,7 @@
       "ano_modelo": 2020,
       "km": 42981,
       "preco": 59900,
-      "preco_promocional": null,
+      "preco_promocional": 54900,
       "cor": "Cinza",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -778,7 +778,7 @@
       "descricao": "Ford Ka 2020, cinza, flex, 42.981 km. Multimídia, Sensor de estacionamento, Freios ABS, Airbag motorista, Airbag passageiro, Alarme, Ar condicionado, Ar quente.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-03T15:02:30-03:00"
+      "atualizado_em": "2026-10-15T08:29:19-03:00"
     },
     {
       "id": "8404460",
@@ -1002,7 +1002,7 @@
       "ano_modelo": 2016,
       "km": 104300,
       "preco": 67900,
-      "preco_promocional": null,
+      "preco_promocional": 65900,
       "cor": "Preto",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -1063,7 +1063,7 @@
       "descricao": "Jeep Renegade 2016, preto, flex, 104.300 km. IPVA Pago, Bancos de Couro, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-08T11:02:57-03:00"
+      "atualizado_em": "2026-10-15T08:30:07-03:00"
     },
     {
       "id": "5806387",
