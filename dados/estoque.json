@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-15T11:44:44-03:00",
+  "gerado_em": "2026-10-16T15:53:04-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -23,7 +23,7 @@
       "ano_fabricacao": 2025,
       "ano_modelo": 2026,
       "km": 9007,
-      "preco": 118900,
+      "preco": 119900,
       "preco_promocional": null,
       "cor": "Preto",
       "combustivel": "Flex",
@@ -99,7 +99,7 @@
       "descricao": "Citroen Aircross 2026, preto, flex, 9.007 km. Único Dono, IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-01T19:06:06-03:00"
+      "atualizado_em": "2026-10-16T12:39:41-03:00"
     },
     {
       "id": "8413047",
