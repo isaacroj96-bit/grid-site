@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-19T10:18:31-03:00",
+  "gerado_em": "2026-10-19T11:03:26-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -50,6 +50,7 @@
         "Auto Hold",
         "Banco traseiro bipartido",
         "Câmera de ré",
+        "Chave Reserva",
         "Computador de bordo",
         "Controle de estabilidade",
         "Controle de tração",
@@ -93,7 +94,7 @@
       "descricao": "Fiat Fastback 2025, cinza, flex, 17.752 km. IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista.",
       "novo_no_estoque": true,
       "destaque": true,
-      "atualizado_em": "2026-10-16T14:29:36-03:00"
+      "atualizado_em": "2026-10-19T07:49:33-03:00"
     },
     {
       "id": "8495217",
