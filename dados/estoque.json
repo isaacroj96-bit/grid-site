@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-19T13:48:24-03:00",
+  "gerado_em": "2026-10-19T15:33:27-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -1317,7 +1317,7 @@
       "ano_fabricacao": 2024,
       "ano_modelo": 2025,
       "km": 22421,
-      "preco": 114900,
+      "preco": 111900,
       "preco_promocional": null,
       "cor": "Azul",
       "combustivel": "Flex",
@@ -1390,7 +1390,7 @@
       "descricao": "Peugeot 2008 2025, azul, flex, 22.421 km. IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-25T15:20:45-03:00"
+      "atualizado_em": "2026-10-19T12:20:24-03:00"
     },
     {
       "id": "8413945",
