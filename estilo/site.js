@@ -326,20 +326,24 @@
     var cards = Array.prototype.slice.call(vitrine.querySelectorAll('.card'));
     var vazio = document.getElementById('vazio');
     var estado = { faixa: 'todos', ordem: 'recentes' };
-    var cabe = function (p) {
+    var cabe = function (p, prep) {
+      if (estado.faixa === 'prep') return prep;
       return estado.faixa === 'todos' || (estado.faixa === 'ate80' && p <= 80000) ||
         (estado.faixa === '80a120' && p > 80000 && p <= 120000) || (estado.faixa === 'mais120' && p > 120000);
     };
     function aplicar() {
       var visiveis = 0;
       var ordenados = cards.slice().sort(function (a, b) {
+        // Em preparação sempre por último, em qualquer ordem.
+        var ea = a.dataset.prep ? 1 : 0, eb = b.dataset.prep ? 1 : 0;
+        if (ea !== eb) return ea - eb;
         var pa = +a.dataset.preco, pb = +b.dataset.preco;
         if (estado.ordem === 'menor') return pa - pb;
         if (estado.ordem === 'maior') return pb - pa;
         return +a.dataset.ordem - +b.dataset.ordem;
       });
       ordenados.forEach(function (c) {
-        var ok = cabe(+c.dataset.preco);
+        var ok = cabe(+c.dataset.preco, Boolean(c.dataset.prep));
         c.hidden = !ok; if (ok) visiveis++;
         vitrine.appendChild(c);
       });

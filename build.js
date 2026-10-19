@@ -290,7 +290,7 @@ ${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="
 function cardHtml(c, i) {
   const o = organizarOpcionais(c);
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
-  return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}">
+  return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}"${c.status === 'em_preparacao' ? ' data-prep="1"' : ''}>
     <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/' + LOGO)}" alt="${esc(nomeCompleto(c))}"></div>
     <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
     ${(() => { const m = o.raros.concat(o.procurados.filter(x => !/^Câmbio/.test(x))).slice(0, 3); return m.length ? `<div class="mini-dest">${m.map((d, k) => `<span${k < o.raros.length ? ' class="raro"' : ''}>` + esc(d) + '</span>').join('')}</div>` : ''; })()}</div></a>`;
@@ -530,14 +530,19 @@ function montar() {
   copiarPasta(path.join(RAIZ, 'dados'), path.join(SAIDA, 'dados'));
 
   // vitrine
-  const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']];
+  // Carro em preparação vai sempre para o fim da vitrine (pedido do Isaac, 19/10), e ganha o
+  // chip próprio quando houver algum.
+  const emPrep = c => c.status === 'em_preparacao';
+  const carrosVitrine = carros.filter(c => !emPrep(c)).concat(carros.filter(emPrep));
+  const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']]
+    .concat(carros.some(emPrep) ? [['prep', 'Em preparação']] : []);
   const vitrine = `<main class="wrap">
   ${heroHtml(carros, loja)}
   ${FAIXA_CONFIANCA}
   <div class="eyebrow-secao" id="carros">Na loja agora</div>
   <div class="filtros" role="group" aria-label="Faixa de preço">${FAIXAS.map(([k, n]) => `<button type="button" class="chip" data-faixa="${k}" aria-pressed="${k === 'todos'}">${n}</button>`).join('')}
     <select id="ordem" class="ordem" aria-label="Ordenar"><option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option></select></div>
-  <div class="vitrine" id="vitrine">${carros.map(cardHtml).join('')}</div>
+  <div class="vitrine" id="vitrine">${carrosVitrine.map(cardHtml).join('')}</div>
   <div class="vazio" id="vazio" ${carros.length ? 'hidden' : ''}><div class="h1">Não temos agora.</div><p>Diga o que você procura e avisamos quando chegar.</p><a class="zap" data-zap="Olá! Estou procurando um carro e queria ser avisado quando chegar." href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Me avise quando chegar</a></div>
   ${visiteHtml(loja)}
 </main>`;
