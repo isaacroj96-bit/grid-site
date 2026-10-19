@@ -39,7 +39,7 @@ module.exports = {
   textos: {
     tituloInicio: 'Grid Automóveis · Seminovos em Belo Horizonte',
     descricaoInicio: cidade => `Seminovos selecionados em ${cidade}. Fotos de verdade, ficha completa e o preço na tela.`,
-    heroHtml: '<span class="pre">Acelera e</span> Vem pra <em>Grid</em>.',
+    heroHtml: '<span class="pre">Acelera e</span> Vem pra <em>Grid</em><span class="excl" role="img" aria-label="!"></span>',
     visiteTitulo: 'A Grid fica no Portal Auto Shopping',
     porqueComprar: 'Por que comprar na Grid',
     vendaTituloHtml: 'Venda ou troque seu carro <em>na Grid</em>.',
