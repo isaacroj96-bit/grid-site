@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-20T16:00:27-03:00",
+  "gerado_em": "2026-10-20T17:15:55-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -312,8 +312,8 @@
       "ano_fabricacao": 2024,
       "ano_modelo": 2025,
       "km": 37358,
-      "preco": 71900,
-      "preco_promocional": 69900,
+      "preco": 69900,
+      "preco_promocional": 63900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Manual",
@@ -356,7 +356,7 @@
       "descricao": "Fiat Argo 2025, branco, flex, 37.358 km. Freios ABS, Airbag motorista, Airbag passageiro, Alarme, Ar condicionado, Ar quente, Direção Elétrica, Travas elétricas.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-09-02T12:32:53-03:00"
+      "atualizado_em": "2026-10-20T14:12:15-03:00"
     },
     {
       "id": "8428692",
