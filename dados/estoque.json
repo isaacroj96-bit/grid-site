@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-20T13:33:25-03:00",
+  "gerado_em": "2026-10-20T15:27:07-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -433,7 +433,7 @@
       "ano_modelo": 2023,
       "km": 39123,
       "preco": 112900,
-      "preco_promocional": null,
+      "preco_promocional": 10600.09,
       "cor": "Vermelho",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -482,7 +482,7 @@
       "descricao": "Fiat Fastback 2023, vermelho, flex, 39.123 km. Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Ar condicionado.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-07T15:30:50-03:00"
+      "atualizado_em": "2026-10-20T12:02:08-03:00"
     },
     {
       "id": "8126994",
@@ -723,7 +723,7 @@
       "ano_modelo": 2017,
       "km": 66221,
       "preco": 70900,
-      "preco_promocional": 69900,
+      "preco_promocional": 67900,
       "cor": "Branco",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -778,7 +778,7 @@
       "descricao": "Hyundai HB20 2017, branco, flex, 66.221 km. Único Dono, IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-07T10:21:48-03:00"
+      "atualizado_em": "2026-10-20T12:04:30-03:00"
     },
     {
       "id": "8322489",
@@ -791,8 +791,8 @@
       "ano_fabricacao": 2023,
       "ano_modelo": 2024,
       "km": 44537,
-      "preco": 76900,
-      "preco_promocional": 74900,
+      "preco": 74900,
+      "preco_promocional": 70900,
       "cor": "Prata",
       "combustivel": "Flex",
       "cambio": "Manual",
@@ -845,7 +845,7 @@
       "descricao": "Hyundai HB20 2024, prata, flex, 44.537 km. Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-19T12:44:09-03:00"
+      "atualizado_em": "2026-10-20T12:18:04-03:00"
     },
     {
       "id": "8144677",
