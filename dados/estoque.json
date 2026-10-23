@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-23T13:12:57-03:00",
+  "gerado_em": "2026-10-23T13:42:56-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -521,27 +521,27 @@
         "Volante com regulagem de altura"
       ],
       "fotos": [
+        "https://s3.carro57.com.br/FC/3586/7938560_3_W_f68707049a.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_0_W_fef1110fbf.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_1_W_2f39ca0a03.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_2_W_013f40fa91.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_3_W_ea9a490161.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_3_W_f68707049a.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_1_W_2f39ca0a03.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_8_W_813246793a.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_12_W_f5fd03826b.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_12_W_303158908b.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_12_W_983388b05d.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_12_W_fd65c49f1d.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_13_W_93da6a7dd6.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_13_W_ac1a5545ea.jpeg",
-        "https://s3.carro57.com.br/FC/3586/7938560_14_W_83815edca3.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_14_W_66be7603c0.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_13_W_ac1a5545ea.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_12_W_fd65c49f1d.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_14_W_83815edca3.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_12_W_983388b05d.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_14_W_2ea2e30ee2.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_12_W_303158908b.jpeg",
+        "https://s3.carro57.com.br/FC/3586/7938560_12_W_f5fd03826b.jpeg",
         "https://s3.carro57.com.br/FC/3586/7938560_16_W_1a36761bea.jpeg"
       ],
       "descricao": "Fiat Fastback 2023, vermelho, flex, 39.123 km. Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Ar condicionado.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-23T10:12:19-03:00"
+      "atualizado_em": "2026-10-23T10:13:11-03:00"
     },
     {
       "id": "8126994",
