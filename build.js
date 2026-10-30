@@ -287,12 +287,17 @@ ${tipo === 'product' || semFlutuante ? '' : `<a class="zap-flutuante" data-zap="
 `;
 }
 
+// Motos (cadastro próprio do Integrador, docs/cadastro-proprio.md do Integrador): o feed traz tipo_veiculo 'moto',
+// cilindrada e partida. Sem moto no feed, nada muda no site.
+const ehMoto = c => c.tipo_veiculo === 'moto';
+const cc = c => c.cilindrada ? `${String(c.cilindrada).replace(/\D/g, '')} cc` : '';
+
 function cardHtml(c, i) {
   const o = organizarOpcionais(c);
   const anos = `${c.ano_fabricacao || c.ano_modelo}/${c.ano_modelo}`;
-  return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}"${c.status === 'em_preparacao' ? ' data-prep="1"' : ''}>
+  return `<a class="card" href="${B}/carro/${esc(c.slug)}/" data-preco="${precoFinal(c)}" data-ordem="${i}"${c.status === 'em_preparacao' ? ' data-prep="1"' : ''}${ehMoto(c) ? ' data-moto="1"' : ''}>
     <div class="foto">${selos(c)}<img loading="${i < 3 ? 'eager' : 'lazy'}" src="${esc(c.fotos[0] || B + '/' + LOGO)}" alt="${esc(nomeCompleto(c))}"></div>
-    <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(c.cambio)}</span></div>${precoHtml(c)}
+    <div class="ficha"><h2 class="nome">${esc(nomeCurto(c))}</h2>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}<div class="linha-dados"><span>${anos}</span><span>${km(c.km)}</span><span>${esc(ehMoto(c) ? cc(c) : c.cambio)}</span></div>${precoHtml(c)}
     ${(() => { const m = o.raros.concat(o.procurados.filter(x => !/^Câmbio/.test(x))).slice(0, 3); return m.length ? `<div class="mini-dest">${m.map((d, k) => `<span${k < o.raros.length ? ' class="raro"' : ''}>` + esc(d) + '</span>').join('')}</div>` : ''; })()}</div></a>`;
 }
 
@@ -313,7 +318,7 @@ function paginaCarro(c, loja) {
   const grupos = Object.entries(o.grupos).filter(([, l]) => l && l.length);
   const fotos = c.fotos.length ? c.fotos : [B + '/' + LOGO];
   const corpo = `<main class="wrap carro">
-  <a class="voltar" href="${B}/">‹ Ver todos os carros</a>
+  <a class="voltar" href="${B}/">‹ ${ehMoto(c) ? 'Ver todo o estoque' : 'Ver todos os carros'}</a>
   <div class="layout-carro">
     <div class="gal">
       <div class="galeria">
@@ -326,7 +331,9 @@ function paginaCarro(c, loja) {
     </div>
     <div class="lado">
       <div class="cab"><h1 class="h1">${esc(nomeCurto(c))}</h1>${c.versao ? `<div class="versao">${esc(c.versao)}</div>` : ''}${precoHtml(c)}${selos(c)}</div>
-      <dl class="specs"><div><dt>Ano</dt><dd>${anos}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div><div><dt>Câmbio</dt><dd>${esc(c.cambio || '—')}</dd></div><div><dt>Combustível</dt><dd>${esc(c.combustivel || '—')}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor || '—')}</dd></div><div><dt>Motor</dt><dd>${esc(c.motor || '—')}</dd></div></dl>
+      <dl class="specs"><div><dt>Ano</dt><dd>${anos}</dd></div><div><dt>Quilometragem</dt><dd>${km(c.km)}</dd></div>${ehMoto(c)
+        ? `<div><dt>Cilindrada</dt><dd>${esc(cc(c) || '—')}</dd></div><div><dt>Partida</dt><dd>${esc(c.partida || '—')}</dd></div>`
+        : `<div><dt>Câmbio</dt><dd>${esc(c.cambio || '—')}</dd></div>`}<div><dt>Combustível</dt><dd>${esc(c.combustivel || '—')}</dd></div><div><dt>Cor</dt><dd>${esc(c.cor || '—')}</dd></div>${ehMoto(c) ? '' : `<div><dt>Motor</dt><dd>${esc(c.motor || '—')}</dd></div>`}</dl>
       <a class="zap zap-ficha" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a>
       <div class="intencoes">
         <a class="botao2" href="${B}/venda-seu-carro/?troca=${esc(c.id)}">${ICONE_TROCA}Tenho um carro para trocar</a>
@@ -341,14 +348,14 @@ function paginaCarro(c, loja) {
     </div>
     <div class="info">
       ${grupos.length ? `<section class="bloco"><h2>Todos os itens</h2><div>${grupos.map(([g, l]) => `<details><summary>${esc(g)}<span>${l.length} ${l.length === 1 ? 'item' : 'itens'}</span></summary><ul>${l.map(x => '<li>' + esc(x) + '</li>').join('')}</ul></details>`).join('')}</div></section>` : ''}
-      ${c.descricao ? `<section class="bloco"><h2>Sobre este carro</h2><p class="descricao">${esc(c.descricao)}</p></section>` : ''}
+      ${c.descricao ? `<section class="bloco"><h2>Sobre ${ehMoto(c) ? 'esta moto' : 'este carro'}</h2><p class="descricao">${esc(c.descricao)}</p></section>` : ''}
     </div>
     ${BLOCO_LOJA(loja)}
   </div>
 </main>
 <div class="rodape-zap"><div class="wrap"><span class="p">${brl(precoFinal(c))}</span><a class="zap" data-zap="${esc(msgCarro(c))}" data-ref="${esc(c.id)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></div></div>`;
   const jsonld = {
-    '@context': 'https://schema.org', '@type': 'Car', name: nomeCompleto(c), brand: { '@type': 'Brand', name: c.marca },
+    '@context': 'https://schema.org', '@type': ehMoto(c) ? 'Motorcycle' : 'Car', name: nomeCompleto(c), brand: { '@type': 'Brand', name: c.marca },
     model: c.modelo, vehicleModelDate: String(c.ano_modelo), productionDate: String(c.ano_fabricacao || c.ano_modelo),
     mileageFromOdometer: { '@type': 'QuantitativeValue', value: c.km, unitCode: 'KMT' }, color: c.cor, fuelType: c.combustivel,
     vehicleTransmission: c.cambio, itemCondition: 'https://schema.org/UsedCondition', image: c.fotos.slice(0, 5), url,
@@ -357,7 +364,7 @@ function paginaCarro(c, loja) {
   };
   return pagina({
     titulo: `${nomeCompleto(c)} · ${brl(precoFinal(c))}`,
-    descricao: `${km(c.km)} · ${c.cambio || ''} · ${c.combustivel || ''}. ${C.nome}, ${loja.bairro}, ${loja.cidade}.`,
+    descricao: `${km(c.km)} · ${ehMoto(c) ? cc(c) : (c.cambio || '')} · ${c.combustivel || ''}. ${C.nome}, ${loja.bairro}, ${loja.cidade}.`,
     url, imagem: c.fotos[0], tipo: 'product', corpo, loja, jsonld,
     evento: `fbq('track','ViewContent',{content_ids:['${esc(c.id)}'],content_name:'${esc(nomeCompleto(c))}',content_type:'vehicle',value:${precoFinal(c)},currency:'BRL'});`,
     eventoGoogle: `gtag('event','view_item',{currency:'BRL',value:${precoFinal(c)},items:[{item_id:'${esc(c.id)}',item_name:'${esc(nomeCompleto(c))}',item_brand:'${esc(c.marca)}',price:${precoFinal(c)}}]});`
@@ -535,6 +542,7 @@ function montar() {
   const emPrep = c => c.status === 'em_preparacao';
   const carrosVitrine = carros.filter(c => !emPrep(c)).concat(carros.filter(emPrep));
   const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']]
+    .concat(carros.some(ehMoto) ? [['motos', 'Motos']] : [])
     .concat(carros.some(emPrep) ? [['prep', 'Em preparação']] : []);
   const vitrine = `<main class="wrap">
   ${heroHtml(carros, loja)}
