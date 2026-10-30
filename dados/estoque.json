@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-28T14:46:51-03:00",
+  "gerado_em": "2026-10-30T17:28:53-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -1396,6 +1396,50 @@
       "novo_no_estoque": false,
       "destaque": true,
       "atualizado_em": "2026-10-05T12:24:26-03:00"
+    },
+    {
+      "id": "i7wo4c0hjky",
+      "slug": "royal-enfield-meteor-fireball-2022-i7wo4c0hjky",
+      "status": "em_preparacao",
+      "titulo": "Royal Enfield Meteor Fireball 2022",
+      "marca": "Royal Enfield",
+      "modelo": "Meteor",
+      "versao": "Fireball",
+      "ano_fabricacao": 2022,
+      "ano_modelo": 2022,
+      "km": 38000,
+      "preco": 22900,
+      "preco_promocional": null,
+      "cor": "Amarela",
+      "combustivel": "",
+      "cambio": "",
+      "portas": null,
+      "motor": "",
+      "opcionais": [],
+      "fotos": [
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/01.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/02.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/03.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/04.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/05.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/06.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/07.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/08.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/09.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/10.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/11.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/12.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/13.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/14.jpg",
+        "https://www.gridbh.com/fotos/i7wo4c0hjky/15.jpg"
+      ],
+      "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
+      "novo_no_estoque": true,
+      "destaque": false,
+      "atualizado_em": "2026-10-30T17:28:53-03:00",
+      "tipo_veiculo": "moto",
+      "cilindrada": "349",
+      "partida": ""
     }
   ]
 }
