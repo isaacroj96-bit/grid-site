@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-10-30T17:58:10-03:00",
+  "gerado_em": "2026-10-30T18:13:12-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -1400,7 +1400,7 @@
     {
       "id": "i7wo4c0hjky",
       "slug": "royal-enfield-meteor-fireball-2022-i7wo4c0hjky",
-      "status": "em_preparacao",
+      "status": "disponivel",
       "titulo": "Royal Enfield Meteor Fireball 2022",
       "marca": "Royal Enfield",
       "modelo": "Meteor",
@@ -1436,10 +1436,10 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": true,
       "destaque": false,
-      "atualizado_em": "2026-10-30T17:58:10-03:00",
+      "atualizado_em": "2026-10-30T18:13:12-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
-      "partida": ""
+      "partida": "Elétrica"
     }
   ]
 }
