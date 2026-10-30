@@ -326,8 +326,9 @@
     var cards = Array.prototype.slice.call(vitrine.querySelectorAll('.card'));
     var vazio = document.getElementById('vazio');
     var estado = { faixa: 'todos', ordem: 'recentes' };
-    var cabe = function (p, prep) {
+    var cabe = function (p, prep, moto) {
       if (estado.faixa === 'prep') return prep;
+      if (estado.faixa === 'motos') return moto;
       return estado.faixa === 'todos' || (estado.faixa === 'ate80' && p <= 80000) ||
         (estado.faixa === '80a120' && p > 80000 && p <= 120000) || (estado.faixa === 'mais120' && p > 120000);
     };
@@ -343,7 +344,7 @@
         return +a.dataset.ordem - +b.dataset.ordem;
       });
       ordenados.forEach(function (c) {
-        var ok = cabe(+c.dataset.preco, Boolean(c.dataset.prep));
+        var ok = cabe(+c.dataset.preco, Boolean(c.dataset.prep), Boolean(c.dataset.moto));
         c.hidden = !ok; if (ok) visiveis++;
         vitrine.appendChild(c);
       });
