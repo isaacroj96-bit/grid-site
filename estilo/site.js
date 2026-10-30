@@ -19,6 +19,23 @@
   }
   var ORIGEM = origemDaVisita();
 
+  // Marca do clique do anúncio (Google: gclid; Meta: fbclid) e UTMs da PRIMEIRA página da visita. Guardadas na
+  // sessão para não se perderem quando o cliente navega até outro carro antes de chamar. O Integrador decide a
+  // origem da lead (Google Ads / Meta Ads) a partir delas.
+  var MARCAS_ANUNCIO = (function () {
+    var q = new URLSearchParams(location.search), salvo = {};
+    try { salvo = JSON.parse(sessionStorage.getItem('grid-anuncio') || '{}') || {}; } catch (e) { salvo = {}; }
+    var novo = {};
+    ['gclid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+      var v = q.get(k); if (v) novo[k] = String(v).slice(0, 100);
+    });
+    if (novo.gclid || novo.fbclid || novo.utm_source) {
+      salvo = novo;
+      try { sessionStorage.setItem('grid-anuncio', JSON.stringify(salvo)); } catch (e) {}
+    }
+    return salvo;
+  })();
+
   // ---------- envio automático de lead para o Integrador (Fase 5) ----------
   var ultimoEnvioLead = 0;
   var ultimaChaveLead = '';
@@ -46,9 +63,12 @@
         modelo_interesse: dados.modelo_interesse || '',
         mensagem: dados.mensagem || '',
         notas: dados.notas || '',
-        utm_source: q.get('utm_source') || '',
-        utm_campaign: q.get('utm_campaign') || '',
-        utm_medium: q.get('utm_medium') || '',
+        utm_source: q.get('utm_source') || MARCAS_ANUNCIO.utm_source || '',
+        utm_campaign: q.get('utm_campaign') || MARCAS_ANUNCIO.utm_campaign || '',
+        utm_medium: q.get('utm_medium') || MARCAS_ANUNCIO.utm_medium || '',
+        gclid: q.get('gclid') || MARCAS_ANUNCIO.gclid || '',
+        fbclid: q.get('fbclid') || MARCAS_ANUNCIO.fbclid || '',
+        origem_visita: ORIGEM,
         pagina_origem: window.location.href,
         valor_proposta: dados.valor_proposta || '',
         condicao_pagamento: dados.condicao_pagamento || '',
