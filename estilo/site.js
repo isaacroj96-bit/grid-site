@@ -355,8 +355,8 @@
     function aplicar() {
       var visiveis = 0;
       var ordenados = cards.slice().sort(function (a, b) {
-        // Em preparação sempre por último, em qualquer ordem.
-        var ea = a.dataset.prep ? 1 : 0, eb = b.dataset.prep ? 1 : 0;
+        // Carros, depois motos, e em preparação sempre por último, em qualquer ordem (Isaac, 30/10).
+        var ea = a.dataset.prep ? 2 : (a.dataset.moto ? 1 : 0), eb = b.dataset.prep ? 2 : (b.dataset.moto ? 1 : 0);
         if (ea !== eb) return ea - eb;
         var pa = +a.dataset.preco, pb = +b.dataset.preco;
         if (estado.ordem === 'menor') return pa - pb;

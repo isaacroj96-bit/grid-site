@@ -540,7 +540,8 @@ function montar() {
   // Carro em preparação vai sempre para o fim da vitrine (pedido do Isaac, 19/10), e ganha o
   // chip próprio quando houver algum.
   const emPrep = c => c.status === 'em_preparacao';
-  const carrosVitrine = carros.filter(c => !emPrep(c)).concat(carros.filter(emPrep));
+  // Ordem da vitrine (Isaac, 30/10): carros disponíveis, depois motos, e por último os em preparação.
+  const carrosVitrine = carros.filter(c => !emPrep(c) && !ehMoto(c)).concat(carros.filter(c => !emPrep(c) && ehMoto(c))).concat(carros.filter(emPrep));
   const FAIXAS = [['todos', 'Todos'], ['ate80', 'Até R$ 80 mil'], ['80a120', 'R$ 80 a 120 mil'], ['mais120', 'Acima de R$ 120 mil']]
     .concat(carros.some(ehMoto) ? [['motos', 'Motos']] : [])
     .concat(carros.some(emPrep) ? [['prep', 'Em preparação']] : []);
