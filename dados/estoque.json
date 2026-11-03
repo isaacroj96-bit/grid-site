@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-03T16:57:40-03:00",
+  "gerado_em": "2026-11-03T17:12:41-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -705,6 +705,7 @@
         "Vidros elétricos",
         "Vidros elétricos Traseiros",
         "Câmera de ré",
+        "Chave Reserva",
         "Computador de bordo",
         "Controle de estabilidade",
         "Controle de tração",
@@ -735,7 +736,7 @@
       "descricao": "Hyundai HB20 2024, prata, flex, 44.537 km. Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-21T15:26:43-03:00"
+      "atualizado_em": "2026-11-03T13:55:40-03:00"
     },
     {
       "id": "8506666",
@@ -777,6 +778,7 @@
         "Auto Hold",
         "Banco traseiro bipartido",
         "Câmera de ré",
+        "Chave Reserva",
         "Computador de bordo",
         "Controle de estabilidade",
         "Controle de tração",
@@ -814,7 +816,7 @@
       "descricao": "Jeep Compass 2018, branco, flex, 58.000 km. IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-11-03T12:53:27-03:00"
+      "atualizado_em": "2026-11-03T13:54:26-03:00"
     },
     {
       "id": "8144677",
@@ -856,6 +858,7 @@
         "Ar condicionado Digital",
         "Banco traseiro bipartido",
         "Câmera de ré",
+        "Chave Reserva",
         "Computador de bordo",
         "Controle de estabilidade",
         "Controle de tração",
@@ -888,7 +891,7 @@
       "descricao": "Jeep Compass 2019, branco, flex, 13.000 km. Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-11-03T12:54:14-03:00"
+      "atualizado_em": "2026-11-03T13:54:59-03:00"
     },
     {
       "id": "8518858",
@@ -1394,7 +1397,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": true,
       "destaque": false,
-      "atualizado_em": "2026-11-03T16:57:40-03:00",
+      "atualizado_em": "2026-11-03T17:12:41-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
