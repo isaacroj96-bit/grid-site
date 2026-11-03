@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-03T17:57:41-03:00",
+  "gerado_em": "2026-11-03T18:12:42-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -966,7 +966,7 @@
       "descricao": "Jeep Renegade 2016, preto, flex, 104.300 km. IPVA Pago, Bancos de Couro, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-15T08:30:07-03:00"
+      "atualizado_em": "2026-11-03T14:46:03-03:00"
     },
     {
       "id": "5806387",
@@ -1397,7 +1397,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": true,
       "destaque": false,
-      "atualizado_em": "2026-11-03T17:57:41-03:00",
+      "atualizado_em": "2026-11-03T18:12:42-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
