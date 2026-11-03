@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-03T16:27:37-03:00",
+  "gerado_em": "2026-11-03T16:35:54-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -600,7 +600,7 @@
     {
       "id": "8579467",
       "slug": "honda-city-lx-cvt-2017-8579467",
-      "status": "em_preparacao",
+      "status": "disponivel",
       "titulo": "Honda City 2017",
       "marca": "Honda",
       "modelo": "City",
@@ -648,12 +648,27 @@
         "Controle de som no volante"
       ],
       "fotos": [
-        "https://s3.carro57.com.br/FC/3586/8579467_0_W_ab51eb4a55.jpeg"
+        "https://s3.carro57.com.br/FC/3586/8579467_8_W_49761b2da4.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_3_W_c98215ed85.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_4_W_256f543272.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_1_W_e3064640ec.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_2_W_a3f4154da5.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_4_W_b8e31fcd3f.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_9_W_76a7b33fc6.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_12_W_e7cd1c20b8.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_12_W_6b834ff7a6.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_13_W_3079db134b.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_11_W_2abdc0cce2.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_7_W_cf324edcda.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_9_W_13083bfe53.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_12_W_4c1460a65a.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_18_W_3da123a694.jpeg",
+        "https://s3.carro57.com.br/FC/3586/8579467_12_W_2aef104a8d.jpeg"
       ],
       "descricao": "Honda City 2017, cinza, flex, 58.000 km. IPVA Pago, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-19T10:20:05-03:00"
+      "atualizado_em": "2026-11-03T13:19:52-03:00"
     },
     {
       "id": "8322489",
@@ -1379,7 +1394,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": true,
       "destaque": false,
-      "atualizado_em": "2026-11-03T16:27:37-03:00",
+      "atualizado_em": "2026-11-03T16:35:54-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
