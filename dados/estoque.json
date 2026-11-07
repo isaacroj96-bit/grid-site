@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-07T12:55:17-03:00",
+  "gerado_em": "2026-11-07T12:55:52-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -419,7 +419,7 @@
       "descricao": "Fiat Fastback 2023, vermelho, flex, 39.123 km. Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Ar condicionado.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-23T10:13:11-03:00"
+      "atualizado_em": "2026-11-07T09:47:53-03:00"
     },
     {
       "id": "8559776",
@@ -1547,7 +1547,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": false,
       "destaque": false,
-      "atualizado_em": "2026-11-07T12:55:17-03:00",
+      "atualizado_em": "2026-11-07T12:55:52-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
