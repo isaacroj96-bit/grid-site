@@ -52,19 +52,16 @@ module.exports = {
     vendaInteresse: 'Carro da Grid que te interessou'
   },
 
-  // Quem somos (Isaac, 09/11): base no post do Portal Auto Shopping de 14/09/2026 ("Histórias que movem o Portal").
-  // Clayton e Vinícius autorizaram nome e foto. Foto: pôr o arquivo em estatico/ e o nome em foto (vazio = sem foto).
+  // Quem somos (Isaac, 09/11): texto institucional, sobre a loja (não sobre os sócios). Foto: arquivo em estatico/.
   quemSomos: {
     titulo: 'Há mais de 10 anos no Portal Auto Shopping',
-    donos: 'Clayton e Vinícius',
-    foto: '',
+    foto: 'loja-fachada.jpg',
+    fotoAlt: 'A Grid Automóveis no Portal Auto Shopping',
     paragrafos: [
-      'A Grid é a loja de seminovos do Clayton e do Vinícius. Há mais de dez anos eles atendem dentro do Portal Auto Shopping, que está há 32 anos em Belo Horizonte.',
-      'Nesse tempo a loja atravessou pandemia, crises do mercado e muitas mudanças nos bancos e nas condições de compra, e seguiu crescendo com o mesmo cuidado na escolha de cada carro.',
-      'Comprar aqui é comprar dentro de um shopping de automóveis com estrutura, segurança e uma rede de bancos parceiros para facilitar o seu financiamento.'
-    ],
-    citacao: 'Mais do que estar no mercado, o grande desafio é se manter ativo, constante e evoluindo.',
-    citacaoFonte: 'Clayton e Vinícius, ao Portal Auto Shopping'
+      'A Grid Automóveis é uma loja de seminovos em Belo Horizonte, instalada há mais de dez anos no Portal Auto Shopping, no Carlos Prates.',
+      'O nosso trabalho começa antes de o carro chegar à vitrine: cada veículo é escolhido e avaliado, passa por laudo cautelar e é preparado antes de ser anunciado. No site você vê fotos de verdade, a ficha completa e o preço na tela.',
+      'Também compramos o seu carro, aceitamos na troca e cuidamos do financiamento e da transferência, com a estrutura e a rede de bancos parceiros do Portal.'
+    ]
   },
 
   // Confiança e procedência (Isaac, 03/10): é o que o cliente procura na loja.

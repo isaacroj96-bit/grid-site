@@ -423,7 +423,7 @@ function quemSomosHtml() {
   const q = C.quemSomos;
   if (!q) return '';
   const foto = q.foto && fs.existsSync(path.join(__dirname, 'estatico', q.foto))
-    ? `<img class="qs-foto" src="${B}/${esc(q.foto)}" alt="${esc(q.donos)}, da ${esc(C.nome)}" loading="lazy">` : '';
+    ? `<img class="qs-foto" src="${B}/${esc(q.foto)}" alt="${esc(q.fotoAlt || C.nome)}" loading="lazy">` : '';
   return `<section class="quem-somos" id="quem-somos" aria-labelledby="t-quem-somos">
     <div class="eyebrow-secao">Quem somos</div>
     <div class="qs-grade${foto ? ' com-foto' : ''}">
@@ -624,9 +624,9 @@ function montar() {
   if (C.quemSomos) escrever('quem-somos/index.html', pagina({
     titulo: `Quem somos · ${C.nome}`, descricao: `${C.nome}: ${C.quemSomos.titulo.toLowerCase()}. ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/quem-somos/', loja,
-    corpo: `<main class="wrap texto">
+    corpo: `<main class="wrap texto qs-pagina">
   ${quemSomosHtml()}
-  <p><a class="hero-link" href="${B}/#carros">Ver os carros</a></p>
+  <p class="qs-links"><a class="hero-link" href="${B}/#carros">Ver os carros</a><a class="hero-link" href="${esc(linkMapa(loja))}" target="_blank" rel="noopener">Como chegar</a></p>
 </main>`
   }));
 
