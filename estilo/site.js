@@ -19,6 +19,14 @@
   }
   var ORIGEM = origemDaVisita();
 
+  // ---------- topo: caixinha de Contato fecha ao tocar fora ou no Esc ----------
+  document.addEventListener('click', function (e) {
+    document.querySelectorAll('details.contato[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') document.querySelectorAll('details.contato[open]').forEach(function (d) { d.removeAttribute('open'); });
+  });
+
   // ---------- topo: volta ao tamanho anterior quando a página desce ----------
   // Folga entre ligar (60px) e desligar (20px) para o topo não piscar quando a altura dele muda.
   (function () {
