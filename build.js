@@ -188,6 +188,17 @@ const nomeCurto = c => [c.marca, c.modelo].filter(Boolean).join(' ') || c.titulo
 const nomeCompleto = c => [c.marca, c.modelo, c.versao, c.ano_modelo].filter(Boolean).join(' ') || c.titulo;
 const msgCarro = c => C.msgCarro(nomeCompleto(c), brl(precoFinal(c)));
 
+// Contato do topo (desenho do Isaac, 09/11): abre uma caixinha com WhatsApp, Instagram, Facebook e Como chegar (Maps).
+function contatoHtml(loja, classe) {
+  const itens = [
+    `<a data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">WhatsApp</a>`,
+    C.instagram ? `<a href="https://www.instagram.com/${esc(C.instagram)}/" target="_blank" rel="noopener">Instagram</a>` : '',
+    C.facebook ? `<a href="${esc(C.facebook)}" target="_blank" rel="noopener">Facebook</a>` : '',
+    `<a href="${esc(linkMapa(loja))}" target="_blank" rel="noopener">Como chegar</a>`
+  ].filter(Boolean).join('');
+  return `<details class="contato ${classe}"><summary>Contato <span class="contato-seta" aria-hidden="true">▾</span></summary><div class="contato-menu">${itens}</div></details>`;
+}
+
 function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, eventoGoogle, jsonld, semFlutuante }) {
   const pxList = (Array.isArray(CONFIG.pixelId) ? CONFIG.pixelId : String(CONFIG.pixelId || '').split(','))
     .map(s => String(s || '').trim()).filter(Boolean);
@@ -228,9 +239,12 @@ ${googleTag}
 <header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
+    <a class="topo-sec topo-sec-esq" href="${B}/quem-somos/">Quem somos</a>
     <a class="topo-logo" href="${B}/" aria-label="${esc(C.nome)}, página inicial"><img class="logo" src="${B}/${LOGO}" alt="${esc(C.nome)}" width="${C.logo.largura}" height="${C.logo.altura}"></a>
+    ${contatoHtml(loja, 'topo-sec topo-sec-dir')}
     <a class="topo-botao topo-vender" href="${B}/venda-seu-carro/">${ICONE_CHAVE}<span class="longo">Venda seu carro</span><span class="curto">Vender carro</span></a>
   </div>
+  <nav class="topo-linha2" aria-label="Mais"><a href="${B}/quem-somos/">Quem somos</a><span aria-hidden="true">·</span>${contatoHtml(loja, '')}</nav>
   <div class="flag" aria-hidden="true"></div>
 </header>
 ${corpo}
@@ -243,7 +257,7 @@ ${corpo}
     <a data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
     <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
   </div>
-  <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/#quem-somos">Quem somos</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
+  <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/quem-somos/">Quem somos</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
   <div class="painel-pista">
     <div class="velo" aria-hidden="true"><i></i></div>
     <div class="placar" aria-live="polite"><span>Volta <b data-volta>—</b></span><span>Melhor <b data-melhor>—</b></span></div>
@@ -593,18 +607,26 @@ function montar() {
   const mapa = loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
   escrever('loja/index.html', pagina({
-    titulo: `Quem somos e como chegar · ${C.nome}`, descricao: `${C.nome}: há mais de 10 anos no Portal Auto Shopping. ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
+    titulo: `A loja · ${C.nome}`, descricao: `${C.nome}: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/loja/', loja,
     corpo: `<main class="wrap texto">
   ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}">` : ''}
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">A loja</h1>
-  ${quemSomosHtml()}
-  <h2 class="h1" style="font-size:clamp(28px,4.5vw,40px);margin-top:12px">Como chegar</h2>
   <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
   <p><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a></p>
   <p>WhatsApp: <b>${esc(loja.telefone)}</b></p>
   <p><a class="zap" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></p>
   ${BLOCO_LOJA(loja)}
+</main>`
+  }));
+
+  // quem somos (página própria, 09/11)
+  if (C.quemSomos) escrever('quem-somos/index.html', pagina({
+    titulo: `Quem somos · ${C.nome}`, descricao: `${C.nome}: ${C.quemSomos.titulo.toLowerCase()}. ${loja.bairro}, ${loja.cidade}.`,
+    url: CONFIG.dominio + '/quem-somos/', loja,
+    corpo: `<main class="wrap texto">
+  ${quemSomosHtml()}
+  <p><a class="hero-link" href="${B}/#carros">Ver os carros</a></p>
 </main>`
   }));
 
@@ -628,7 +650,7 @@ function montar() {
   <div class="vitrine">${carros.slice(0, 6).map(cardHtml).join('')}</div><p><a class="zap" href="${B}/">Ver todos os carros</a></p></main>`
   }));
 
-  const urls = ['/', '/loja/'].concat(carros.map(c => `/carro/${c.slug}/`));
+  const urls = ['/', '/quem-somos/', '/loja/'].concat(carros.map(c => `/carro/${c.slug}/`));
   escrever('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${CONFIG.dominio}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
   escrever('robots.txt', `User-agent: *\nDisallow: /prototipo/\nSitemap: ${CONFIG.dominio}/sitemap.xml\n`);
 
