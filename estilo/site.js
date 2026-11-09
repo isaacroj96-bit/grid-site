@@ -761,8 +761,14 @@
     function mostrarMinhas() {
       if (!minhas) return;
       var l = ler();
-      minhas.hidden = !l.length;
+      var ap = localStorage.getItem(CHAVE_AP);
+      minhas.hidden = !l.length && !ap;
       minhas.textContent = l.length ? 'Suas melhores: ' + l.slice(0, 3).map(seg).join(' · ') : '';
+      if (ap) {
+        var b = document.createElement('span'); b.textContent = (l.length ? ' — ' : '') + 'no ranking como ' + ap + ' · ';
+        var a = document.createElement('a'); a.href = '#'; a.setAttribute('data-trocar-apelido', ''); a.textContent = 'trocar';
+        minhas.appendChild(b); minhas.appendChild(a);
+      }
     }
     function desenhar(top) {
       if (!lista) return;
@@ -789,11 +795,34 @@
       mostrarMinhas();
       if (recorde && form) {
         pendente = ms;
+        var ap = localStorage.getItem(CHAVE_AP);
+        // Já tem apelido salvo neste aparelho: manda sozinho, sem perguntar de novo (pedido do Isaac, 09/11).
+        if (ap) { enviar(ap, true); return; }
         form.querySelector('[data-ranking-tempo]').textContent = seg(ms);
-        var inp = form.querySelector('input'); if (!inp.value) inp.value = localStorage.getItem(CHAVE_AP) || '';
         msg.textContent = ''; form.hidden = false;
       }
     };
+    var reenvio = null;
+    function enviar(apelido, automatico) {
+      var botao = form.querySelector('button'), ms = pendente;
+      if (ms == null) return;
+      botao.disabled = true; if (!automatico) msg.textContent = 'Salvando…';
+      fetch(url, { method: 'POST', body: JSON.stringify({ acao: 'salvar', apelido: apelido, ms: ms }) })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          botao.disabled = false;
+          if (!d || !d.ok) {
+            var erro = (d && d.erro) || 'Não consegui salvar. Tente de novo.';
+            // duas melhores voltas em menos de 10 s: tenta de novo com a mais recente
+            if (automatico && /Espere/.test(erro)) { clearTimeout(reenvio); reenvio = setTimeout(function () { enviar(apelido, true); }, 11000); return; }
+            if (automatico) { form.querySelector('[data-ranking-tempo]').textContent = seg(ms); form.querySelector('input').value = apelido; form.hidden = false; }
+            msg.textContent = erro; return;
+          }
+          try { localStorage.setItem(CHAVE_AP, apelido); } catch (e2) {}
+          form.hidden = true; if (pendente === ms) pendente = null; desenhar(d.top); mostrarMinhas();
+        })
+        .catch(function () { botao.disabled = false; if (!automatico) msg.textContent = 'Sem conexão. Tente de novo.'; });
+    }
     if (!box) return;
     mostrarMinhas();
     if ('IntersectionObserver' in window) {
@@ -804,17 +833,15 @@
       e.preventDefault();
       var apelido = form.querySelector('input').value.trim();
       if (apelido.length < 2) { msg.textContent = 'Use pelo menos 2 letras.'; return; }
-      if (pendente == null) return;
-      var botao = form.querySelector('button'); botao.disabled = true; msg.textContent = 'Salvando…';
-      fetch(url, { method: 'POST', body: JSON.stringify({ acao: 'salvar', apelido: apelido, ms: pendente }) })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          botao.disabled = false;
-          if (!d || !d.ok) { msg.textContent = (d && d.erro) || 'Não consegui salvar. Tente de novo.'; return; }
-          try { localStorage.setItem(CHAVE_AP, apelido); } catch (e2) {}
-          form.hidden = true; pendente = null; desenhar(d.top);
-        })
-        .catch(function () { botao.disabled = false; msg.textContent = 'Sem conexão. Tente de novo.'; });
+      enviar(apelido, false);
+    });
+    // "trocar": volta a perguntar o apelido na próxima melhor volta
+    if (minhas) minhas.addEventListener('click', function (e) {
+      if (!e.target.closest('[data-trocar-apelido]')) return;
+      e.preventDefault();
+      try { localStorage.removeItem(CHAVE_AP); } catch (e2) {}
+      form.querySelector('input').value = ''; mostrarMinhas();
+      if (pendente != null) { form.querySelector('[data-ranking-tempo]').textContent = seg(pendente); form.hidden = false; }
     });
   })();
 
