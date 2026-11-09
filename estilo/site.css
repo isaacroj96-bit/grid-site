@@ -367,3 +367,5 @@ header.topo.compacto .topo-linha2{display:none}
 
 .qs-pagina{max-width:1200px} /* mesma largura do topo e da vitrine */
 @media (min-width:860px){.qs-links{column-gap:44px}} /* mesmas colunas da foto e do texto acima */
+.qs-botoes{column-gap:10px}
+@media (max-width:559px){.qs-botoes .zap{width:100%;justify-content:center;padding-inline:8px;font-size:14px}} /* par de botões do mesmo tamanho no celular */

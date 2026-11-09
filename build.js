@@ -609,13 +609,17 @@ function montar() {
   escrever('loja/index.html', pagina({
     titulo: `A loja · ${C.nome}`, descricao: `${C.nome}: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/loja/', loja,
-    corpo: `<main class="wrap texto">
-  ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}">` : ''}
-  <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">A loja</h1>
-  <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
-  <p><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a></p>
-  <p>WhatsApp: <b>${esc(loja.telefone)}</b></p>
-  <p><a class="zap" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></p>
+    corpo: `<main class="wrap texto qs-pagina">
+  <div class="qs-grade${FOTO_LOJA ? ' com-foto' : ''}">
+    ${FOTO_LOJA ? `<img class="qs-foto" src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}">` : ''}
+    <div class="qs-texto">
+      <div class="eyebrow-secao">Como chegar</div>
+      <h1 class="h1" style="font-size:clamp(36px,6vw,56px);margin:4px 0 14px">A loja</h1>
+      <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
+      <p>Dentro do Portal Auto Shopping. WhatsApp: <b>${esc(loja.telefone)}</b></p>
+    </div>
+  </div>
+  <p class="qs-links qs-botoes"><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a><a class="zap" data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}Chamar no WhatsApp</a></p>
   ${BLOCO_LOJA(loja)}
 </main>`
   }));
