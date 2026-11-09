@@ -225,6 +225,7 @@ details ul{margin:0;padding:0 16px 14px 34px;columns:2 170px;color:var(--ink2);f
 .tela .rodape{padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center}
 /* páginas de texto */
 .texto{padding-block:30px 60px;display:grid;gap:16px;max-width:70ch}
+.texto>.loja{grid-area:auto} /* o bloco "Compre com confiança" usa grid-area da página do carro; aqui criava uma 2ª coluna */
 .texto p,.texto li{color:var(--ink2)}
 /* aviso de cookies */
 .cookies{position:fixed;left:16px;right:88px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;max-width:520px;margin-inline:auto;background:var(--sup2);border:1px solid var(--linha);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:center;font-size:13.5px;color:var(--ink2);box-shadow:0 10px 30px rgba(0,0,0,.5)}
@@ -326,3 +327,14 @@ footer.rodape-site a{color:var(--ink2)}
 .modal-campos input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--linha);border-radius:8px;padding:11px 12px;width:100%}
 .modal-campos input:focus{outline:none;border-color:var(--amarelo)}
 .zap-modal{width:100%;justify-content:center;font-size:15px;padding:12px 16px;border-radius:8px}
+
+/* Quem somos (/loja/#quem-somos) */
+.quem-somos{margin:8px 0 28px}
+.qs-grade{display:grid;gap:22px}
+.qs-texto h2{font-size:clamp(28px,4.5vw,40px);margin:4px 0 14px}
+.qs-texto p{color:var(--ink2);line-height:1.65;margin:0 0 12px;max-width:62ch}
+.qs-foto{width:100%;border-radius:var(--raio);aspect-ratio:4/5;object-fit:cover}
+.qs-citacao{margin:22px 0 0;padding:4px 0 4px 18px;border-left:3px solid var(--amarelo)}
+.qs-citacao p{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(20px,2.6vw,26px);line-height:1.3;color:var(--ink);margin:0 0 8px;max-width:none}
+.qs-citacao cite{font-style:normal;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+@media (min-width:860px){.qs-grade.com-foto{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:44px}}

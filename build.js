@@ -243,7 +243,7 @@ ${corpo}
     <a data-zap="${esc(C.msgPadrao)}" href="https://wa.me/${esc(loja.whatsapp)}">${ICONE_ZAP}<span>${esc(loja.telefone)}</span></a>
     <a href="https://instagram.com/${esc(CONFIG.instagram)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@${esc(CONFIG.instagram)}</span></a>
   </div>
-  <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
+  <div class="rodape-fino"><a href="${B}/venda-seu-carro/">Venda ou troque seu carro</a> · <a href="${B}/loja/#quem-somos">Quem somos</a> · <a href="${B}/loja/">Como chegar</a> · <a href="${B}/privacidade/">Privacidade</a></div>
   <div class="painel-pista">
     <div class="velo" aria-hidden="true"><i></i></div>
     <div class="placar" aria-live="polite"><span>Volta <b data-volta>—</b></span><span>Melhor <b data-melhor>—</b></span></div>
@@ -404,6 +404,25 @@ function carrosDoHistorico() {
 }
 
 // Topo da vitrine: o slogan da loja e um carro em destaque (o de maior preço), como a luz da cena.
+// Quem somos (cliente.js > quemSomos): a história da loja, com os donos e um trecho do depoimento deles.
+function quemSomosHtml() {
+  const q = C.quemSomos;
+  if (!q) return '';
+  const foto = q.foto && fs.existsSync(path.join(__dirname, 'estatico', q.foto))
+    ? `<img class="qs-foto" src="${B}/${esc(q.foto)}" alt="${esc(q.donos)}, da ${esc(C.nome)}" loading="lazy">` : '';
+  return `<section class="quem-somos" id="quem-somos" aria-labelledby="t-quem-somos">
+    <div class="eyebrow-secao">Quem somos</div>
+    <div class="qs-grade${foto ? ' com-foto' : ''}">
+      ${foto}
+      <div class="qs-texto">
+        <h2 class="h1" id="t-quem-somos">${esc(q.titulo)}</h2>
+        ${(q.paragrafos || []).map(t => `<p>${esc(t)}</p>`).join('')}
+        ${q.citacao ? `<blockquote class="qs-citacao"><p>“${esc(q.citacao)}”</p><cite>${esc(q.citacaoFonte || q.donos)}</cite></blockquote>` : ''}
+      </div>
+    </div>
+  </section>`;
+}
+
 function linkMapa(loja) {
   return loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${C.nome}, ${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
@@ -574,11 +593,13 @@ function montar() {
   const mapa = loja.latitude && loja.longitude ? `https://www.google.com/maps/search/?api=1&query=${loja.latitude},${loja.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${loja.endereco}, ${loja.bairro}, ${loja.cidade}`)}`;
   escrever('loja/index.html', pagina({
-    titulo: `A loja · ${C.nome}`, descricao: `${C.nome}: ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
+    titulo: `Quem somos e como chegar · ${C.nome}`, descricao: `${C.nome}: há mais de 10 anos no Portal Auto Shopping. ${loja.endereco}, ${loja.bairro}, ${loja.cidade}.`,
     url: CONFIG.dominio + '/loja/', loja,
     corpo: `<main class="wrap texto">
   ${FOTO_LOJA ? `<img class="foto-loja" src="${B}/${FOTO_LOJA}" alt="Fachada da ${esc(C.nome)}">` : ''}
   <h1 class="h1" style="font-size:clamp(36px,6vw,56px)">A loja</h1>
+  ${quemSomosHtml()}
+  <h2 class="h1" style="font-size:clamp(28px,4.5vw,40px);margin-top:12px">Como chegar</h2>
   <p><b>${esc(loja.endereco)}</b><br>${esc(loja.bairro)} · ${esc(loja.cidade)}${loja.uf ? ' · ' + esc(loja.uf) : ''}${loja.cep ? ' · CEP ' + esc(String(loja.cep).replace(/(\d{5})(\d{3})/, '$1-$2')) : ''}</p>
   <p><a class="zap" href="${esc(mapa)}" target="_blank" rel="noopener">Abrir no mapa</a></p>
   <p>WhatsApp: <b>${esc(loja.telefone)}</b></p>
