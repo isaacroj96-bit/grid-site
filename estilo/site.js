@@ -609,6 +609,10 @@
     var elVolta = caixa.querySelector('[data-volta]'), elMelhor = caixa.querySelector('[data-melhor]');
     var NS = 'http://www.w3.org/2000/svg';
     var LARG = 44, FAIXA = 11, ACEL_LATERAL = 1000, VMAX = 640;
+    // Pista de referência (09/11, para o ranking ser justo): a física roda sempre nesta medida, a do computador
+    // (caixa 920×430). A tela só desenha; em qualquer aparelho a volta vale o mesmo tempo. Volta mais rápida possível ≈ 4,6 s.
+    var REF_R = 198, REF_S = 490, REF_L = 2 * REF_S + 2 * Math.PI * REF_R, REF_LIM = Math.sqrt(ACEL_LATERAL * REF_R);
+    var REF_SEG = [REF_S / 2, Math.PI * REF_R, REF_S, Math.PI * REF_R, REF_S / 2], realSeg = REF_SEG.slice();
     var reduzir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var g = null, ext, int, eu, rival, LE = 1, LI = 1, limEu = 0, limRival = 0;
     var s = 0, v = 0, sr = 0, apertado = false, fora = null, entradaCurva = 0, naCurva = false;
@@ -648,7 +652,7 @@
     function montar() {
       var nW = caixa.clientWidth, nH = caixa.clientHeight;
       if (!nW || !nH || (nW === W && nH === H)) return;
-      var fracEu = s / LE, fracRival = sr / LI;
+      var fracRival = sr / LI;
       W = nW; H = nH; deitada = W >= H;
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
       while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -668,10 +672,12 @@
       if (deitada) el('rect', { x: W / 2 - 6, y: H - m - LARG / 2, width: 12, height: LARG, fill: 'url(#xadrez-pista)' }, g);
       else el('rect', { x: W - m - LARG / 2, y: H / 2 - 6, width: LARG, height: 12, fill: 'url(#xadrez-pista)' }, g);
       LE = ext.getTotalLength(); LI = int.getTotalLength();
-      limEu = Math.sqrt(ACEL_LATERAL * e.r); limRival = Math.sqrt(ACEL_LATERAL * i.r) * 0.86;
+      var retaReal = Math.max(0, (LE - 2 * Math.PI * e.r) / 2);
+      realSeg = [retaReal / 2, Math.PI * e.r, retaReal, Math.PI * e.r, retaReal / 2];
+      limEu = REF_LIM; limRival = Math.sqrt(ACEL_LATERAL * i.r) * 0.86;
       rival = carro('#f3f2ed', g); eu = carro('#f2c200', g);
-      s = (fracEu || 0) * LE; sr = (isFinite(fracRival) && fracRival ? fracRival : 0.5) * LI;
-      por(eu, pos(ext, s, LE)); por(rival, pos(int, sr, LI));
+      sr = (isFinite(fracRival) && fracRival ? fracRival : 0.5) * LI;
+      por(eu, pos(ext, real(s), LE)); por(rival, pos(int, sr, LI));
       svg.querySelector('.toque').addEventListener('pointerdown', apertar);
     }
     function pos(c, x, L) {
@@ -679,6 +685,17 @@
       var a = c.getPointAtLength(x), b = c.getPointAtLength((x + 1) % L);
       return { x: a.x, y: a.y, ang: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI };
     }
+    // posição na pista de referência → distância na pista desenhada (trecho a trecho: reta, curva, reta, curva, reta)
+    function real(x) {
+      x = ((x % REF_L) + REF_L) % REF_L;
+      var acum = 0;
+      for (var k = 0; k < 5; k++) {
+        if (x < REF_SEG[k] || k === 4) { var fr = REF_SEG[k] ? Math.min(1, x / REF_SEG[k]) : 0; return acum + fr * realSeg[k]; }
+        x -= REF_SEG[k]; acum += realSeg[k];
+      }
+      return acum;
+    }
+    function curvaRef(x) { x = ((x % REF_L) + REF_L) % REF_L; var a = REF_SEG[0], b = a + REF_SEG[1], c = b + REF_SEG[2], d = c + REF_SEG[3]; return (x >= a && x < b) || (x >= c && x < d); }
     function por(c, p) { c.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + p.ang.toFixed(1) + ')'); }
     function emCurva(p) { return deitada ? (p.x < H / 2 - 1 || p.x > W - H / 2 + 1) : (p.y < W / 2 - 1 || p.y > H - W / 2 + 1); }
     function seg(ms) { return (ms / 1000).toFixed(2).replace('.', ',') + 's'; }
@@ -709,12 +726,12 @@
         } else {
           v = Math.max(0, Math.min(VMAX, v + (apertado ? 540 : -380) * dt));
           var antes = s; s += v * dt;
-          if (s >= LE) {
-            s -= LE; var agora = performance.now();
-            if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } }
+          if (s >= REF_L) {
+            s -= REF_L; var agora = performance.now();
+            if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } if (window.gridAutoramaVolta) window.gridAutoramaVolta(tv); }
             inicioVolta = agora;
           }
-          var p = pos(ext, s, LE), curva = emCurva(p);
+          var p = pos(ext, real(s), LE), curva = curvaRef(s);
           if (curva && !naCurva) entradaCurva = antes;
           naCurva = curva;
           if (curva && v > limEu) {
@@ -728,6 +745,77 @@
       requestAnimationFrame(passo);
     }
     requestAnimationFrame(passo);
+  })();
+
+  // ---------- ranking da pista (09/11) ----------
+  // Lê o top 10 do Apps Script (pasta ranking/), guarda as melhores voltas no aparelho e oferece "Salvar no ranking".
+  (function () {
+    var box = document.querySelector('[data-ranking]');
+    var CHAVE = 'grid_autorama_voltas', CHAVE_AP = 'grid_autorama_apelido';
+    function ler() { try { return JSON.parse(localStorage.getItem(CHAVE) || '[]'); } catch (e) { return []; } }
+    function gravar(l) { try { localStorage.setItem(CHAVE, JSON.stringify(l)); } catch (e) {} }
+    function seg(ms) { return (ms / 1000).toFixed(2).replace('.', ',') + 's'; }
+    var lista = box && box.querySelector('[data-ranking-lista]'), form = box && box.querySelector('[data-ranking-form]');
+    var minhas = box && box.querySelector('[data-ranking-minhas]'), msg = box && box.querySelector('[data-ranking-msg]');
+    var pendente = null, url = box && box.getAttribute('data-ranking');
+    function mostrarMinhas() {
+      if (!minhas) return;
+      var l = ler();
+      minhas.hidden = !l.length;
+      minhas.textContent = l.length ? 'Suas melhores: ' + l.slice(0, 3).map(seg).join(' · ') : '';
+    }
+    function desenhar(top) {
+      if (!lista) return;
+      var ap = (localStorage.getItem(CHAVE_AP) || '').toLowerCase();
+      lista.innerHTML = '';
+      if (!top || !top.length) { lista.innerHTML = '<li class="vazio">Ninguém no ranking ainda. Seja o primeiro!</li>'; return; }
+      top.forEach(function (r) {
+        var li = document.createElement('li');
+        if (ap && String(r.apelido).toLowerCase() === ap) li.className = 'eu';
+        var a = document.createElement('span'); a.className = 'ap'; a.textContent = r.apelido;
+        var t = document.createElement('span'); t.textContent = seg(r.ms);
+        li.appendChild(a); li.appendChild(t); lista.appendChild(li);
+      });
+    }
+    function carregar() {
+      if (!url) return;
+      fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 'acao=top').then(function (r) { return r.json(); })
+        .then(function (d) { desenhar(d && d.top); }).catch(function () { lista.innerHTML = '<li class="vazio">Ranking indisponível agora.</li>'; });
+    }
+    window.gridAutoramaVolta = function (ms) {
+      ms = Math.round(ms);
+      var l = ler(), recorde = !l.length || ms < l[0];
+      l.push(ms); l.sort(function (a, b) { return a - b; }); gravar(l.slice(0, 10));
+      mostrarMinhas();
+      if (recorde && form) {
+        pendente = ms;
+        form.querySelector('[data-ranking-tempo]').textContent = seg(ms);
+        var inp = form.querySelector('input'); if (!inp.value) inp.value = localStorage.getItem(CHAVE_AP) || '';
+        msg.textContent = ''; form.hidden = false;
+      }
+    };
+    if (!box) return;
+    mostrarMinhas();
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); carregar(); } });
+      io.observe(box);
+    } else carregar();
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var apelido = form.querySelector('input').value.trim();
+      if (apelido.length < 2) { msg.textContent = 'Use pelo menos 2 letras.'; return; }
+      if (pendente == null) return;
+      var botao = form.querySelector('button'); botao.disabled = true; msg.textContent = 'Salvando…';
+      fetch(url, { method: 'POST', body: JSON.stringify({ acao: 'salvar', apelido: apelido, ms: pendente }) })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          botao.disabled = false;
+          if (!d || !d.ok) { msg.textContent = (d && d.erro) || 'Não consegui salvar. Tente de novo.'; return; }
+          try { localStorage.setItem(CHAVE_AP, apelido); } catch (e2) {}
+          form.hidden = true; pendente = null; desenhar(d.top);
+        })
+        .catch(function () { botao.disabled = false; msg.textContent = 'Sem conexão. Tente de novo.'; });
+    });
   })();
 
   // ---------- aviso de cookies (só com o pixel ligado) ----------

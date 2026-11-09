@@ -52,6 +52,9 @@ module.exports = {
     vendaInteresse: 'Carro da Grid que te interessou'
   },
 
+  // Ranking do autorama (09/11): endereço do Apps Script separado (pasta ranking/). Vazio = ranking escondido.
+  ranking: { url: '' },
+
   // Quem somos (Isaac, 09/11): texto institucional, sobre a loja (não sobre os sócios). Foto: arquivo em estatico/.
   quemSomos: {
     titulo: 'Há mais de 10 anos no Portal Auto Shopping',
