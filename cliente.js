@@ -18,6 +18,7 @@ module.exports = {
   whatsappPadrao: '5531996011999',
   telefonePadrao: '31 99601-1999',
   instagram: 'gridbh.auto',
+  facebook: 'https://www.facebook.com/gridbh',
   // Endpoint de captura pública de leads (Integrador / Porta pública)
   leadEndpoint: 'https://script.google.com/macros/s/AKfycbx7DP48bTN9lGJwMQhOCcncLoeAFrP7-IERQWeP-SmYV8VYsFq0BbW1AVY_ZEzvtkprFw/exec',
 
