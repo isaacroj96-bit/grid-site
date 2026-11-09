@@ -19,6 +19,24 @@
   }
   var ORIGEM = origemDaVisita();
 
+  // ---------- topo: volta ao tamanho anterior quando a página desce ----------
+  // Folga entre ligar (60px) e desligar (20px) para o topo não piscar quando a altura dele muda.
+  (function () {
+    var topo = document.querySelector('header.topo');
+    if (!topo) return;
+    var compacto = false, agendado = false;
+    function aplicar() {
+      agendado = false;
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (!compacto && y > 60) { compacto = true; topo.classList.add('compacto'); }
+      else if (compacto && y < 20) { compacto = false; topo.classList.remove('compacto'); }
+    }
+    window.addEventListener('scroll', function () {
+      if (!agendado) { agendado = true; window.requestAnimationFrame(aplicar); }
+    }, { passive: true });
+    aplicar();
+  })();
+
   // Marca do clique do anúncio (Google: gclid; Meta: fbclid) e UTMs da PRIMEIRA página da visita. Guardadas na
   // sessão para não se perderem quando o cliente navega até outro carro antes de chamar. O Integrador decide a
   // origem da lead (Google Ads / Meta Ads) a partir delas.
