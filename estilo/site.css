@@ -365,5 +365,5 @@ header.topo.compacto .topo-linha2{display:none}
   .topo-sec summary{color:var(--ink2)}
 }
 
-.qs-pagina{max-width:none}
+.qs-pagina{max-width:1200px} /* mesma largura do topo e da vitrine */
 @media (min-width:860px){.qs-links{column-gap:44px}} /* mesmas colunas da foto e do texto acima */
