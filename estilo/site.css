@@ -357,9 +357,10 @@ footer.rodape-site a{color:var(--ink2)}
 .topo-linha2,.topo-linha2 *{transition:opacity .2s}
 header.topo.compacto .topo-linha2{display:none}
 @media (min-width:980px){
-  header.topo .wrap{grid-template-columns:1fr auto auto auto 1fr;gap:28px}
+  header.topo .wrap{grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr) auto;gap:16px}
   .topo-linha2{display:none}
   .topo-sec{display:inline-flex;justify-self:center;color:var(--ink2);text-decoration:none;font-size:15px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:8px 4px;border-bottom:1px solid transparent}
   a.topo-sec:hover,.topo-sec summary:hover{color:var(--ink);border-color:var(--amarelo)}
   .topo-sec summary{color:var(--ink2)}
 }
+
