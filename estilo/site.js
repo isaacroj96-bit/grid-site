@@ -707,6 +707,14 @@
     botao.addEventListener('keyup', soltar);
     botao.addEventListener('blur', soltar);
     botao.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    // Celular: segurar ou tocar várias vezes não pode virar seleção de texto, menu de copiar ou lupa (09/11).
+    function semGesto(e) { if (e.cancelable) e.preventDefault(); }
+    botao.addEventListener('touchstart', function (e) { semGesto(e); apertar(); }, { passive: false });
+    botao.addEventListener('touchend', function (e) { semGesto(e); soltar(); }, { passive: false });
+    caixa.addEventListener('contextmenu', function (e) { if (!e.target.closest('a,address')) e.preventDefault(); });
+    caixa.addEventListener('selectstart', function (e) { if (!e.target.closest || !e.target.closest('a,address')) e.preventDefault(); });
+    svg.addEventListener('touchstart', function (e) { if (e.target.classList && e.target.classList.contains('toque')) { semGesto(e); apertar(); } }, { passive: false });
+    svg.addEventListener('touchend', function (e) { if (e.target.classList && e.target.classList.contains('toque')) { semGesto(e); soltar(); } }, { passive: false });
     window.addEventListener('pointerup', soltar);
     window.addEventListener('pointercancel', soltar);
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visivel = es[0].isIntersecting; }).observe(caixa);
