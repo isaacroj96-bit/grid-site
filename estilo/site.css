@@ -393,3 +393,6 @@ header.topo.compacto .topo-linha2{display:none}
 .ranking-salvar small{color:var(--ink3);min-height:16px}
 .ranking-minhas{margin:12px 0 0;font-size:13px;color:var(--ink3);font-family:var(--dado)}
 .ranking-minhas a{color:var(--ink2)}
+.ranking-abas{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 10px}
+.ranking-abas button{background:transparent;border:1px solid var(--linha);color:var(--ink2);border-radius:999px;padding:7px 0;font:inherit;font-size:13px;cursor:pointer}
+.ranking-abas button[aria-pressed="true"]{border-color:var(--amarelo);color:var(--ink);background:rgba(242,194,0,.1)}

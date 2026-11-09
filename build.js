@@ -267,6 +267,7 @@ ${corpo}
   </div>
   ${C.ranking && C.ranking.url ? `<section class="ranking-pista" data-ranking="${esc(C.ranking.url)}" aria-labelledby="t-ranking">
     <h2 id="t-ranking">Ranking da pista</h2>
+    <div class="ranking-abas" data-ranking-abas role="group" aria-label="Pista"><button type="button" data-pista="pc" aria-pressed="false">Computador</button><button type="button" data-pista="cel" aria-pressed="false">Celular</button></div>
     <ol class="ranking-lista" data-ranking-lista><li class="vazio">Carregando…</li></ol>
     <form class="ranking-salvar" data-ranking-form hidden>
       <p>Nova melhor volta: <b data-ranking-tempo></b>. Quer entrar no ranking?</p>

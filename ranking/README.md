@@ -26,3 +26,14 @@ Pôr o endereço em `cliente.js` → `ranking: { url: '...' }` e publicar. Com o
 ## Moderar
 
 Abrir a planilha e apagar a linha. Some do ranking em até 1 minuto.
+
+## Atualizar (quando o código em ranking/ mudar)
+
+```
+cd ranking
+clasp push -f
+clasp deployments            # anote o ID da implantação que já existe (a que termina o endereço /exec)
+clasp deploy -i <ID> --description "ranking v2"
+```
+
+Usar sempre `-i <ID>`: assim o endereço continua o mesmo e o site não precisa mudar.

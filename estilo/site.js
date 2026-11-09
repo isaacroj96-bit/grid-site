@@ -611,8 +611,17 @@
     var LARG = 44, FAIXA = 11, ACEL_LATERAL = 1000, VMAX = 640;
     // Pista de referência (09/11, para o ranking ser justo): a física roda sempre nesta medida, a do computador
     // (caixa 920×430). A tela só desenha; em qualquer aparelho a volta vale o mesmo tempo. Volta mais rápida possível ≈ 4,6 s.
-    var REF_R = 198, REF_S = 490, REF_L = 2 * REF_S + 2 * Math.PI * REF_R, REF_LIM = Math.sqrt(ACEL_LATERAL * REF_R);
-    var REF_SEG = [REF_S / 2, Math.PI * REF_R, REF_S, Math.PI * REF_R, REF_S / 2], realSeg = REF_SEG.slice();
+    // Duas pistas de referência (09/11): computador (deitada, caixa 920×430) e celular (em pé, celular de 390 px).
+    // Cada uma tem o seu ranking; dentro dela o tempo vale o mesmo em qualquer tela, e o desenho quase não distorce.
+    var REFS = { pc: { r: 198, s: 490 }, cel: { r: 162, s: 271 } };
+    var PISTA = 'pc', REF_R, REF_S, REF_L, REF_LIM, REF_SEG, realSeg;
+    function usarRef(nome) {
+      PISTA = nome; REF_R = REFS[nome].r; REF_S = REFS[nome].s;
+      REF_L = 2 * REF_S + 2 * Math.PI * REF_R; REF_LIM = Math.sqrt(ACEL_LATERAL * REF_R);
+      REF_SEG = [REF_S / 2, Math.PI * REF_R, REF_S, Math.PI * REF_R, REF_S / 2]; realSeg = REF_SEG.slice();
+      window.gridAutoramaPista = nome;
+    }
+    usarRef('pc');
     var reduzir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var g = null, ext, int, eu, rival, LE = 1, LI = 1, limEu = 0, limRival = 0;
     var s = 0, v = 0, sr = 0, apertado = false, fora = null, entradaCurva = 0, naCurva = false;
@@ -654,6 +663,8 @@
       if (!nW || !nH || (nW === W && nH === H)) return;
       var fracRival = sr / LI;
       W = nW; H = nH; deitada = W >= H;
+      var novaRef = deitada ? 'pc' : 'cel';
+      if (novaRef !== PISTA) { s = s / REF_L; usarRef(novaRef); s = s * REF_L; inicioVolta = null; v = Math.min(v, REF_LIM); }
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
       while (svg.firstChild) svg.removeChild(svg.firstChild);
       g = el('g', {}, svg);
@@ -736,7 +747,7 @@
           var antes = s; s += v * dt;
           if (s >= REF_L) {
             s -= REF_L; var agora = performance.now();
-            if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } if (window.gridAutoramaVolta) window.gridAutoramaVolta(tv); }
+            if (inicioVolta != null) { var tv = agora - inicioVolta; elVolta.textContent = seg(tv); if (melhor == null || tv < melhor) { melhor = tv; elMelhor.textContent = seg(tv); } if (window.gridAutoramaVolta) window.gridAutoramaVolta(tv, PISTA); }
             inicioVolta = agora;
           }
           var p = pos(ext, real(s), LE), curva = curvaRef(s);
@@ -759,19 +770,23 @@
   // Lê o top 10 do Apps Script (pasta ranking/), guarda as melhores voltas no aparelho e oferece "Salvar no ranking".
   (function () {
     var box = document.querySelector('[data-ranking]');
-    var CHAVE = 'grid_autorama_voltas', CHAVE_AP = 'grid_autorama_apelido';
-    function ler() { try { return JSON.parse(localStorage.getItem(CHAVE) || '[]'); } catch (e) { return []; } }
-    function gravar(l) { try { localStorage.setItem(CHAVE, JSON.stringify(l)); } catch (e) {} }
+    var CHAVE_AP = 'grid_autorama_apelido', NOMES = { pc: 'Computador', cel: 'Celular' };
+    function pistaAtual() { return window.gridAutoramaPista || 'pc'; }
+    function chave(p) { return 'grid_autorama_voltas_' + (p || pistaAtual()); }
+    function ler(p) { try { return JSON.parse(localStorage.getItem(chave(p)) || '[]'); } catch (e) { return []; } }
+    function gravar(l, p) { try { localStorage.setItem(chave(p), JSON.stringify(l)); } catch (e) {} }
+    var mostrando = null, servidorV2 = false, pendentePista = null;
     function seg(ms) { return (ms / 1000).toFixed(2).replace('.', ',') + 's'; }
     var lista = box && box.querySelector('[data-ranking-lista]'), form = box && box.querySelector('[data-ranking-form]');
     var minhas = box && box.querySelector('[data-ranking-minhas]'), msg = box && box.querySelector('[data-ranking-msg]');
     var pendente = null, url = box && box.getAttribute('data-ranking');
+    var abas = box && box.querySelector('[data-ranking-abas]');
     function mostrarMinhas() {
       if (!minhas) return;
       var l = ler();
       var ap = localStorage.getItem(CHAVE_AP);
       minhas.hidden = !l.length && !ap;
-      minhas.textContent = l.length ? 'Suas melhores: ' + l.slice(0, 3).map(seg).join(' · ') : '';
+      minhas.textContent = l.length ? 'Suas melhores (' + NOMES[pistaAtual()].toLowerCase() + '): ' + l.slice(0, 3).map(seg).join(' · ') : '';
       if (ap) {
         var b = document.createElement('span'); b.textContent = (l.length ? ' — ' : '') + 'no ranking como ' + ap + ' · ';
         var a = document.createElement('a'); a.href = '#'; a.setAttribute('data-trocar-apelido', ''); a.textContent = 'trocar';
@@ -791,18 +806,25 @@
         li.appendChild(a); li.appendChild(t); lista.appendChild(li);
       });
     }
-    function carregar() {
+    function carregar(p) {
       if (!url) return;
-      fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 'acao=top').then(function (r) { return r.json(); })
-        .then(function (d) { desenhar(d && d.top); }).catch(function () { lista.innerHTML = '<li class="vazio">Ranking indisponível agora.</li>'; });
+      mostrando = p || mostrando || pistaAtual();
+      if (abas) abas.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pista') === mostrando)); });
+      fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 'acao=top&pista=' + mostrando).then(function (r) { return r.json(); })
+        .then(function (d) {
+          servidorV2 = !!(d && d.versao >= 2);
+          // servidor antigo só tem o ranking do computador
+          if (!servidorV2 && mostrando === 'cel') { lista.innerHTML = '<li class="vazio">O ranking do celular abre em breve.</li>'; return; }
+          desenhar(d && d.top);
+        }).catch(function () { lista.innerHTML = '<li class="vazio">Ranking indisponível agora.</li>'; });
     }
-    window.gridAutoramaVolta = function (ms) {
-      ms = Math.round(ms);
-      var l = ler(), recorde = !l.length || ms < l[0];
-      l.push(ms); l.sort(function (a, b) { return a - b; }); gravar(l.slice(0, 10));
+    window.gridAutoramaVolta = function (ms, pista) {
+      ms = Math.round(ms); pista = pista || pistaAtual();
+      var l = ler(pista), recorde = !l.length || ms < l[0];
+      l.push(ms); l.sort(function (a, b) { return a - b; }); gravar(l.slice(0, 10), pista);
       mostrarMinhas();
-      if (recorde && form) {
-        pendente = ms;
+      if (recorde && form && (pista === 'pc' || servidorV2)) {
+        pendente = ms; pendentePista = pista;
         var ap = localStorage.getItem(CHAVE_AP);
         // Já tem apelido salvo neste aparelho: manda sozinho, sem perguntar de novo (pedido do Isaac, 09/11).
         if (ap) { enviar(ap, true); return; }
@@ -812,10 +834,10 @@
     };
     var reenvio = null;
     function enviar(apelido, automatico) {
-      var botao = form.querySelector('button'), ms = pendente;
+      var botao = form.querySelector('button'), ms = pendente, pista = pendentePista || pistaAtual();
       if (ms == null) return;
       botao.disabled = true; if (!automatico) msg.textContent = 'Salvando…';
-      fetch(url, { method: 'POST', body: JSON.stringify({ acao: 'salvar', apelido: apelido, ms: ms }) })
+      fetch(url, { method: 'POST', body: JSON.stringify({ acao: 'salvar', apelido: apelido, ms: ms, pista: pista }) })
         .then(function (r) { return r.json(); })
         .then(function (d) {
           botao.disabled = false;
@@ -827,14 +849,15 @@
             msg.textContent = erro; return;
           }
           try { localStorage.setItem(CHAVE_AP, apelido); } catch (e2) {}
-          form.hidden = true; if (pendente === ms) pendente = null; desenhar(d.top); mostrarMinhas();
+          form.hidden = true; if (pendente === ms) pendente = null; mostrando = pista; carregar(pista); mostrarMinhas();
         })
         .catch(function () { botao.disabled = false; if (!automatico) msg.textContent = 'Sem conexão. Tente de novo.'; });
     }
     if (!box) return;
     mostrarMinhas();
+    if (abas) abas.addEventListener('click', function (e) { var b = e.target.closest('[data-pista]'); if (b) carregar(b.getAttribute('data-pista')); });
     if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); carregar(); } });
+      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); carregar(pistaAtual()); } });
       io.observe(box);
     } else carregar();
     form.addEventListener('submit', function (e) {
