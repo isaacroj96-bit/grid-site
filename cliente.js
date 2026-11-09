@@ -53,7 +53,7 @@ module.exports = {
   },
 
   // Ranking do autorama (09/11): endereço do Apps Script separado (pasta ranking/). Vazio = ranking escondido.
-  ranking: { url: '' },
+  ranking: { url: 'https://script.google.com/macros/s/AKfycbyBdABIegVR527E-CehukCZW9g_iQKQnRueMqTe83ZccLPBWn10E_KwdTZ0ML6FIzIA/exec' },
 
   // Quem somos (Isaac, 09/11): texto institucional, sobre a loja (não sobre os sócios). Foto: arquivo em estatico/.
   quemSomos: {
