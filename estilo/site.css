@@ -334,7 +334,7 @@ footer.rodape-site a{color:var(--ink2)}
 .qs-texto h2{font-size:clamp(28px,4.5vw,40px);margin:4px 0 14px}
 .qs-texto p{color:var(--ink2);line-height:1.65;margin:0 0 12px;max-width:62ch}
 .qs-foto{width:100%;border-radius:12px;aspect-ratio:4/3;object-fit:cover}
-.qs-links{display:flex;gap:28px;flex-wrap:wrap}
+.qs-links{display:grid;grid-template-columns:1fr 1fr;justify-items:center;align-items:center;margin-top:8px}
 .qs-citacao{margin:22px 0 0;padding:4px 0 4px 18px;border-left:3px solid var(--amarelo)}
 .qs-citacao p{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(20px,2.6vw,26px);line-height:1.3;color:var(--ink);margin:0 0 8px;max-width:none}
 .qs-citacao cite{font-style:normal;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
@@ -366,3 +366,4 @@ header.topo.compacto .topo-linha2{display:none}
 }
 
 .qs-pagina{max-width:none}
+@media (min-width:860px){.qs-links{column-gap:44px}} /* mesmas colunas da foto e do texto acima */
