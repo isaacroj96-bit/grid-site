@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-12T14:50:39-03:00",
+  "gerado_em": "2026-11-12T15:05:41-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -581,7 +581,7 @@
       "descricao": "Fiat Toro 2024, cinza, diesel, 40.252 km. IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Controle de velocidade, Sensor de estacionamento, Rodas de liga leve, Tração 4x4.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-10-19T07:13:20-03:00"
+      "atualizado_em": "2026-11-12T11:41:43-03:00"
     },
     {
       "id": "8490461",
@@ -1515,7 +1515,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": false,
       "destaque": false,
-      "atualizado_em": "2026-11-12T14:50:39-03:00",
+      "atualizado_em": "2026-11-12T15:05:41-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
