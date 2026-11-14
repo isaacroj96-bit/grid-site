@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-14T16:05:21-03:00",
+  "gerado_em": "2026-11-14T16:20:22-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -407,7 +407,7 @@
       "ano_fabricacao": 2017,
       "ano_modelo": 2018,
       "km": 85001,
-      "preco": 70900,
+      "preco": 68900,
       "preco_promocional": null,
       "cor": "Azul",
       "combustivel": "Flex",
@@ -474,7 +474,7 @@
       "descricao": "Fiat Argo 2018, azul, flex, 85.001 km. IPVA Pago, Bancos de Couro, Câmera de ré, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-11-14T12:03:48-03:00"
+      "atualizado_em": "2026-11-14T13:11:53-03:00"
     },
     {
       "id": "8428692",
@@ -1457,7 +1457,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": false,
       "destaque": false,
-      "atualizado_em": "2026-11-14T16:05:21-03:00",
+      "atualizado_em": "2026-11-14T16:20:22-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
