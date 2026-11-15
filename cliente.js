@@ -12,6 +12,7 @@ module.exports = {
   dominio: 'https://www.gridbh.com',
   logo: { arquivo: 'grid-logo.png', largura: 88, altura: 40 },
   corTema: '#121214',
+  abertura: 'largada',   // abertura da página inicial (luzes de largada, uma vez por visita); apagar a linha desliga
   fontes: 'https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,700..900&family=IBM+Plex+Mono:wght@400;500&display=swap',
 
   // Contato (o feed pode trazer outro WhatsApp em dados.loja; estes valem quando não traz)

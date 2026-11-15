@@ -199,7 +199,22 @@ function contatoHtml(loja, classe) {
   return `<details class="contato ${classe}"><summary>Contato <span class="contato-seta" aria-hidden="true">▾</span></summary><div class="contato-menu">${itens}</div></details>`;
 }
 
-function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, eventoGoogle, jsonld, semFlutuante }) {
+// Abertura da página inicial, ligada por `abertura: 'largada'` no cliente.js: painel de largada (cinco colunas,
+// as duas luzes de baixo acendem em vermelho, da esquerda para a direita), tudo apaga e a logo arranca.
+// Uma vez por visita (sessionStorage); toque pula; sai sozinha em 9 s; não aparece para quem pediu menos
+// movimento, para quem chega com #seção no endereço nem sem JavaScript. Estilo em estilo/site.css (#abertura).
+const ABERTURA_LARGADA = `<script>(function(){try{if(sessionStorage.getItem('abertura')||location.hash||matchMedia('(prefers-reduced-motion: reduce)').matches)return;sessionStorage.setItem('abertura','1')}catch(e){return}
+var d=document,a=d.createElement('div');a.id='abertura';a.setAttribute('aria-hidden','true');
+a.innerHTML='<i class="ab-risco"></i><img class="ab-logo" src="${B}/${LOGO}" alt="" width="423" height="192"><div class="ab-luzes">'+Array(6).join('<b><i></i><i></i><i></i><i></i></b>')+'</div><small>toque para pular</small>';
+d.body.appendChild(a);d.documentElement.classList.add('ab-trava');
+var feito=false,cols=[].slice.call(a.querySelectorAll('b'));
+function abrir(){if(feito)return;feito=true;a.classList.add('sai');d.documentElement.classList.remove('ab-trava');setTimeout(function(){a.remove()},600)}
+a.addEventListener('click',abrir);setTimeout(abrir,9000);
+cols.forEach(function(b,i){setTimeout(function(){b.className='on'},350+i*340)});
+setTimeout(function(){cols.forEach(function(b){b.className=''});a.classList.add('vai');setTimeout(abrir,1150)},350+4*340+620);
+})();</script>`;
+
+function pagina({ titulo, descricao, url, imagem, tipo, corpo, loja, evento, eventoGoogle, jsonld, semFlutuante, abertura }) {
   const pxList = (Array.isArray(CONFIG.pixelId) ? CONFIG.pixelId : String(CONFIG.pixelId || '').split(','))
     .map(s => String(s || '').trim()).filter(Boolean);
   const gaId = CONFIG.googleAnalyticsId;
@@ -236,7 +251,7 @@ ${pixel}
 ${googleTag}
 </head>
 <body data-whatsapp="${esc(loja.whatsapp)}" data-lead-endpoint="${esc(CONFIG.leadEndpoint)}" data-pixel="${(pxList.length || tagGoogleId) ? '1' : '0'}"${tipo === 'product' ? ' class="tem-barra"' : ''}>
-<header class="topo">
+${abertura && C.abertura === 'largada' ? ABERTURA_LARGADA : ''}<header class="topo">
   <div class="wrap">
     <a class="topo-botao topo-comprar" href="${B}/#carros">${ICONE_CARRO}<span class="longo">Compre seu carro</span><span class="curto">Comprar carro</span></a>
     <a class="topo-sec topo-sec-esq" href="${B}/quem-somos/">Quem somos</a>
@@ -602,7 +617,7 @@ function montar() {
   escrever('index.html', pagina({
     titulo: C.textos.tituloInicio,
     descricao: C.textos.descricaoInicio(loja.cidade),
-    url: CONFIG.dominio + '/', imagem: carros[0] && carros[0].fotos[0], corpo: vitrine, loja
+    url: CONFIG.dominio + '/', imagem: carros[0] && carros[0].fotos[0], corpo: vitrine, loja, abertura: true
   }));
 
   // páginas dos carros
