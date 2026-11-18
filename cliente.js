@@ -18,6 +18,9 @@ module.exports = {
   // Contato (o feed pode trazer outro WhatsApp em dados.loja; estes valem quando não traz)
   whatsappPadrao: '5531996011999',
   telefonePadrao: '31 99601-1999',
+  // Endereço da loja: vale este, não o que vem no feed (o feed traz o CEP do Revenda Mais, que estava errado).
+  // CEP certo da Av. Dom Pedro II, 1900 (lado par): 31230-052 (Isaac, 18/11/2026).
+  endereco: { endereco: 'Avenida Dom Pedro II, 1900', bairro: 'Carlos Prates', cidade: 'Belo Horizonte', uf: 'MG', cep: '31230052' },
   instagram: 'gridbh.auto',
   facebook: 'https://www.facebook.com/gridbh',
   // Endpoint de captura pública de leads (Integrador / Porta pública)
