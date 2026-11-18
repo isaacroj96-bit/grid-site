@@ -406,6 +406,12 @@
     });
     var ordem = document.getElementById('ordem');
     if (ordem) ordem.addEventListener('change', function () { estado.ordem = ordem.value; aplicar(); });
+    // Link com ?faixa=ate80 (ex.: produtos do Perfil no Google) já abre com a faixa escolhida.
+    try {
+      var pedida = new URLSearchParams(location.search).get('faixa');
+      var botao = pedida && document.querySelector('[data-faixa="' + pedida.replace(/[^a-z0-9]/gi, '') + '"]');
+      if (botao) { botao.click(); vitrine.scrollIntoView({ block: 'start' }); }
+    } catch (e) { /* navegador antigo: fica em "Todos" */ }
   }
 
   // ---------- galeria da página do carro ----------
