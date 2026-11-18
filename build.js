@@ -586,7 +586,7 @@ function paginaVendaSeuCarro(carros, loja) {
 // ---------- montagem ----------
 function montar() {
   const dados = JSON.parse(fs.readFileSync(path.join(RAIZ, 'dados', 'estoque.json'), 'utf8'));
-  const loja = Object.assign({ whatsapp: CONFIG.whatsappPadrao, telefone: C.telefonePadrao }, dados.loja || {});
+  const loja = Object.assign({ whatsapp: CONFIG.whatsappPadrao, telefone: C.telefonePadrao }, dados.loja || {}, C.endereco || {}); // endereço do cliente.js vence o do feed
   const carros = (dados.carros || []).filter(c => c && c.slug && c.id);
 
   fs.rmSync(SAIDA, { recursive: true, force: true });
