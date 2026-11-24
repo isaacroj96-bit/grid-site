@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-24T13:11:33-03:00",
+  "gerado_em": "2026-11-24T13:15:02-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -274,7 +274,7 @@
       "ano_modelo": 2012,
       "km": 136404,
       "preco": 37900,
-      "preco_promocional": null,
+      "preco_promocional": 33900,
       "cor": "Preto",
       "combustivel": "Flex",
       "cambio": "Manual",
@@ -326,7 +326,7 @@
       "descricao": "Citroen C3 2012, preto, flex, 136.404 km. IPVA Pago, Bancos de Couro, Multimídia, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-11-13T14:10:31-03:00"
+      "atualizado_em": "2026-11-24T09:45:33-03:00"
     },
     {
       "id": "8628791",
@@ -1504,7 +1504,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": false,
       "destaque": false,
-      "atualizado_em": "2026-11-24T13:11:33-03:00",
+      "atualizado_em": "2026-11-24T13:15:02-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
