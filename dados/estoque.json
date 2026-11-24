@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "gerado_em": "2026-11-24T14:56:31-03:00",
+  "gerado_em": "2026-11-24T15:11:33-03:00",
   "loja": {
     "nome": "Grid Automóveis",
     "whatsapp": "5531996011999",
@@ -765,7 +765,7 @@
       "ano_modelo": 2017,
       "km": 58000,
       "preco": 79900,
-      "preco_promocional": 77900,
+      "preco_promocional": null,
       "cor": "Cinza",
       "combustivel": "Flex",
       "cambio": "Automático",
@@ -824,7 +824,7 @@
       "descricao": "Honda City 2017, cinza, flex, 58.000 km. IPVA Pago, Multimídia, Sensor de estacionamento, Rodas de liga leve, Freios ABS, Airbag motorista, Airbag passageiro, Alarme.",
       "novo_no_estoque": false,
       "destaque": true,
-      "atualizado_em": "2026-11-24T08:01:29-03:00"
+      "atualizado_em": "2026-11-24T11:33:42-03:00"
     },
     {
       "id": "8322489",
@@ -1504,7 +1504,7 @@
       "descricao": "Royal Enfield Meteor 350 Fireball 2022, na cor amarela. Cruiser de estilo clássico e pilotagem confortável, ideal para o dia a dia e para a estrada. Motor monocilíndrico de 349 cc com partida elétrica, câmbio de 5 marchas e freios a disco com ABS. Moto em ótimo estado, pronta para rodar. Venha conferir de perto na Grid Automóveis, no Carlos Prates, em BH.",
       "novo_no_estoque": false,
       "destaque": false,
-      "atualizado_em": "2026-11-24T14:56:31-03:00",
+      "atualizado_em": "2026-11-24T15:11:33-03:00",
       "tipo_veiculo": "moto",
       "cilindrada": "349",
       "partida": "Elétrica"
